@@ -1,0 +1,18 @@
+Got It!
+1. The Embedding layer
+You will learn now about vectorization of a language model using the embedding layer in keras, and how it can be used for transfer learning.
+
+2. Why embeddings
+The first reason to use embeddings is because the one-hot encoding of the tokens in a scenario with a very big vocabulary (maybe 100 thousands words) demands a lot of memory. An embedding layer with dimension, say, 300 is more viable. Also, embeddings are a dense representations of the words, and the implementations gives surprisingly nice understanding of the tokens. Like the famous king minus man plus woman equals to queen. Finally, it can be used for transfer learning. On the other hand, it demands training lots of parameters to learn this representation, and can make training slower.
+
+3. How to use in keras
+To use the embedding layer in keras, we first import it from keras dot layers module. The embedding layer should be the first layer of the model. The relevant parameters include: input dim, which is the size of the vocabulary output dim, which is the dimension of the embedding space trainable, that defines if this layer should have its weights updated or not during the training phase embedding initializer, that can be used to perform transfer learning by using pre-trained weights for the words in your vocabulary. Often, when using transfer learning we set trainable to False, but it is not mandatory. The final parameter is the input length, which determines the size of the sequences (it assumes that you padded the input sentences beforehand)
+
+4. Transfer learning
+There are many pre-trained vectors that were trained on big datasets such as the Wikipedia, news articles, etc. To train a model on those big sets demand a lot of computer power, but loading the weights does not! Recent advances in NLP and language models research is based on open sourcing pre-trained weights on big datasets using popular models such as glove, word to vec and bert, among others. In keras, we need the constant initializer to define the pre-trained matrix of the Embedding layer.
+
+5. Using GloVE pre-trained vectors
+Glove files contain rows separated by spaces, where the first column is the word and the others are the weights values for each dimension of the embedding space. To read the values, then, we loop over the rows of the file, split the line by spaces, get the word as the first item of the list and the rest of the list are the weights. We use dictionaries to easily store for each word an np array with the values. We also cast the values to have float32 type because it is the type used to create the vectors.
+
+6. Using the GloVE on a specific task
+To use the GloVE vectors in a specific task, we can simply select the words present on the vocabulary list, ignoring the other words to save memory. We need the task-specific vocabulary dictionary with words as keys and indexes as values, the glove dict created in the previous slide and the dimension of the embedding space as inputs. We define a matrix with shape equal to the number of words plus one and the embedding space dim. We add one because the index zero is reserved for the padding token. We iterate over the vocabulary words, if the word is found in the glove vectors, then we update this row of the matrix with the values from glove.
