@@ -1,1 +1,1 @@
-This is some slide, book i used to learned
+This is some slides, books i used to learned
