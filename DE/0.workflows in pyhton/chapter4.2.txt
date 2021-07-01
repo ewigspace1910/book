@@ -1,0 +1,26 @@
+1. Executable projects
+In this video, we will learn about executable projects.
+
+2. Run a module
+Python can run a module from outside of a project. For example, we can run our main.py file by using dot notation to drill down into the project to the file. In this example, our main.py file prints the __name__ and __file__ variables. When we run main.py, we see that __name__ is __main__, because we are running the file instead of importing it, and that __file__ is the absolute path to the module.
+
+3. Top-level imports
+We can add a __main__.py file so that our project can be executed from outside of the project using the project name. When we run our project, __main__.py will import the function in main.py and print __name__ and __file__. This time, __name__ is not __main__, because we are running the project and not a specific file.
+
+4. Import error
+If we modify __main__.py to import a module as we would from inside a project, we will get a ModuleNotFoundError when we run the project. To solve this, we just need to zip our project!
+
+5. Run zipped project
+We can zip our project with the zipapp module either using the create_archive() function or by running the zipapp module in a shell. When we run the resulting .pyz file in a shell, we get the expected result instead of a ModuleNotFoundError. The ability to run a zipped project is a great example of enjoying the convenience of a single file without sacrificing modularity!
+
+6. Pass arguments to projects
+We can also pass arguments to our projects by including a CLI in __main__.py. In this example, we use a simple CLI that prints sys.argv. Then we use Python to create a zipped project and run the project with an argument. The result is a list containing the filename and the argument.
+
+7. Zipapp main argument
+Zipapp can generate a __main__.py file for us. To demonstrate this, we remove the current __main__.py file either in Python or with the "rm" shell command, and then pass a string that points to our print_name_and_file() function as the main argument to create_archive() or the --main argument to zipapp in a shell. The auto-generated __main__.py will be included in the zip file, but not in our original project.
+
+8. Zipapp set interpreter
+We can also make our project command-line executable by passing a Python interpreter path as the interpreter argument to create_archive() or to the zipapp module in a shell as its --python argument. This allows us to run the zipped project using its path.
+
+9. Self-contained zipped projects
+We can also create self-contained python projects by including a requirements.txt file and installing dependencies into the project. Anyone who has Python installed can now run our zipped project on their computer! Zipapp makes it easy to share code in the form of zipped projects.

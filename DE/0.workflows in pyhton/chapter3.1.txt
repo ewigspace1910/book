@@ -1,0 +1,29 @@
+1. Command-line interfaces
+Welcome to chapter 3! In this video, we will learn about command-line interfaces.
+
+2. Synergy with the shell
+Command-line interfaces (CLIs) allow us to pass shell arguments to Python scripts and avoid using comments to enable or disable sections of code.
+
+3. Build command-line interfaces
+We will compare two options for building CLIs: the standard library "argparse" module and the third-party "docopt" library. Argparse builds CLIs with the methods and attributes of its "ArgumentParser" class. After we instantiate the ArgumentParser class, we set up a CLI with the add_argument() method, and obtain a Namespace object using the parse_args() method. Individual arguments are accessible as attributes of the Namespace object. Docopt lets us simultaneously design and document CLIs with file docstrings. By passing the dunder doc (__doc__) variable to the docopt() function, we can obtain an argument dictionary that stores shell arguments as values.
+
+4. Argparse and methods
+First, we will set up an argparse CLI. On the right, we define a function called get_namespace() that instantiates the "ArgumentParser" class, uses the add_argument() method to add an argument called "format", and returns a Namespace object with the parse_args() method. On the left, we import the get_namespace() function into a script called "now.py", which uses the standard library datetime module to print the current time or date. We pass the "format" shell argument to the strftime() method, which converts datetime objects into strings. Now we can pass datetime formats as shell variables to "now.py". In this example, the datetime format we passed corresponds to the current time.
+
+5. Docopt and docstrings
+In contrast to argparse, docopt defines CLIs in file docstrings. Argument names must be uppercase, as shown here, or surrounded by less than (<) and greater than (>) signs. The get_arg_dict() function shown here passes __doc__ to the docopt() function and returns a dictionary. After importing get_arg_dict() into "now.py", we can obtain the argument dictionary and supply the FORMAT argument to strftime(). Our docopt and argparse CLIs are used in the same way. Here, we pass a datetime format that gives us the current month and calendar day.
+
+6. GNU Make
+Regardless of how we build our CLIs, we can use a tool called GNU Make to automate execution of shell commands and scripts, and Python scripts and modules.
+
+7. Make shell command
+Make follows instructions called rules in Makefiles. Makefile rules can include a "target" and a "recipe" used to make that target. In the Makefile shown on the left, there is a target called "time". The "time" target's "recipe" runs "now.py" with a shell argument. When we run the "make" shell command, Make will execute the recipe for the first target in the Makefile.
+
+8. Make dependencies
+Now we will add two more rules to our Makefile. The second rule has a similar structure to the first, but the last rule does not have a recipe and instead lists dependencies. The purpose of the "all" target is to execute the recipes of its dependencies, and thus "all" does not have its own recipe.
+
+9. Make all
+When we run "make all" in a shell, Make will execute the recipes for the dependencies of the "all" target. Here, we are using Make to run the same Python script with different shell arguments. We will explore other uses for Make later in this chapter. For now, we will focus on building CLIs with argparse and docopt.
+
+10. Command-line interface documentation
+Specifically, we will create a CLI for the nbuild() function, which is part of the nbless package described in the previous video. After installing nbless, we will be able to use the nbuild shell command as shown in this Sphinx documentation webpage.

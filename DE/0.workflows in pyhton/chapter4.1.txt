@@ -1,0 +1,35 @@
+2. Why use templates?
+Project templates allow us to avoid repetitive tasks, standardize project structure, pre-configure tools like Pytest and Sphinx by including configuration files that already contain our preferred settings and automate steps after project setup by including a Makefile that already contains recipes to build Sphinx documentation, create virtual environments, initialize git repositories, and deploy Python packages to the Python Package Index (PyPI).
+
+3. Cookiecutter
+We will focus on the Cookiecutter project template library. Cookiecutter can be used for any programming language. Cookiecutter project structure can be modified by editing files in the template directory, which can be stored locally or remotely.
+
+4. Cookiecutter prompts
+We can set up a Cookiecutter project by passing a template repository url or path to the cookiecutter() function. Cookiecutter will then prompt us to override each of the default settings in the cookiecutter.json file. In this example, we provide a project name...
+
+5. Cookiecutter prompts
+and then choose one of three open source licenses.
+
+6. Cookiecutter defaults
+We can suppress the prompts with the no_input argument and instead use the defaults in the cookiecutter.json file. JSON files are similar to Python dictionaries and contain key-value pairs. We can replace any of the cookiecutter.json defaults by passing a dictionary of option names and values to cookiecutter()
+
+7. Override defaults
+as its extra_context argument. The example cookiecutter.json shown here has two keys, name and license, that we can override. The license key can be replaced by one of three possible strings. The first string, "MIT", is the default. To override the defaults, we have to know what keys are in the cookiecutter.json file.
+
+8. Access JSON files
+We can read in local JSON files as dictionary with the standard library json and pathlib modules. We can do the same for remote JSON files with the third-party requests library. Unpacking a dictionary into a list produces a list of dictionary keys. This is useful if we want to work with dictionary keys programmatically.
+
+9. Jinja2 template
+In this example JSON file, we have three keys, project, author, and repo. The "repo" key uses a Jinja2 template string to creates its value from the "project" value. We do not have to override this default, because it will automatically generated from our project name. For example, if the project is named "My Project", the Jinja2 template string will evaluate to my_project.
+
+10. Cookiecutter example
+In the example shown here, we pass a GitHub repository url to the cookiecutter() function. This will create a project based on the template contained in the GitHub repository. Instead of the cookiecutter() function, we could use the cookiecutter shell command. In both the Python and shell code, we skip the interactive prompts, and override the project, author, user, and description default values.
+
+11. Cookiecutter example
+To avoid writing out the entire GitHub repository url, we can use the "gh" abbreviation. This works for the cookiecutter() function and the cookiecutter shell command. Next, how we can use Cookiecutter to setup the Sphinx documentation generator.
+
+12. Project structure
+Our project template contains everything we need. When we run "make html" inside the docs/ directory, the main documentation webpage will be created as the index.html file in the docs/_build/html directory.
+
+13. Automated Sphinx setup
+Here is the main page of sample documentation generated from our template. Another advantage of Sphinx is that it works well with "Read the Docs", a free hosting service for software documentation. The ability to set up Sphinx to automatically generate documentation is just one example of the power of project templates.

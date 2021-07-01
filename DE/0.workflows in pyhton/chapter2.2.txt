@@ -1,0 +1,35 @@
+1. Docstrings
+In this video, we will learn how to include descriptions and examples in our code in the form of docstrings.
+
+2. Docstrings
+Docstrings are triple quoted strings that allow us to include documentation in objects. For example, we can include a docstring in the definition of our double() function. The docstring contains a description of what the function does.
+
+3. Access docstrings
+We can access the docstring later with the help() function. Docstrings combined with type hints make the help() output more... well.. helpful.
+
+4. Google docstring style
+There are several different docstring writing styles. The Google style tends to result in wider docstrings with fewer lines of code. In Google docstrings, item names and descriptions are on the same line.
+
+5. Numpy docstring style
+Another option is the Numpy style, which tends to results in narrower docstrings with more lines of code. In Numpy docstrings, item names and descriptions are on separate lines.
+
+6. Docstring types
+In addition to function definitions, we can find docstrings in the definitions of classes and methods. Docstrings at the top of modules and scripts provide information about the purpose of these files. Docstrings at the top of __init__.py files are called package docstrings and describe entire directories of python files.
+
+7. Package docstrings
+We can access package and module docstrings by passing packages and modules to the help() function. Here, we call help() on the pandas package. The package docstring is provided in the DESCRIPTION section. The last section, FILE, gives the path to the __init__.py that contains the docstring.
+
+8. Module docstrings
+The first line of module docstrings is included in the NAME section of the help() output, while the rest of the docstring is in the DESCRIPTION section. The double module docstring is only one line, so the DESCRIPTION section is skipped and the next section after NAME is CLASSES. The CLASSES section provides class and method docstrings.
+
+9. Class docstrings
+Class docstrings should list and describe all class and instance attributes. In this Google-style class docstring example, there is one instance attribute called "n_doubled". We also included an Arguments section that describes the "n" argument. The "self" argument should not be included in docstrings. The class docstring shown here provides all of the necessary information, so there is no need to add a docstring to the __init__() method definition.
+
+10. Docstring examples
+Docstrings can also include examples to demonstrate how an object can be used. Here, we've added an example to the Google-style docstring of the double() function. The example contains a mistake. If we multiply two integers, the result is an integer, not a float! To fix this, we can either change the result or pass a float to double() to make the result correct.
+
+11. Test docstring examples
+We already set up pytest to test docstrings in the previous video. When we run pytest in a shell, the pytest output tell us that there is a failure in double.py. Pytest used a standard library module called doctest to run the docstring example and compare the expected and actual results. Doctest detected a problem on line 8 where we expected a float, but the actual result was an integer. Thanks to doctest, docstring examples can serve two purposes: documentation and testing.
+
+12. Module docstring examples
+We can also include examples in modules docstrings to show how different objects defined in the module interact. In this example, we compare the "n_doubled" instance attribute with the result of passing 2 to double(). When we run pytest on the module, we see that the example is correct. Docstrings, especially with relevant examples, are extremely useful!

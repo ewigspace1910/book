@@ -1,0 +1,38 @@
+2. Jupyter nbconvert
+In Chapter 2, we used the Jupyter nbconvert library. Nbconvert can execute notebooks but cannot pass arguments to notebooks. For that, we will need the papermill library!
+
+3. Injected parameters
+Passing parameters to the papermill shell command adds a notebook cell that has an "injected-parameters" tag and contains the parameters that we passed.
+
+4. Default parameters
+We can provide default values for parameters inside of a notebook with a "parameters" tag. Here, we use the papermill shell command to override the default value of the alpha parameter, execute input.ipynb, and create output.ipynb.
+
+5. Classic notebook interface
+In the classic Jupyter notebook interface, we can access the Tags Cell Toolbar via the View menu.
+
+6. JupyterLab interface
+In the JupyterLab interface, we need to Edit Metadata using the Cell Inspector in the sidebar.
+
+7. Jupyter nbformat
+We can create "parameters" cells programmatically using nbformat, by reading in a notebook with the read() function, editing the notebook's first cell to add a parameters tag and a default parameter, and overwriting the original notebook file with the write() function.
+
+8. Execute notebook
+We can parametrize notebooks with the papermill API's execute_notebook() function and the papermill shell command. The arguments accepted by execute_notebook() and the papermill shell command are similar. In addition to the input, output, and current working directory paths, we can pass parameters, specify which Jupyter kernel to use, and enable report mode to hide code in the output notebook.
+
+9. Parametrize
+Working in Python files allows us to save parameter names and values as lists, and create a dictionary of custom parameters. We can then pass this dictionary to the execute_notebook() function as its parameters argument.
+
+10. Overwrite defaults
+When we use papermill to execute a notebook with parameters, an "injected-parameters" cell will be added below the "parameters" cell.
+
+11. Notebook parameters
+After we assign default parameters inside a notebook, we can define functions to use those parameters. Here, we create parameters for a Random Forest model.
+
+12. Use parameters inside notebooks
+Next, we define a get_model() function that can retrieve any scikit-learn model when provided with the correct arguments. We then create lists of argument names and values that can be paired up using the zip() function and unpacked as a dictionary into the function call.
+
+13. Scrapbook
+The scrapbook library allows us to record values with the glue() function and later read in notebooks to retrieve recorded values as a dictionary with the scraps attribute or a dataframe via the scrap_dataframe attribute. We can also access papermill execution metrics and notebook parameters as dataframes. These dataframe attributes allow us to use pandas to work with data obtained from notebooks.
+
+14. Summarize
+Building on our example of executing a notebook, we can use scrapbook to read in the notebook and obtain a dataframe of notebook parameters with the parameter_dataframe attribute. This example demonstrates how we can use papermill to programmatically execute notebooks and scrapbook to access notebook data.

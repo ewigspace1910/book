@@ -1,0 +1,33 @@
+Got It!
+1. Type hints
+Congratulations on finishing the first chapter! You should reflect on the principles we discussed as you work through the next three chapters. In this lesson, we will go over the benefits of type annotation.
+
+2. Dynamic typing
+Python is famous or perhaps infamous for determining types at runtime. This is known as dynamic or duck typing, because Python will decide that if something quacks, swims, walks and flies like a duck, then it must be a duck. Dynamic typing is definitely easier for users, but it can lead to problems. For example, the purpose of the double() function is not clear. It could accept a number and return a number or take a string and return a string. To address this ambiguity, we can add type hints to functions and methods.
+
+3. Type hints for arguments
+Here, we have added type hints for the "n" argument. On the left, we indicate that double() should accept an integer. On the right, the annotated type is a string.
+
+4. Type hints for return values
+Similarly, we can also annotate the return type with an arrow (->). Thinking about the argument and return value types while writing code can help prevent bugs.
+
+5. Get type hint information
+We can call the help() function on double() to view its type hints. Type hints are essentially built-in instructions for how to use a function!
+
+6. Type checker setup
+We will use a type checking tool called mypy. Instead of calling mypy directly, we will use it through the pytest testing framework and its pytest-mypy plugin. We can use pip to install everything we will need with one shell command. Shell commands in this course will be denoted by a dollar sign ($). When running shell commands, do not include the dollar sign.
+
+7. Type checker setup
+The last thing we will need is a pytest.ini file with some options for pytest and pytest-mypy.
+
+8. Mypy to the rescue!
+To run pytest on the double.py file, we will use the pytest shell command. In the pytest output, we can see that mypy detected the incorrect use of double() on line 4.
+
+9. List
+Let's write a function called cook_foods() that will replace the word "raw" with the word "cooked" in every string in an input list. We annotate the "raw_foods" argument and the return value with the List class from the typing module. The cook_foods() function works great when we pass it a list of strings, but it gives us an unexpected result when we pass a single string. We wanted a list of cooked foods, not a list of letters!
+
+10. Pytest cook
+When we run pytest on the cook module, mypy catches that we passed a string instead of a list to cook_foods() on line 7. Pytest and mypy help ensure that our code is used as intended.
+
+11. Optional
+Some typing module classes offer more flexibility than others. For example, the Optional class allows an argument to be None in addition to another type. Optional is commonly used when the default value for an argument is None as is the case with the optional_string argument of the str_or_none() function shown here. The function can return a string or None, depending on whether an input string was provided or not. When designing type annotation, classes like Optional allow us to strike a balance between flexibility and strictness.
