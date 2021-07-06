@@ -1,0 +1,57 @@
+Got It!
+1. Mocking
+In the previous lesson, we tested the preprocess() function.
+
+2. The preprocessing function
+preprocess() applies
+
+3. The preprocessing function
+row_to_list() and
+
+4. The preprocessing function
+convert_to_int() sequentially to the raw data file to create a clean data file.
+
+5. Test result depend on dependencies
+If the tests for preprocess() were to pass, row_to_list() and convert_to_int() must also work as expected.
+
+6. Test result depend on dependencies
+If any of them has a bug, the tests for preprocess() will not pass, even if preprocess() has no bugs.
+
+7. Test result depends on dependencies
+But the test results should be indicative of the bugs in the function under test, and not bugs in any of its dependencies.
+
+8. Mocking: testing functions independently of dependencies
+In this lesson, we will learn a trick which will allow us to test a function independently of its dependencies. This very useful trick is called mocking. To use mocking in pytest, we will need two packages. The first one is pytest-mock and we can install it using pip. The second one is a standard library package called unittest.mock.
+
+9. MagicMock() and mocker.patch()
+The basic idea of mocking
+
+10. MagicMock() and mocker.patch()
+is to replace potentially buggy dependencies such as row_to_list() with the object unittest.mock.MagicMock(), but only during testing. This replacement is done using a fixture called mocker, and calling its patch method right at the beginning of the test test_on_raw_data(), which we wrote in the last lesson.
+
+11. MagicMock() and mocker.patch()
+The first argument of the mocker.patch method is the fully qualified name of the dependency including module name, as registered by the function under test.
+
+12. MagicMock() and mocker.patch()
+preprocess() knows row_to_list() as data.preprocessing_helpers.row_to_list, so that's what we will use here. The mocker.patch method returns the MagicMock object which we store in the variable row_to_list_mock.
+
+13. Making the MagicMock() bug-free
+During the test, row_to_list_mock can be programmed to behave like a bug-free replacement of row_to_list(). We call the bug free version of row_to_list() as row_to_list_bug_free(). Note that this only needs to be bug-free in the context of the test, and therefore, can be much simpler than the actual row_to_list() function. In the test, we use the following raw data file, which we already saw in the last lesson. The row_to_list_bug_free() simply needs to return the correct result for these five rows. Therefore, we create a dictionary containing the correct results for these five rows and return the results from the dictionary. Then we set the side_effect attribute of the MagicMock() object to the bug-free version.
+
+14. Side effect
+We can also set the side_effect attribute by passing side_effect as a keyword argument to mocker.patch. mocker.patch treats any keyword argument that it does not recognize as an attribute of the returned MagicMock() object and sets the attribute value accordingly.
+
+15. Bug free replacement of dependency
+From this point on, when we call preprocess() in the test, the bug-free mock of row_to_list() will be used, and the test will not encounter any bugs.
+
+16. Checking the arguments
+We can also check if preprocess() is calling row_to_list() with the correct arguments. The call_args_list attribute is a list of all the arguments that row_to_list_mock was called with, wrapped in a convenience object called call().
+
+17. Checking the arguments
+This convenience object can be imported from unittest.mock, and we import it at the top of the test. In the test, we can assert that the call_args_list attribute is the expected list containing the five rows of the raw data file in the correct order.
+
+18. Dependency buggy, function bug-free, test still passes!
+We have prepared a scenario where row_to_list() contains a bug but preprocess() doesn't. If we run the tests for both functions, we see that the some tests for row_to_list() fail,
+
+19. Dependency buggy, function bug-free, test still passes!
+but the test for preprocess() passes. That's exactly the behavior we wanted!
