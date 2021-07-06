@@ -1,0 +1,60 @@
+Got It!
+1. Beyond assertion: setup and teardown
+Congratulations, you are now in the fourth and final chapter! In this lesson, we are going to look at functions whose tests require more than assert statements.
+
+2. The preprocessing function
+As an example, consider the function preprocess(), which accepts paths to a raw data file and a clean file as arguments. Let's say that the raw data file looks like this.
+
+3. The preprocessing function
+The function first applies row_to_list() on the rows. The second row has no tab separator,
+
+4. The preprocessing function
+so row_to_list() filters it out.
+
+5. The preprocessing function
+convert_to_int() is applied next. The fourth and fifth rows are dirty because the area and the price entry are missing commas respectively.
+
+6. The preprocessing function
+convert_to_int() filters them out.
+
+7. The preprocessing function
+For the two valid rows, convert_to_int() converts the comma separated strings into integers. The result is written to the clean file.
+
+8. Environment preconditions
+preprocess() is different from other functions because it has a precondition to work properly. The precondition is the presence of a raw data file in the environment.
+
+9. Environment modification
+Another difference is that when we call the function, it modifies the environment by creating a clean data file.
+
+10. Testing the preprocessing function
+We create a test called test_on_raw_data() for this function.
+
+11. Step 1: Setup
+We create the raw data file first. This step is called setup, and it is used to bring the environment to a state where testing can begin.
+
+12. Step 2: Assert
+Then we call the function, which creates the clean data file. We open that file, read it and assert that it contains the expected lines.
+
+13. Step 3: Teardown
+Afterwards, we need to remove the clean and raw data file so that the next run of the test gets a clean environment. This step is called teardown, and it cleans any modification to the environment and brings it back to the initial state.
+
+14. The new workflow
+To summarize, instead of a sequence of assert statements, we have to follow the workflow: setup, assert and teardown.
+
+15. Fixture
+In pytest, the setup and teardown is placed outside the test, in a function called a fixture. A fixture is a function which has the pytest.fixture decorator. The first section is the setup. Then the function returns the data that the test needs. The test can access this data by calling the fixture passed as an argument.
+
+16. Fixture
+But instead of using the return keyword, the fixture function actually uses the yield keyword instead. The next section is the teardown. This section runs only when the test has finished executing.
+
+17. Fixture example
+Let's see an example of how this works for the test test_on_raw_data().
+
+18. Fixture example
+We create a fixture called raw_and_clean_data_file(). In setup, we create the paths to the raw and clean data file. Next, we write the raw data to the raw data file. Finally, we yield the paths as a tuple. The test calls the fixture and gets the paths required to call the preprocess() function. Then we proceed to the assert statements. In the teardown section, we remove both raw and clean data file using the os.remove() function.
+
+19. The built-in tmpdir fixture
+There is a built-in pytest fixture called tmpdir, which is useful when dealing with files. This fixture creates a temporary directory during setup and deletes the temporary directory during teardown.
+
+20. tmpdir and fixture chaining
+We can pass this fixture as an argument to our fixture. This is called fixture chaining, which results in the setup of tmpdir to be called first, followed by the setup of our fixture. When the test finishes, the teardown of our fixture is called first, followed by the teardown of tmpdir. The tmpdir argument supports all os.path commands such as join. We use the join function of tmpdir to create the raw and clean data file inside the temporary directory. The rest of the setup looks identical. The awesome thing is: we can omit the teardown code in our fixture entirely, because the teardown of tmpdir will delete all files in the temporary directory when the test ends.

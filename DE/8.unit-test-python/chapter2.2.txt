@@ -1,0 +1,32 @@
+1. Test Driven Development (TDD)
+By now, we understand why it is so important to write unit tests.
+
+2. Writing unit tests is often skipped
+But in the real world, it is all too common to skip writing them.
+
+3. Usual priorities in the industry
+Bosses want to prioritize feature implementation, because they want fast results. Unit tests only get second priority.
+
+4. Unit tests never get written
+So we tell ourselves that we will write the not-so-urgent unit tests tomorrow. Eventually, the unit tests never get written. Of course, we pay for this mistake in the long term.
+
+5. Test Driven Development (TDD)
+In this lesson, we will learn a new coding method called Test Driven Development or TDD in short, which tries to ensure that unit tests do get written. We got introduced to the life cycle of a function in Chapter 1. A function is first implemented and then it is tested, according to this life cycle.
+
+6. Test Driven Development (TDD)
+Test Driven Development alters the usual life cycle by adding a single step before implementation. This step involves writing unit tests for the function.
+
+7. Write unit tests before implementation!
+Yes, that right. We write tests even before the function is implemented in code! By making unit tests a precondition for implementation, this ensures that writing unit tests cannot be postponed or deprioritized. It also means that we, along with our bosses, should factor in the time for writing unit tests as a part of implementation time. Furthermore, when we write unit tests first, we have to think of possible arguments and return values - which includes normal, special and bad arguments. This type of thinking before implementation actually helps in finalizing the requirements for a function. When the requirements for a function is clear and precise, it makes the implementation much easier.
+
+8. In the coding exercises...
+That's all the theory we need. In the coding exercises following this video lesson, you will apply this coding method to the function convert_to_int(). We have seen this function before. It converts an integer valued string with comma as thousands separator to an integer.
+
+9. Step 1: Write unit tests and fix requirements
+In the exercises, you will start with a blank slate, which means that the function is not yet implemented. Then you will go through a three step process. First, you will write the tests for this function in the test module test_convert_to_int.py. As you write the unit tests, you will think more about the requirements of this function.
+
+10. Step 2: Run tests and watch it fail
+Then you will execute the test module. Of course, the tests will not pass because the function does not even exist yet.
+
+11. Step 3: Implement function and run tests again
+Finally you will implement the function and run the tests again. If you implemented the function correctly, then the tests should pass this time. Otherwise, you would have to fix bugs and repeat this step.

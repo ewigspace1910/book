@@ -1,0 +1,95 @@
+1. Continuous integration and code coverage
+In Chapter 1,
+
+2. Code coverage and build status badges
+We saw how NumPy increases user trust
+
+3. Code coverage and build status badges
+by adding code coverage
+
+4. Code coverage and build status badges
+and build status badges. In this lesson, we will learn to implement these badges for our own GitHub projects.
+
+5. The build status badge
+Let's start with the build status badge.
+
+6. The build status badge
+This badge uses a Continuous Integration server, which runs all tests automatically whenever we push a commit to GitHub. It shows whether tests are currently passing or failing.
+
+7. Build passing = Stable project
+To an end user, passing indicates a stable code base
+
+8. Build failing = Unstable project
+while failing indicates instability.
+
+9. CI server
+We will use Travis CI as our CI server.
+
+10. Step 1: Create a configuration file
+To integrate with Travis CI, we have to create a settings file called .travis.yml at the root of our repository.
+
+11. Step 1: Create a configuration file
+The file is arranged into sections. First, there's a language setting, and we set it to python. The python setting determines which Python version will be used to run the tests. We choose Python 3.6. The install setting is a list of commands to install our project and dependencies in the CI server. If we organized our tests in the recommended way, then we can use a local pip install using pip install -e dot. The script section lists the commands necessary to run the tests once everything is installed. We use pytest tests to run the test suite.
+
+12. Step 2: Push the file to GitHub
+We push this settings file to GitHub.
+
+13. Step 3: Install the Travis CI app
+Now we go to the GitHub profile page and click on MarketPlace.
+
+14. Step 3: Install the Travis CI app
+We search for Travis CI, click on it
+
+15. Step 3: Install the Travis CI app
+and install the app. It's free for public repositories.
+
+16. Step 3: Install the Travis CI app
+We allow the app access to the necessary repositories or organizations. Here, we are only allowing it access to the public repository univariate-linear-regression, which holds the example code for this course.
+
+17. Step 3: Install the Travis CI app
+We will be redirected to Travis CI, where we should login using our GitHub account. This will bring us to the Travis CI dashboard.
+
+18. Every commit leads to a build
+That's all the setup we need! From now on, whenever we push a commit to the GitHub repo, we should see a build appearing in the Travis CI dashboard.
+
+19. Step 4: Showing the build status badge
+When the build finishes, the badge appears here. We click on the badge,
+
+20. Step 4: Showing the build status badge
+choose Markdown from the dropdown
+
+21. Step 4: Showing the build status badge
+and paste the markdown code in the README file on GitHub. This adds the badge to the GitHub repo.
+
+22. Code coverage
+We will add the code coverage badge next. The code coverage badge indicates the percentage of our application code that gets run when we run the test suite. High percentages indicate a well tested code base.
+
+23. Codecov
+This badge comes from a service called Codecov that integrates seamlessly with GitHub and Travis CI.
+
+24. Step 1: Modify the Travis CI configuration file
+First, we will modify the .travis.yml to enable code coverage reports.
+
+25. Step 1: Modify the Travis CI configuration file
+In the install setting, pip install pytest-cov and codecov, as they are necessary to generate and upload coverage reports.
+
+26. Step 1: Modify the Travis CI configuration file
+The usual pytest command to run the tests should be modified by adding a command line flag --cov which points to the application directory src. This new command will not only run the tests, but also produce a coverage report.
+
+27. Step 1: Modify the Travis CI configuration file
+Finally, add a setting called after_success and add the command codecov. This makes Travis CI push the code coverage results to Codecov after every build.
+
+28. Step 2: Install Codecov
+To enable Codecov for our repository, we install the Codecov app in the GitHub marketplace in the same way we installed Travis CI.
+
+29. Commits lead to coverage report at codecov.io
+From now, when we push a new commit, the code coverage report should show up in Codecov, accessible at codecov.io, after Travis CI completes the build.
+
+30. Step 3: Showing the badge in GitHub
+Go to the badge section in settings and paste the Markdown code to the GitHub README file.
+
+31. Step 3: Showing the badge in GitHub
+And that adds the code coverage badge.
+
+32. Let's practice CI and code coverage!
+Let's practice some of these concepts in the exercises. It is also recommended that you go through these steps for a GitHub repository that you own.

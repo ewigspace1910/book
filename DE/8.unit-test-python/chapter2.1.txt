@@ -1,0 +1,41 @@
+1. Mastering assert statements
+Congratulations on completing the first chapter! You can already write basic unit tests, and in this lesson, we will learn more about the assert statement.
+
+2. Theoretical structure of an assertion
+So far, we have used only a boolean expression as an argument of the assert statement.
+
+3. The optional message argument
+But the assert statement can take an optional second argument, called the message. The message is only printed when the assert statement raises an AssertionError and it should contain information about why the AssertionError was raised. If the assert statement passes, nothing is printed.
+
+4. Adding a message to a unit test
+Let's look at the unit test called test_for_missing_area() for the row_to_list() function that we encountered in Chapter 1.
+
+5. Adding a message to a unit test
+We could enhance this test by adding a message. We first capture the return value of row_to_list() in a variable called actual. We define a variable called expected holding the expected return value. Then we define a message that contains the argument, the actual and expected return values - basically everything that we need to debug in case the test fails. We follow it up with the appropriate assert statement including the message.
+
+6. Test result report with message
+Here, on the top, we run the unit test without the message and we get pytest's automatic output on failed tests. On the bottom, we run the modified one with the message. Now the automatic output is gone, and we get the nice human readable message next to the AssertionError.
+
+7. Recommendations
+It is recommended to include a message with assertions because it is much easier to read and understand than the automatic output. In the message, print values of any variable of choice that may be relevant to debugging.
+
+8. Beware of float return values!
+Next, we will learn about an especially tricky situation when the function returns a float. In Python, comparisons between floats don't always work as expected, as we can see in this surprising example.
+
+9. Beware of float return values!
+Because of the way Python represents floats, the digits on the right might be different from what we expect, causing comparisons to fail. Why this happens is out of the scope of this course.
+
+10. Don't do this
+The bottom line is: we should not use the usual way to compare floats in the assert statement.
+
+11. Do this
+Instead, we should use the pytest.approx() function to wrap the expected value, as we see in this example. This ensures that the digits far on the right are ignored and we can compare floats safely. We get an empty output since the assert statement passes.
+
+12. NumPy arrays containing floats
+pytest.approx() also works for NumPy arrays containing floats. For example, notice how we are passing a NumPy array to the pytest.approx() function in the assert statement shown here.
+
+13. Multiple assertions in one unit test
+So far, we have only seen one assert statement per unit test, but unit tests can have more than one assert statement. Remember the convert_to_int() function, which converts an integer valued string with commas to an integer?
+
+14. Multiple assertions in one unit test
+Let's look at a unit test which you wrote for convert_to_int() in one of the exercises. We will modify this unit test on the right. We first want to test if the function returns an integer at all. For this, we use the isinstance() function, which takes the return value as a first argument, and the expected type of the return value as a second argument, which is int in this case. We follow this up with another assert statement which checks if the return value matches the expected value. The modified test will pass if both assert statements pass. It will fail if any of them raises an AssertionError.
