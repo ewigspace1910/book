@@ -1,0 +1,15 @@
+Got It!
+1. Referential integrity
+We'll now talk about one of the most important concepts in database systems: referential integrity. It's a very simple concept...
+
+2. Referential integrity
+...that states that a record referencing another record in another table must always refer to an existing record. In other words: A record in table A cannot point to a record in table B that does not exist. Referential integrity is a constraint that always concerns two tables, and is enforced through foreign keys, as you've seen in the previous lessons of this chapter. So if you define a foreign key in the table "professors" referencing the table "universities", referential integrity is held from "professors" to "universities".
+
+3. Referential integrity violations
+Referential integrity can be violated in two ways. Let's say table A references table B. So if a record in table B that is already referenced from table A is deleted, you have a violation. On the other hand, if you try to insert a record in table A that refers to something that does not exist in table B, you also violate the principle. And that's the main reason for foreign keys – they will throw errors and stop you from accidentally doing these things.
+
+4. Dealing with violations
+However, throwing an error is not the only option. If you specify a foreign key on a column, you can actually tell the database system what should happen if an entry in the referenced table is deleted. By default, the "ON DELETE NO ACTION" keyword is automatically appended to a foreign key definition, like in the example here. This means that if you try to delete a record in table B which is referenced from table A, the system will throw an error. However, there are other options. For example, there's the "CASCADE" option, which will first allow the deletion of the record in table B, and then will automatically delete all referencing records in table A. So that deletion is cascaded.
+
+5. Dealing with violations, contd.
+There are even more options. The "RESTRICT" option is almost identical to the "NO ACTION" option. The differences are technical and beyond the scope of this course. More interesting is the "SET NULL" option. It will set the value of the foreign key for this record to "NULL". The "SET DEFAULT" option only works if you have specified a default value for a column. It automatically changes the referencing column to a certain default value if the referenced record is deleted. Setting default values is also beyond the scope of this course, but this option is still good to know.

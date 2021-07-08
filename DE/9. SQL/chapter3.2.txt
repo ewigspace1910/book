@@ -1,0 +1,20 @@
+1. Surrogate keys
+Surrogate keys are sort of an artificial primary key. In other words, they are not based on a native column in your data, but on a column that just exists for the sake of having a primary key. Why would you need that?
+
+2. Surrogate keys
+There are several reasons for creating an artificial surrogate key. As mentioned before, a primary key is ideally constructed from as few columns as possible. Secondly, the primary key of a record should never change over time. If you define an artificial primary key, ideally consisting of a unique number or string, you can be sure that this number stays the same for each record. Other attributes might change, but the primary key always has the same value for a given record.
+
+3. An example
+Let's look back at the example in the first video of this chapter. I altered it slightly and added the "color" column. In this table, the "license_no" column would be suited as the primary key – the license number is unlikely to change over time, not like the color column, for example, which might change if the car is repainted. So there's no need for a surrogate key here. However, let's say there were only these three attributes in the table. The only sensible primary key would be the combination of "make" and "model", but that's two columns for the primary key.
+
+4. Adding a surrogate key with serial data type
+You could add a new surrogate key column, called "id", to solve this problem. Actually, there's a special data type in PostgreSQL that allows the addition of auto-incrementing numbers to an existing table: the "serial" type. It is specified just like any other data type. Once you add a column with the "serial" type, all the records in your table will be numbered. Whenever you add a new record to the table, it will automatically get a number that does not exist yet. There are similar data types in other database management systems, like MySQL.
+
+5. Adding a surrogate key with serial data type (contd.)
+Also, if you try to specify an ID that already exists, the primary key constraint will prevent you from doing so. So, after all, the "id" column uniquely identifies each record in this table – which is very useful, for example, when you want to refer to these records from another table. But this will be the subject of the next chapter.
+
+6. Another type of surrogate key
+Another strategy for creating a surrogate key is to combine two existing columns into a new one. In this example, we first add a new column with the "varchar" data type. We then "UPDATE" that column with the concatenation of two existing columns. The "CONCAT" function glues together the values of two or more existing columns. Lastly, we turn that new column into a surrogate primary key.
+
+7. Your database
+In the exercises, you'll add a surrogate key to the "professors" table, because the existing attributes are not really suited as primary key. Theoretically, there could be more than one professor with the same name working for one university, resulting in duplicates. With an auto-incrementing "id" column as the primary key, you make sure that each professor can be uniquely referred to. This was not necessary for organizations and universities, as their names can be assumed to be unique across these tables. In other words: It is unlikely that two organizations with the same name exist, solely for trademark reasons. The same goes for universities.

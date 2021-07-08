@@ -1,0 +1,17 @@
+1. Keys and superkeys
+Welcome back! Let's discuss key constraints. They are a very important concept in database systems, so we'll spend a whole chapter on them.
+
+2. The current database model
+Let's have a look at your current database model first. In the last chapter, you specified attribute constraints, first and foremost data types. You also set not-null and unique constraints on certain attributes. This didn't actually change the structure of the model, so it still looks the same.
+
+3. The database model with primary keys
+By the end of this chapter, the database will look slightly different. You'll add so-called primary keys to three different tables. You'll name them "id". In the entity-relationship diagram, keys are denoted by underlined attribute names. Notice that you'll add a whole new attribute to the "professors" table, and you'll modify existing columns of the "organizations" and "universities" tables.
+
+4. What is a key?
+Before we go into the nitty-gritty of what a primary key actually is, let's look at keys in general. Typically a database table has an attribute, or a combination of multiple attributes, whose values are unique across the whole table. Such attributes identify a record uniquely. Normally, a table, as a whole, only contains unique records, meaning that the combination of all attributes is a key in itself. However, it's not called a key, but a superkey, if attributes from that combination can be removed, and the attributes still uniquely identify records. If all possible attributes have been removed but the records are still uniquely identifiable by the remaining attributes, we speak of a minimal superkey. This is the actual key. So a key is always minimal. Let's look at an example.
+
+5. An example
+Here's an example that I found in a textbook on database systems. Obviously, the table shows six different cars, so the combination of all attributes is a superkey. If we remove the "year" attribute from the superkey, the six records are still unique, so it's still a superkey. Actually, there are a lot of possible superkeys in this example.
+
+6. An example (contd.)
+However, there are only four minimal superkeys, and these are "license_no", "serial_no", and "model", as well as the combination of "make" and "year". Remember that superkeys are minimal if no attributes can be removed without losing the uniqueness property. This is trivial for K1 to 3, as they only consist of a single attribute. Also, if we remove "year" from K4, "make" would contain duplicates, and would, therefore, be no longer suited as key. These four minimal superkeys are also called candidate keys. Why candidate keys? In the end, there can only be one key for the table, which has to be chosen from the candidates. More on that in the next video.

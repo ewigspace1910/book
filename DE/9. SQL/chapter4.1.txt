@@ -1,0 +1,21 @@
+Got It!
+1. Model 1:N relationships with foreign keys
+Welcome to the last chapter of this course. Now it's time to make use of key constraints.
+
+2. The current database model
+Here's your current database model. The three entity types "professors", "organizations", and "universities" all have primary keys – but "affiliations" doesn't, for a specific reason that will be revealed in this chapter.
+
+3. The next database model
+Next up, you'll model a so-called relationship type between "professors" and "universities". As you know, in your database, each professor works for a university. In the ER diagram, this is drawn with a rhombus. The small numbers specify the cardinality of the relationship: a professor works for at most one university, while a university can have any number of professors working for it – even zero.
+
+4. Implementing relationships with foreign keys
+Such relationships are implemented with foreign keys. Foreign keys are designated columns that point to a primary key of another table. There are some restrictions for foreign keys. First, the domain and the data type must be the same as one of the primary key. Secondly, only foreign key values are allowed that exist as values in the primary key of the referenced table. This is the actual foreign key constraint, also called "referential integrity". You'll dig into referential integrity at the end of this chapter. Lastly, a foreign key is not necessarily an actual key, because duplicates and "NULL" values are allowed. Let's have a look at your database.
+
+5. A query
+As you can see, the column "university_shortname" of "professors" has the same domain as the "id" column of the "universities" table. If you go through each record of "professors", you can always find the respective "id" in the "universities" table. So both criteria for a foreign key in the table "professors" referencing "universities" are fulfilled. Also, you see that "university_shortname" is not really a key because there are duplicates. For example, the id "EPF" and "UBE" occur three times each.
+
+6. Specifying foreign keys
+When you create a new table, you can specify a foreign key similarly to a primary key. Let's look at two example tables. First, we create a "manufacturers" table with a primary key called "name". Then we create a table "cars", that also has a primary key, called "model". As each car is produced by a certain manufacturer, it makes sense to also add a foreign key to this table. We do that by writing the "REFERENCES" keyword, followed by the referenced table and its primary key in brackets. From now on, only cars with valid and existing manufacturers may be entered into that table. Trying to enter models with manufacturers that are not yet stored in the "manufacturers" table won't be possible, thanks to the foreign key constraint.
+
+7. Specifying foreign keys to existing tables
+Again, the syntax for adding foreign keys to existing tables is the same as the one for adding primary keys and unique constraints.
