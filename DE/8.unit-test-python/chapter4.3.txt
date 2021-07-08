@@ -1,0 +1,60 @@
+Got It!
+1. Testing models
+We have come far in this course and now it's time to slowly put everything together.
+
+2. Functions we have tested so far
+We are already familiar with the functions preprocess(), get_data_as_numpy_array() and split_into_training_and_testing_set().
+
+3. Raw data to clean data
+The raw data file containing housing area and prices is in a file called housing_data.txt inside a subdirectory called raw of the top level directory data. We clean the raw data using preprocess()
+
+4. Raw data to clean data
+and put the file clean_housing_data.txt in the subdirectory clean of the data folder.
+
+5. Clean data to NumPy array
+Next, we can apply get_data_as_numpy_array() on the clean data file to get a NumPy array containing the clean data.
+
+6. Splitting into training and testing sets
+Finally, we can apply split_into_training_and_testing_set() to randomly split this NumPy array row-wise in the ratio 3:1. Three fourth of the data will be used for training a linear regression model. The rest will be used to test the model.
+
+7. Functions are well tested - thanks to you!
+All these functions are well tested, thanks to your efforts in the exercises!
+
+8. The linear regression model
+It's time now to train a linear regression model using the function train_model(), which takes the training set as the only argument. The training set has areas in the first column and prices in the second column.
+
+9. The linear regression model
+The linregress() function from scipy.stats is used to perform linear regression on the two columns. It returns the slope and intercept of the best fit line. It also returns three other quantities related to linear regression, but since we don't need them, we simply use the dummy variable underscore three times.
+
+10. Return values difficult to compute manually
+The train_model() function is different from the functions that we have tested so far.
+
+11. Return values difficult to compute manually
+Since it performs a complicated linear regression procedure,
+
+12. Return values difficult to compute manually
+we cannot easily predict the best fit line. And if we don't know the expected return value, we cannot test the function!
+
+13. True for all data science models
+This is true for all data science models, be it regression, random forest, support vector machine or neural network.
+
+14. Trick 1: Use dataset where return value is known
+The trick is to use an artificial or well-known training set, where it is easy to manually compute the return value. In the case of linear regression, one such training dataset is a linear data set. In the test test_on_linear_data(), we use such a dataset which follows the equation price equals two times area plus one.
+
+15. Trick 1: Use dataset where return value is known
+Since the data lies in a straight line, the best fit line is the same straight line. Therefore, the slope returned by train_model() should be 2, while the intercept returned should be 1. We can write assert statements to check that.
+
+16. Trick 2: Use inequalities
+We can also use inequalities. For example, in the test test_on_positively_correlated_data(), we use a dataset that is positively correlated.
+
+17. Trick 2: Use inequalities
+In this case, we can't predict the best fit line, but we can definitely assert that the best fit line has a slope greater than zero. This is an example of a sanity check.
+
+18. Recommendations
+We shouldn't leave our model untested just because it is complex. Perform all sorts of sanity checks. This will save us lots of debugging effort in the long run.
+
+19. Using the model
+Once the training function has been tested, we use it to find the best fit line for the housing data.
+
+20. Testing model performance
+The next step is to test the model using the model_test() function. It takes the testing set as the first argument. It also takes the slope and intercept returned by the model, and checks the performance of the model on the testing set. It returns a quantity called the r squared, which expresses how well the model fits the testing set. The value of r squared usually ranges from 0 to 1. It is 1 when the fit is perfect, it is 0 if there's no fit. It is hard to compute r squared in the general case. Therefore, we will have to use the recommendations of this lesson to test this function

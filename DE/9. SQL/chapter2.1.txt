@@ -1,0 +1,16 @@
+Better data quality with constraints
+So far you've learned how to set up a simple database that consists of multiple tables. Apart from storing different entity types, such as professors, in different tables, you haven't made much use of database features. In the end, the idea of a database is to push data into a certain structure – a pre-defined model, where you enforce data types, relationships, and other rules. Generally, these rules are called integrity constraints, although different names exist.
+
+2. Integrity constraints
+Integrity constraints can roughly be divided into three types. The most simple ones are probably the so-called attribute constraints. For example, a certain attribute, represented through a database column, could have the integer data type, allowing only for integers to be stored in this column. They'll be the subject of this chapter. Secondly, there are so-called key constraints. Primary keys, for example, uniquely identify each record, or row, of a database table. They'll be discussed in the next chapter. Lastly, there are referential integrity constraints. In short, they glue different database tables together. You'll learn about them in the last chapter of this course.
+
+3. Why constraints?
+So why should you know about constraints? Well, they press the data into a certain form. With good constraints in place, people who type in birthdates, for example, have to enter them in always the same form. Data entered by humans is often very tedious to pre-process. So constraints give you consistency, meaning that a row in a certain table has exactly the same form as the next row, and so forth. All in all, they help to solve a lot of data quality issues. While enforcing constraints on human-entered data is difficult and tedious, database management systems can be a great help. In the next chapters and exercises, you'll explore how.
+
+4. Data types as attribute constraints
+You'll start with attribute constraints in this chapter. In its simplest form, attribute constraints are data types that can be specified for each column of a table. Here you see the beginning of a list of all data types in PostgreSQL. There are basic data types for numbers, such as "bigint", or strings of characters, such as "character varying". There are also more high-level data types like "cidr", which can be used for IP addresses. Implementing such a type on a column would disallow anything that doesn't fit the structure of an IP.
+
+5. Dealing with data types (casting)
+Data types also restrict possible SQL operations on the stored data. For example, it is impossible to calculate a product from an integer *and* a text column, as shown here in the example. The text column "wind_speed" may store numbers, but PostgreSQL doesn't know how to use text in a calculation. The solution for this is type casts, that is, on-the-fly type conversions. In this case, you can use the "CAST" function, followed by the column name, the AS keyword, and the desired data type, and PostgreSQL will turn "wind_speed" into an integer right before the calculation.
+
+6. Let's practice!
