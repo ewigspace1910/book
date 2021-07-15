@@ -1,0 +1,28 @@
+1. Dealing with different date formats
+In this lesson, we will learn how to deal with dates when they don't have the format that we want.
+
+2. Different date formats
+Dates can have different formats depending on the language. For instance, in American English, it is common to write dates like this. First, we write the month, then the day, and finally, the year. However, in other languages, dates can have different formats, like in Spanish, where the day comes first, then the month, and finally, the year. In the Italian language it is the year the first part of the date, followed by the month, and finally the day. We can find more variations in other languages.
+
+3. Checking the date format of our tables
+Let's analyze the format of the entry_date column from the pilots table. The format starts with the year, followed by the month, and ends with the day. But, what should we do if this format is not the one that we need to get in our reports?
+
+4. Functions to modify the date formats
+If we want to modify the entry_date with another format, we will need to use the CONVERT or the FORMAT functions.
+
+5. CONVERT
+CONVERT converts an expression of one data type to another, determining optionally how the function will translate the expression.
+
+6. CONVERT
+Applied to dates, we can use CONVERT as follows. As we can see, we used the function CAST because the values of the entry_date column are stored as varchar, and we need them to be as dates. If they were dates, the CAST wouldn't be necessary. The last parameter of the CONVERT function, 0, 1, 101, and so on, is used to define the style we want.
+
+7. CONVERT
+Here, we can see some of the possible formats we can use. Note that we can get the century of the year by adding 10 at the beginning of the number. For the complete catalog, please visit the Microsoft documentation.
+
+8. FORMAT
+The FORMAT function can also help us to convert dates into the format that we want, optionally specifying a culture. It is more flexible than CONVERT, but it also performs worse, resulting in a slower process. It is not recommended for high data volumes. Let's see how to use it.
+
+9. FORMAT
+As the first parameter, we need to cast the values for the entry_date column as a date. Again, if they were dates, we wouldn't need to do it. The second parameter receives the format we want. The letter "d" in lowercase is used to get short dates, and the letter "D" in capital letters is used to get long dates. In the last FORMAT function, we just added "dd/MM/yyyy" to get the desired format. Finally, the third parameter optionally receives the locale of the language.
+
+10. Let's practice!

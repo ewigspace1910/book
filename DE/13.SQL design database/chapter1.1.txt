@@ -1,0 +1,23 @@
+Got It!
+1. OLTP and OLAP
+
+2. How should we organize and manage data?
+To put it simply, in this course we're asking the question: How should we organize and manage data? To answer this, we have to consider the different schemas, management options, and objects that make up a database. Some examples are listed here, and they are covered throughout the course. These topics all affect the way data is stored and accessed. Some enable faster query speeds. Some take up less memory than others. And notably, some cost more money than others.
+
+3. How should we organize and manage data?
+And as we will soon find out in this course, there is no one right answer to this motivating question. It will come down to how the data will be used.
+
+4. Approaches to processing data
+Okay, let's dive in. OLTP and OLAP are approaches to processing data, and they will be referenced throughout this course. They help define the way data is going to flow, be structured, and stored. If you figure out which fits your business case, designing your database will be much easier. OLTP stands for Online Transaction Processing. OLAP stands for Online Analytical Processing. As the names hint, the OLTP approach is oriented around transactions, while the other is oriented around analytics.
+
+5. Some concrete examples
+Before going into formal definitions, let's look at some use cases of each. Say you are in charge of data management at a bookstore. You would use an OLTP approach to keep track of the prices of books, while to analyze the most profitable books, an OLAP approach would be more appropriate. To keep track of all customer transactions, you would use an OLTP approach to insert sales as customers finish paying. However, if you wanted to do sophisticated analysis on sales, like most loyal customers - you would use OLAP. An OLTP database would be used to track when employees have worked, while to run an analysis on who deserves employee of the month, you would need to switch over to OLAP. Are you starting to see their differences? OLTP focus on supporting day-to-day operations, while OLAP tasks are vaguer and focus on business decision making.
+
+6. OLAP vs. OLTP
+This is a nice summary of OLAP and OLTP. The OLTP systems are application-oriented, like for bookkeeping for example. OLAP systems are oriented around a certain subject that's under analysis, like last quarter's book sales. The data in OLTP systems can be seen as a current snapshot of transactions that are archived often. The data in OLAP systems tend to be data from over a large period of time that has been consolidated for long-term analysis. This means OLAP tends to have more data than OLTP. As we saw in the bookstore example, the commonly executed OLTP queries are simpler and require a quick query or update. On the other hand, OLAP systems used for analysis require more complex queries. In terms of how these approaches are being used, OLTP systems are used by more people throughout a company and even a company's customers, while OLAP systems are typically used by only analysts and data scientists at a company.
+
+7. Working together
+OLAP and OLTP systems work together; in fact, they need each other. OLTP data is usually stored in an operational database that is pulled and cleaned to create an OLAP data warehouse. We'll get more into data warehouses and other storage solutions in the next video. Without transactional data, no analyses can be done in the first place. Analyses from OLAP systems are used to inform business practices and day-to-day activity, thereby influencing the OLTP databases.
+
+8. Takeaways
+To wrap up, here's what you should take away from this video: Before implementing anything, figure out your business requirements because there are many design decisions you'll have to make. The way you set up your database now will affect how it can be effectively used in the future. Start by figuring out if you need an OLAP or OLTP approach, or perhaps both! You should now be comfortable with the differences between both. These are the two most common approaches. However, they are not exhaustive, but they are an excellent start to get you on the right path to designing your database. In later videos, we'll learn more about the technical differences between both approaches.

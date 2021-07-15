@@ -1,0 +1,44 @@
+2. Why transform images?
+For example when you need to pass images to a Machine Learning model so it can classify if it's a cat or a dog, and we want the image to be upright. To optimize the size of images so it doesn't take long to analyze them. Or when we need all the images to have the same proportion before processing them further.
+
+3. Rotating
+We have flipped images before using Numpy. Rotating images allows us to apply angles, like when you rotate an image 90 degrees, clockwise. Meaning, to the right.
+
+4. Rotating
+Or like when you rotate images 90 degrees anticlockwise, meaning, to the left. Like we see in this example image.
+
+5. Rotating clockwise
+We can use the rotate function from scikit-image module "transform" to rotate an image by a certain angle around its center Once we import the module and function. In this code we are obtaining the rotated image with 90 degrees clockwise. The first parameter is the image we want to rotate and the second parameter is the angle. The rotation angle is in degrees in counter-clockwise or anticlockwise direction. So we use negative values. Here, you can see the original and rotated images.
+
+6. Rotating anticlockwise
+If we want to rotate anticlockwise, that is, to the left, we need to specify the degrees angles with positive numbers. In this case, we are rotating 90 degrees to the left. We see the original and the resulting images.
+
+7. Rescaling
+The rescale operation resizes an image by a given scaling factor. This can either be a single floating point value, or multiple values - one for each axis.
+
+8. Rescaling
+We can use the rescale function from the transform module. Once imported, in this example we make an image to be 4 times smaller than its original size by setting the scaling factor to 1/4. Setting an anti_aliasing boolean parameter to true specifies if applying a filter to smooth the image prior to down-scaling. We'll get into more detail later on. Then a multichannel if the image is colored.
+
+9. Rescaling
+This way we will have a downgraded image. The one we are plotting.
+
+10. Aliasing in digital images
+In a digital image, aliasing is a pattern or a rippling effect. Aliasing makes the image look like it has waves or ripples radiating from a certain portion. This happens because the pixelation of the image is poor; when they simply do not look right.
+
+11. Aliasing in digital images
+Here, we applied a resizing of 1/30, and we see what the anti_aliasing filter is doing to the image when is set. The first one has the anti_aliasing to True so we see is softer. While the one without it is pixelated.
+
+12. Resizing
+Resizing is used for making images match a certain size. The same purpose as rescale, but allows to specify an output image shape instead of a scaling factor.
+
+13. Resizing
+We can use the resize function from the transform module. This function requires the original image as the first parameter and a tuple holding the desired height and width to resize the image. Optionally, we can also set the anti-aliasing method.
+
+14. Resizing
+We can see how the image has been resized to a height of 400 and a width of 600.
+
+15. Resizing proportionally
+If we want to avoid disproportionate dimensions, we can resize an image proportionally. By taking the original width size of the image and dividing it by the scaling factor. The same goes for the height. Here we resize the image to be proportionally 4 times smaller.
+
+16. Resizing proportionally
+We obtain a good looking and proportionally accurate resizing.

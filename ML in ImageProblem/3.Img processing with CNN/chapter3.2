@@ -1,0 +1,38 @@
+1. How many parameters?
+When considering the architecture of networks, it is sometimes useful to think about the number of parameters in the network.
+
+2. Counting parameters
+Consider this dense two-layer network that processes images with 28-by-28 pixels. The first layer has 10 units. Each one of them is connected to each one of the pixels in the image through a weight. The second layer has 10 units, and each one of these is connected to all the units in the first layer. Finally, each one of the units in the last layer is connected to each of the units in layer two.
+
+3. Model summary
+When you construct a Keras model, you can get a description of this model by calling the model's summary method. This tells us that the total number of parameters in the model is 7,993.
+
+4. Counting parameters
+First layer has 7850 parameters. That's one for every pixel in the image, 784 pixels, times the number of units in this layer, 10 units + 10 parameters for bias terms in every one of these units. In the second layer there is one parameter for every unit in layer one, times the number of units in this layer + 10 parameters for bias terms. The last layer has one parameter for every unit in layer 2, times the 3 units in this layer + 3 bias terms. That's why the total number of parameters is 7,993.
+
+5. Model summary
+An that's what the summary shows us here. What does that look like for a convolutional network with a similar number of units?
+
+6. The number of parameters in a CNN
+Here is the code implementing a CNN with the same number of layers and units as our densely connected network.
+
+7. The number of parameters in a CNN
+We run its summary method to find the number of parameters, which is 24,533.
+
+8. The number of parameters in a CNN
+Let's do the math: in the first layer there are ten kernels with 9 parameters each + 10 bias terms. That's 100. In the second layer, each unit is connected through a convolutional kernel to each feature map in the first layer. That's 10 times 9 times 10 parameters, which is 900, and a bias term for each unit, which is a total of 910. The Flatten layer has no parameters at all. It just takes the output from the feature maps in layer 2 and flattens them into one big array. Because there is zero padding here, the convolutions leaves the same number of pixels in each subsequent layer, so we end up with 28 by 28 pixels in each feature map, with 10 feature maps or 7840 pixels in total. Times 3 units in the last layer is 23520 + 3 bias terms is 23523. Adding together, we get 24,533. So convolutional layers don't necessarily reduce the number of parameters. Let's look at another example.
+
+9. Increasing the number of units in each layer
+Here is a densely connected network with an increasing numbers of units in each layer. How many parameters does this network have?
+
+10. Increasing the number of units in each layer
+For this architecture, a lot of the parameters are concentrated at the first layer of the network and then subsequent layers have much fewer parameters.
+
+11. Increasing the number of units in each layer
+This is the convolutional network with the equivalent number of units in each layer. In contrast to the densely connected neural network,
+
+12. Increasing the number of units in each layer
+, when we run the summary method on this network, we see that the first few layers use very few parameters, while the last layer uses a lot of parameters. One way to think about this is that the convolutions have more expressive power, so they require less parameters, but reading out these more expressive representations then requires many more parameters on the output side.
+
+13. Let's practice!
+Now let's try some examples.

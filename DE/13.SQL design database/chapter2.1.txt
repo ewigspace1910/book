@@ -1,0 +1,38 @@
+1. Star and snowflake schema
+Congrats on finishing the first chapter! We're now going to jump in where we left off with the star schema.
+
+2. Star schema
+The star schema is the simplest form of the dimensional model. Some use the terms "star schema" and "dimensional model" interchangeably. Remember that the star schema is made up of two tables: fact and dimension tables. Fact tables hold records of metrics that are described further by dimension tables. Throughout this chapter, we are going to use another bookstore example. However, this time, you work for a company that sells books in bulk to bookstores across the US and Canada. You have a database to keep track of book sales. Let's take a look at the star schema for this database.
+
+3. Star schema example
+Excluding primary and foreign keys, the fact table holds the sales amount and quantity of books. It's connected to dimension tables with details on the books sold, the time the sale took place, and the store buying the books. You may notice the lines connecting these tables have a special pattern. These lines represent a one-to-many relationship. For example, a store can be part of many book sales, but one sale can only belong to one store. The star schema got its name because it tends to look like a star with its different extension points.
+
+4. Snowflake schema (an extension)
+Now that we have a good grasp of the star schema, let's look at the snowflake schema. The snowflake schema is an extension of the star schema. Off the bat, we see that it has more tables. You may not be able to see all the details in this slide, but don't worry it will be broken down in later slides. The information contained in this schema is the same as the star schema. In fact, the fact table is the same, but the way the dimension tables are structured is different. We see that they extend more, hence it's namesake.
+
+5. Same fact table, different dimensions
+The star schema extends one dimension, while the snowflake schema extends over more than one dimension. This is because the dimension tables are normalized.
+
+6. What is normalization?
+So what is normalization? Normalization is a technique that divides tables into smaller tables and connects them via relationships.
+
+7. What is normalization?
+The goal is to reduce redundancy and increase data integrity. So how does this happen? There are several forms of normalization, which we'll delve into later. But the basic idea is to identify repeating groups of data and create new tables for them. Let's go back to our example and to see how these tables were normalized.
+
+8. Book dimension of the star schema
+Here's the book dimension in the star schema. What could be repeating here? Primary keys are inherently unique. For book titles, although there is possible repeat here, it is not common. On the other hand, authors often publish more than one book, publishers definitely publish many books, and a lot of books share genres. We can create new tables for them, and it results in the following snowflake schema:
+
+9. Book dimension of the snowflake schema
+Do you see how these repeating groups now have their own table?
+
+10. Store dimension of the star schema
+On to the store dimension! City, states, and countries can definitely have more than one book stores within them.
+
+11. Store dimension of the snowflake schema
+Here are the normalized dimension tables representing the book stores. Do you notice that the way we structure these repeating groups is a bit different from the book dimension? An author can have published in different genres and with various publishers, hence why they were different dimensions. However, a city stays in the same state and country; thus, they extend each other over three dimensions.
+
+12. Time dimension
+The same is done for the time dimension. A day is part of a month that is part of a quarter, and so on!
+
+13. Snowflake schema
+And here we put all the normalized dimensions together to get the snowflake schema.

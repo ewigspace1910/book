@@ -1,0 +1,35 @@
+1. Morphology
+When you try to spot objects in an image, you can do so by its characteristics, like the shape. This what Morphology does.
+
+2. Binary images
+Binary regions produced by simple thresholding can be distorted by noise and texture, as we can see in the image.
+
+3. Morphological filtering
+Morphological filtering operations try to remove these imperfections by accounting for the form and structure of the objects in the image. These operations are especially suited to binary images, but some can extend to grayscale ones.
+
+4. Morphological operations
+Basic morphological operations are dilation and erosion. Dilation adds pixels to the boundaries of objects in an image, while erosion removes pixels on object boundaries. The number of pixels added or removed from the objects in an image depends on the size and shape of a structuring element used to process the image.
+
+5. Structuring element
+The structuring element is a small binary image used to probe the input image. We try to "fit" in the image object we want to get its shape. Here, the square structuring element named "A" fits in the object we want to select. The "B" intersects the object and the "C" is out of it. So if we want to select an apple in a table, we want the structuring element fit in that apple so then expands, probe and obtain the shape.
+
+6. Structuring element
+The dimensions specify the size of the structuring element. Like a square of 5 by 5 pixels. The pattern of ones and zeros specifies the shape of the structuring element. This should be of a similar form to the shape of the object we want to select. So we see in here different types of shapes, from squares, to diamond. The pink cell is the center or origin of the structuring element. Identifies the pixel being processed.
+
+7. Shapes in scikit-image
+scikit-image has multiple shapes for this structured element, each one with its own method from the morphology module. If we want square as the structured element, we can obtain it with the square method. Or a rectangle with width and height. This will return the desired shape and if we print we'll see how these are formed with 1s.
+
+8. Erosion in scikit-image
+To apply erosion we can use the binary erosion function. With this we can optionally set a structuring element to use in the operation. Here we import it and load a binary horse image. Set the structuring element to a rectangular-shaped, since it's somewhat similar to the shape we want to obtain, which is a horse. And obtain the eroded image by using this function, passing the image and structuring element as parameters. If not set, the function will use a cross-shaped structured element.
+
+9. Erosion in scikit-image
+Showing the resulting image, next to the original to compare them, we see that the resulted image is missing some pixels. But still kind of showing the horse shape.
+
+10. Binary erosion with default selem
+If we apply binary erosion with default structuring element shape, we would obtain this eroded image. It's working better, more accurate than before. So for this image the cross-shaped works great.
+
+11. Dilation in scikit-image
+Now let's look at dilation. As the name implies, this operation sort of "expands" the objects in the image. Here, we use binary dilation function, also from the morphology module, on image_horse. Let's use the default structuring element, which is cross-shaped. Next, plot the result.
+
+12. Dilation in scikit-image
+We see that dilation is indeed adding just a little bit in some parts, like the lower legs and paws. We see that the default structuring element works well.

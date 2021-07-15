@@ -1,0 +1,38 @@
+2. Finding contours
+We will learn how to find the contours of the objects in an image. A contour is a closed shape of points or line segments, representing the boundaries of these objects. Once we find the contours, we can do things like identifying the total points in domino tokens, exactly what we do in this example, where we count 35! So we can measure size, classify shapes or determining the number of objects in an image.
+
+3. Binary images
+The input to a contour-finding function should be a binary image, which we can produce by first applying thresholding. In such binary image, the objects we wish to detect should be white, while the background remains black.
+
+4. Find contours using scikit-image
+First, the image needs to go through some pre-processing steps. We need to turn the image to grayscale to later apply thresholding. We can do so by using the rgb2gray function from the color module.
+
+5. Find contours using scikit-image
+To use the find_contours function, we need the image we want to obtain contours from, to be binary. Meaning, black and white. Here we apply thresholding to do that, so we get a thresholded image.
+
+6. Find contours using scikit-image
+And then, we use the find contours function, that is included in the measure module of scikit-image. This function finds the contour lines or joins points(pixels) of equal elevation or brightness in a 2D array above a given level value. We import the module "measure" from skimage. And from measure we call the function find_contours. Passing the thresholded image as the first parameter and a constant level value of zero point eight. We will go into more detail about the constant level value in the next slide. The function returns a list with all contours of the image. With the coordinates along the contour.
+
+7. Constant level value
+The level value varies between 0 and 1, the closer to 1 the more sensitive the method is to detecting contours, so more complex contours will be detected. We have to find the value that best detects the contours we care for.
+
+8. The steps to spotting contours
+To summarize, the steps for finding the contours of an image are: If it's colored, transform to grayscale. Obtain the optimal thresh value. Apply thresholding and obtain the binary image. Once we have our binary image, we can call the find_contours() function and set a constant level value.
+
+9. The steps to spotting contours
+Resulting in the image with contours detected.
+
+10. A contour's shape
+After executing these steps we obtain a list of contours. Each contour is an ndarray of shape (n, 2), consisting of n row and column coordinates along the contour. In this way, a contour is like an outline formed by multiple points joined together. The bigger the contour, the more points joined together and the wider the perimeter formed. Here we can see the shapes of the contours found in the domino's tokens image.
+
+11. A contour's shape
+The first two have a shape of 433, so we deduct they are the outer border contour of the tokens because they are the longest. Meaning, these are the biggest objects, judging by their shapes.
+
+12. A contour's shape
+The ones that have a shape of 401 belong to the inner border of the domino token. Since the tokens of the original image had a line around them.
+
+13. A contour's shape
+The 123 are the dividing line in the middle of the tokens.
+
+14. A contour's shape
+And then we see the majority of the contours have a shape of 59. These are the token dots. If we count them, we obtain a total number of 7, the total number of dots for both tokens.

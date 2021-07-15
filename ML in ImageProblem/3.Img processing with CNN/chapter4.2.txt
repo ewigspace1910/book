@@ -1,0 +1,21 @@
+Got It!
+1. Neural network regularization
+How do we prevent over-fitting and make the best out of our training data? One of the strategies that has proven effective is regularization. Here we'll discuss two strategies for regularization of convolutional neural networks.
+
+2. Dropout
+The first strategy is called "dropout". In each step of learning, we choose a random subset of the units in a layer and we ignore it. This group of units would be ignored both on the forward pass through the network, as well as in the back-propagation stage.
+
+3. Dropout
+Here is an image that explains this idea, from the original paper by Nitish Srivastava and his colleagues that introduced this idea in 2014. On the left is a fully connected network, and on the right is this network with dropout applied to it during one step of training. This might sound strange, but this regularization strategy can work really well. This is because it allows us to train many different networks on different parts of the data. Each time, the network that is trained is randomly chosen from the full network. This way, if part of the network becomes too sensitive to some noise in the data, other parts will compensate for this, because they haven't seen the samples with this noise. It also helps prevent different units in the network from becoming overly correlated in their activity. One way to think about this is that if one unit learns to prefer horizontal orientations, another unit would be trained to prefer vertical ones.
+
+4. Dropout in Keras
+In Keras, dropout is implemented as a layer. When we construct the network, we add a Dropout layer after the layer for which we want units ignored. When using dropout we'll need to choose what proportion of the units in the layer to ignore in each learning step. For example, here I have chosen to drop 25% of the units in the first layer. The rest of the model that follows is unchanged. Compiling and training the model is also unchanged.
+
+5. Batch normalization
+Another form of regularization in convolutional neural networks is called Batch Normalization. As the name suggests, this operation takes the output of a particular layer, and rescales it so that it always has 0 mean and standard deviation of 1 in every batch of training. This idea was proposed in a paper by Sergey Ioffe and Christian Szegedy in 2015. The algorithm solves the problem where different batches of input might produce wildly different distributions of outputs in any given layer in the network. Because the adjustments to the weights through back-propagation depends on the activation of the units in every step of learning, this means that the network may progress very slowly through training.
+
+6. Batch Normalization in Keras
+Batch normalization is also implemented as another type of layer that can be added after each one of the layers whose output should be normalized. Here, I have added a single batch normalization operation after the first layer. The rest of the network is unchanged, and compiling and training the network would proceed as you have seen before.
+
+7. Be careful when using them together!
+Finally, a word of warning: sometimes dropout and batch normalization do not work well together. This is because while dropout slows down learning, making it more incremental and careful, batch normalization tends to make learning go faster. Their effects together may in fact counter each other, and networks sometimes perform worse when both of these methods are used together than they would if neither were used. This has been called "the disharmony of batch normalization and dropout".

@@ -1,0 +1,44 @@
+Got It!
+1. Normal forms
+Welcome back!
+
+2. Normalization
+Earlier, I introduced the concept of normalization. I gave this simplified definition. Here is a more formal definition provided by Adrienne Watt. Pause to read it. So what are these levels?
+
+1 Database Design, 2nd Edition by Adrienne Watt
+3. Normal forms (NF)
+There are different extents to which you can normalize. These are called normal forms. Below is a list of them from least to most normalized. Each has its own set of rules, and some build on top of each other. We'll only cover the first three normal forms.
+
+1 https://en.wikipedia.org/wiki/Database_normalization
+4. 1NF rules
+Let's begin with the first normal form. To comply with 1NF, each record must be unique and each cell must hold one value. Here's a simple table with student ids and emails, along with courses completed. All these rows are unique, but the courses_completed column has more than one course in two records.
+
+5. In 1NF form
+To rectify this, we can split the original table as such. Now, all the records are unique and each column has one value.
+
+6. 2NF
+Next is 2NF, which must satisfy 1NF. Beyond that, if the primary key is one column, then the table is 2NF. A composite primary key is when a primary key is made up of two or more columns. If the table has a composite primary key, then each non-key column must be dependent on all the keys. Let's look at a concrete example. In this table, we have the student and course id as a composite primary key. We then review the other columns and their dependence on these two keys. First is the instructor, which isn't dependent on the student_id - only the course_id. Meaning an instructor solely depends on the course, not the students who take the course. The same goes for the instructor_id column. However, the percent completed is dependent on both the student and the course id.
+
+7. In 2NF form
+To convert it, we can create two new tables that satisfy the conditions of 2NF.
+
+8. 3NF
+On to 3NF, where you might've correctly guessed requires 2NF to be satisfied. 3NF doesn't allow transitive dependencies. This means that non-primary key columns can't depend on other non-primary key columns. Let's take a look at an example. Course_id is the primary key so we can ignore this column. Instructor_id and Instructor definitely depend on each other. Tech does not depend on the instructor as an instructor can teach different technologies.
+
+9. In 3NF
+We can replace the table from before into these two tables to meet 3NF criteria. These tables have no transitive dependencies and they also meet 2NF as there are no composite primary keys.
+
+10. Data anomalies
+We've covered these first three normal forms that increase in normalization. It's time to consider why we would want to put effort into normalizing a database even more? Why isn't 1NF enough? A database that isn't normalized enough is prone to three types of anomaly errors: update, insertion, and deletion.
+
+11. Update anomaly
+An update anomaly is a data inconsistency that can arise when updating a database with redundancy. For example, take this simple table. It holds the id's and email of students, and their enrolled courses. If we want to update the email of student 520, we would have to update multiple records. It may sound easy to update multiple records, but it's risky because it depends on the user updating- if they remember this redundancy. And this is a simple example - as we scale, it's harder to keep track of these redundancies.
+
+12. Insertion anomaly
+An insertion anomaly is when you are unable to add a new record due to missing attributes. For example, if a student signs up for DataCamp, but doesn't start any courses, they cannot be put into this database. The only exception is if the enrolled_in column can accept nulls. The dependency between columns in the same table unintentionally restricts what can be inserted into the table.
+
+13. Deletion anomaly
+A deletion anomaly happens when you delete a record and unintentionally delete other data. For example, if you were to delete any of these students, you would lose the course information provided in the columns enrolled_in and taught_by. This could be resolved if we put that information in another table.
+
+14. Data anomalies
+The more normalized the database, the less prone it will be to these anomalies. For example, most 3NF tables can't have an update, insertion, and deletion anomalies. This makes normalization sound great. But, don't forget the downsides of normalization from the last video! Remember those long queries?

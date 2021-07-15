@@ -1,0 +1,29 @@
+1. Image classification with Keras
+Let's use Keras to classify images. We'll start by using a fully connected network like the ones that you saw in the deep learning course.
+
+2. Keras for image classification
+We start by importing the Sequential model and initializing it.
+
+3. Keras for image classification
+To construct our network we will use densely connected layers. Every unit in every layer is connected to all the units in the previous layer. The first layer of the network is connected to all the pixels in the input image. The training data in this case are images of clothes: 50 samples, each of 28 by 28 pixels. The last dimension has length 1, because the images are black and white. 50 is a rather small number of training samples, but we'll use that here for simplicity, and so that training proceeds rapidly.
+
+4. Keras for image classification
+The first layer is a set of densely connected units. We'll use 10 units here, but you could use another number - more units would increase the complexity of the network and its capacity to represent complex inputs. To facilitate learning, we're using a rectified linear unit or "relu" as the activation. This should be familiar from the deep learning course. The input_shape keyword argument tells us how many inputs each of these units should expect. In this case, it is 784: one connection from each one of the pixels in the image (28 by 28 is 784). We add another hidden layer, also with 10 units. Also with the "relu" activation. The output of our network is a fully connected layer with a unit for each class of inputs: 3 classes for the three types of clothing. The output unit uses a "softmax" activation to decide which of the three classes was presented.
+
+5. Keras for image classification
+This diagram shows the network and all its connections.
+
+6. Keras for image classification
+Next, we compile the model. We choose the optimizer to use (adam), and a loss function: categorical cross-entropy, which is appropriate for the classification task. Setting "metrics" to "accurac" tells the model to report accuracy as well.
+
+7. Keras for image classification
+The model expects samples to be rows in an array, and each column to represent a pixel in the image, so before we fit the model we need to convert the images into a two-dimensional table, using the "reshape" method.
+
+8. Keras for image classification
+We fit the model to training data. During training, the network adjusts its weights through backpropagation and gradient descent. We might go through the data several times until the network can accurately classify the images. Here, the model will run for three epochs, meaning that it will go over all of the training data three times. How do we know that the algorithm has reached a good set of weights? We worry that the algorithm might overfit to the training data. That is, that the weights result in very small error on the training set, but would not generalize well to another dataset. To avoid overfitting, we set aside a set of validation images. At the end of every epoch of training, we'll test the model on this validation set. Here we use 20 percent of the images for validation, by setting "validation_split" to 0-point-2.
+
+9. Keras for image classification
+This is the output. In each epoch, the program tracks progress through the data set, and at the end of the epoch prints the values of the loss function and the accuracy. Accuracy is still rather low, because we used a small amount of data, and we trained for only a few epochs.
+
+10. Keras for image classification
+Another evaluation of the model should be done on a separate test set that was not used during training. This gives us a separate realistic evaluation of the model quality: loss is 1-point-019, and accuracy is 40%.

@@ -1,0 +1,29 @@
+1. Real-world applications
+Woohoo, you have done an incredible job processing images! During the course you have learned multiple useful techniques. In this final video we'll learn how to apply what we have learned in real-world situations. To do so, we will be combining techniques.
+
+2. Applications
+Some cases where we might need to combine several techniques are, for example, converting to images to grayscale before detecting edges or corners. Or, detecting faces to later on blur them by applying a gaussian filter. And even reducing noise and restoring a damaged image.
+
+3. Privacy protection
+Let's look at how we would solve a privacy protection case by detecting faces and then anonymizing them. We'll use this image to work with.
+
+4. Privacy protection
+So for this case in particular, we'll first need to detect faces, using the cascade of classifiers detector and then apply a gaussian filter to the cropped faces.
+
+5. Privacy protection
+So, with the face detector initialized and ready to use, we can start detecting faces. For each detected face, as the variable d, in the detected list, we'll use the coordinates to crop it out of the image, in other words, extract it.
+
+6. Privacy protection
+This get Face function crops the face out of the image, using the detected face dictionary that contains the coordinates. Then, we'll draw a rectangle around the detected face of the image. Taking r, which is the row position of top left corner of detected rectangle as the X starting position and c, which is the column as the starting Y position. These are the points from where we'll now add a width and a height to complete the rectangle. And that's exactly what we do next, we add the height and width to the starting points. So we have the rectangle dimensions in the image. We then specify these dimensions in the original image from which the face was detected so we can crop it, or slice it.
+
+7. Privacy protection
+Now that the face is cropped from the image, we'll apply the gaussian filter to blur it and make it unrecognizable. This resulting image is assigned to the gaussian_face variable. As a last step, we'll merge the blurry face back to the image, using another function called merge blurry face.
+
+8. Privacy protection
+To do so, we again specify the starting X and Y points as well as the width and height, to slice the original image. Then, the blurry face is assigned to the result.
+
+9. Privacy protection
+So it results in an image that no longer contains people's faces in it and in this way, personal data is anonymized. We need to remember that the classifier was only trained to detect the front side of faces, not profile faces. So, if someone is turning the head too much to a side, it won't recognize it. If you wnat to do that, you'll need to train the classifier with xml files of profile faces, that you can find available online. Like some provided by the OpenCV image processing library.
+
+10. More cases
+Just like the cases mentioned before, there are many more where you will we be able to combine the processes that you learned during the course.

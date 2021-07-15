@@ -1,0 +1,35 @@
+2. Removing additional spaces
+Let's analyze the content of the carriers table mentioned in the previous lesson. Some words that are stored in the name column have extra leading and trailing spaces. Let's see how to remove these additional spaces.
+
+3. Removing additional spaces - TRIM
+To remove leading and trailing spaces we can use the TRIM function, available since SQL Server 2017. TRIM removes any specified character from the start and end of a string. If we don't specify any character, TRIM will remove the space character. For example, if we execute this code, where this carrier name has leading and trailing spaces, we will get the following output, that is, without leading and trailing spaces.
+
+4. Removing additional spaces - RTRIM and LTRIM
+In case you are working with older versions than SQL Server 2017, the TRIM function won't be available. In such a case, you can substitute it by using RTRIM and LTRIM. RTRIM removes all trailing spaces, whereas LTRIM removes all leading spaces. If we combine LTRIM with RTRIM, we will get the same output as we got using TRIM.
+
+5. Removing additional spaces
+Finally, if we want every value from the name column to be without these extra spaces, we will have to include it within the previous functions.
+
+6. Unifying strings
+Let's see another example of messy strings. If we analyze the content of the airports table, we can see that in the airport_state column, we have different values for the state of Florida. All of these values are valid, but it is not reasonable to have different values for the same state. Let's see how to unify these different strings.
+
+7. Unifying strings - REPLACE
+If we decide to unify all these different strings to "Florida", we can use the REPLACE function. REPLACE replaces all occurrences of a specified string with another string. The replacement is case insensitive by default.
+
+8. Unifying strings - REPLACE
+The first step we can take is replacing the string "FL" with the string "Florida". As we said, REPLACE is case insensitive by default, so there is no need to consider both "fl" in lower case letters and "FL" in capital letters. If we execute this code, we can see that the string "Florida" correctly replaced the strings "fl" in lower case letters and "FL" in capital letters. But, what happened with the last value? The letters "Fl" in the string "Florida" were also replaced by the word "Florida" itself, so we got "Floridaorida" as a result. Let's fix it.
+
+9. Unifying strings - REPLACE
+One easy solution is to concatenate two REPLACE functions. In the innermost REPLACE, we can do the same as in the previous slide, that is, replace the string "FL" with the string "Florida". Then, we can use the REPLACE function again and apply it to this result, replacing the string "Floridaorida" with the string "Florida".
+
+10. Unifying strings - REPLACE + CASE
+Another solution can be applying the CASE statement. We can order to replace the values of the column airport_state when these values are different than "Florida". In other cases, we can leave the string as it is.
+
+11. Unifying strings - REPLACE + UPPER
+Finally, let's see how to solve this problem if we had chosen to unify these different strings into the "FL" string. The first step we can take is replacing the string "Florida" with the string "FL", but this won't be enough because we still have the string "fl" in small letters.
+
+12. Unifying strings - REPLACE + UPPER
+To solve it, we can use the UPPER function. UPPER converts a given string to uppercase. In the following code, we can see that the UPPER function wraps the result of the REPLACE function.
+
+13. Unifying strings - REPLACE + UPPER
+This results in the following output.

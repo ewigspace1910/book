@@ -1,0 +1,56 @@
+1. Transforming rows into columns and vice versa
+In this final lesson, we will study the PIVOT and UNPIVOT relational operators to convert the rows data of a table into column data and vice versa.
+
+2. Pivot tables in speadsheets
+Pivot tables are really common in spreadsheets software. They allow us to group data based on a specific set of columns and compute statistics of other columns.
+
+3. Using PIVOT
+Let's start with the PIVOT operator for SQL Server. PIVOT turns the unique values from one column into multiple columns in the output. Let's illustrate this idea with an example.
+
+4. Using PIVOT - Turn product names into columns
+In the paper_shop_monthly_sales table, we have the following data. As we saw in the previous lessons, the first column, product_name_units, combines the names of the products with the units. The second column, year_of_sale, stores the year when the sale was made. Finally, the last column, month_of_sale, stores the number of the month, where 1 corresponds to January, 2 to February, and so on. Here we just have a few rows, but imagine we have thousands of rows. What if we want to find how many items of each type were sold each year? This information would be very hard to analyze!
+
+5. Using PIVOT - Turn product names into columns
+What about transforming the table from this, to this table? In other words, we want to turn the unique values of the names of the products from the first column into multiple columns and then sum the units for every year. We will have just one row per year! Let's analyze how to use the PIVOT operator to solve this problem.
+
+6. Using PIVOT - Turn product names into columns
+The following query that uses the PIVOT operator gets what we want. Let's explain every part of it.
+
+7. Using PIVOT - Turn product names into columns
+First of all, let's write the columns we want to show in the output. We want to have the year of the sales, the units of notebooks, the units of pencils, and the units of crayons.
+
+8. Using PIVOT - Turn product names into columns
+After that, we have to add the source data. The surrounded code is a subquery that gets in different columns the year of the sales, the names of the products, and the units of every product, with the word sales as the alias. This query is similar to the one we explained in the previous lesson when we learned how to split one column into more columns.
+
+9. Using PIVOT - Turn product names into columns
+This subquery will get the following result.
+
+10. Using PIVOT - Turn product names into columns
+After the subquery, we need to add the PIVOT clause.
+
+11. Using PIVOT - Turn product names into columns
+Between parenthesis, PIVOT needs an aggregate function that uses some column from the previous subquery result. In this example, we summarize the units for every product.
+
+12. Using PIVOT - Turn product names into columns
+After that, we need to add a FOR statement that pivots a column from the subquery result. In this case, the column is product_name, and between parenthesis has the words notebooks, pencils, and crayons. These products will become columns, and the aggregate function will be performed for them.
+
+13. Using PIVOT - Turn product names into columns
+Finally, we need to add an alias, paper_shop_pivot, in this example.
+
+14. Using PIVOT - Turn product names into columns
+If we execute this code, we will get the expected result.
+
+15. Using UNPIVOT
+Let's study the UNPIVOT operator now. UNPIVOT turns columns into rows. Suppose we stored the result from the previous PIVOT example in a new table called pivot_sales. If we want to turn the columns notebooks, pencils, and crayons into row values, we will need to use UNPIVOT.
+
+16. Using UNPIVOT - Turn product names into rows
+In the UNPIVOT clause, we need to write the names of the columns from the pivot_sales table that we want to turn into rows.
+
+17. Using UNPIVOT - Turn product names into rows
+These columns are notebooks, pencils, and crayons.
+
+18. Using UNPIVOT - Turn product names into rows
+For these values, the new column name will be product_name.
+
+19. Using UNPIVOT - Turn product names into rows
+The units column will have the values for the column product_name. Note that UNPIVOT is not exactly the opposite of PIVOT. Remember that within the PIVOT operation, we had to use an aggregate function to summarize the units of every month for every year, so we can't reproduce the original table again.

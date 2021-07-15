@@ -1,0 +1,24 @@
+
+1. Pattern matching
+In this lesson, we will learn how to match patterns using SQL Server.
+
+2. Pattern matching - Introduction
+Let's start by illustrating pattern matching with an example. In the series table, there is a column that stores the contact numbers of the producers. Suppose that the contact numbers must have this format, it is, three digits followed by a hyphen, then another three digits followed by another hyphen and finally, four digits. The first and the fourth digits must be numbers between 2 and 9, and the rest, numbers between 0 and 9. Unfortunately, we have some numbers that don't meet this pattern, like this one, because the fourth digit is 1. Let's study how we can detect them.
+
+3. Pattern matching - Introduction
+SQL Server doesn't provide a full-blown set of regular expressions. Instead, we can match patterns by using the LIKE operator in combination with the pattern we want to find. If we want to have the full-blown set of regular expressions, we will need to create and install extensions for the LIKE operator. In this lesson, we will focus on the LIKE operator and the pattern matching that it offers.
+
+4. Pattern matching - LIKE
+SQL Server provides the LIKE operator, which determines if a string matches a specified pattern. These are the characters we can use to specify a pattern. The percent (%) symbol finds any string with zero or more characters. For example, if we write 555 followed by a hyphen and then the percent symbol, we can find any contact number that starts with 555, followed by a hyphen and then have zero or more characters. The underscore (_) symbol matches any single character. For example, we can specify a pattern to find all the contact numbers that have three characters followed by a hyphen, then another three characters followed by another hyphen and finally, four characters. Using the brackets, we can find any single character within a specified range or set, as we can see in this example. Finally, the caret symbol (^) negates any single character in the specified range or set.
+
+5. Pattern matching - example with %
+Let's demonstrate the use of the LIKE operator in combination with some patterns. In this example, with the use of the percent symbol, we are trying to find all the rows from the series table, which contact number starts with 555 and then has zero or more characters. As you can see, all the contact numbers begin with 555.
+
+6. Pattern matching - example with %
+We can also exclude these results by using the negative form of the LIKE operator. In doing this, we get one contact number that doesn't start with 555.
+
+7. Pattern matching - example with [] (brackets)
+Now, let's use the brackets to specify ranges. In this example, we are filtering those series that have a valid contact number. The first and the fourth digits are numbers between 2 and 9, and the rest, between 0 and 9.
+
+8. Pattern matching - example with [] (brackets)
+As we saw before, we can also exclude these results by using the negative form of the LIKE operator.

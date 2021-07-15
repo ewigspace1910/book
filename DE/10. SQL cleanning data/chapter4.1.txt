@@ -1,0 +1,33 @@
+Got It!
+1. Combining data of some columns into one column
+In this final chapter, we will learn how to combine data of some columns into one, split data of one column into more columns, and transform rows into columns and vice versa.
+
+2. Dataset - paper shop sales
+Throughout this chapter, we will be working on a new dataset based on the sales of a paper shop. It contains information about vendors,
+
+3. Dataset - paper shop sales
+clients,
+
+4. Dataset - paper shop sales
+paper_shop_daily_sales,
+
+5. Dataset - paper shop sales
+and paper_shop_monthly_sales.
+
+6. Combining name and surname
+In this lesson, we will focus on how to combine data of some columns into one column. In the vendors table, we can see that the values for the vendor_name and the vendor_surname are in different columns. Suppose that we want to combine both columns to get the full name of each vendor. Let's discover how to do it.
+
+7. Combining name and surname
+We can use the CONCAT function we learned in the first chapter, by concatenating vendor_name with a space, followed by the vendor_surname. As we can see, the column full_name contains what we want. Note that in the last row, the vendor_surname is NULL, but CONCAT ignores the NULL value and outputs the vendor_name's value.
+
+8. Combining name and surname
+As we said in the first chapter, the CONCAT function is only available since SQL Server 2012. So, if we have a lower version, we can still use the "+" operator to perform the combination of the columns. We can also concatenate the vendor_name with a space, followed by the vendor_surname. However, using the "+" operator, the full_name of the last row is NULL. This is a disadvantage compared to using the `CONCAT` function.
+
+9. Combining name and surname
+We can solve the problem with the NULL value using the ISNULL function we already studied. We can check if the vendor_surname is NULL and output a space in that case. By using the ISNULL function, we can reach the same result as we got using CONCAT.
+
+10. Combining dates
+Another common situation is to have the different parts of a date in separate columns. In this table, we can see the columns year_of_sale, month_of_sale, and day_of_sale, storing the different values of a date.
+
+11. Combining dates
+To combine all these columns into one, we can use the DATEFROMPARTS function, available since SQL Server 2012. This function returns a date that maps to the year, month, and day specified values. The order of the parameters must be this one. Note that if one argument passed to DATEFROMPARTS has a NULL value, it will return NULL. For invalid arguments, DATEFROMPARTS will raise an error.

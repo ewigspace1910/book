@@ -1,0 +1,29 @@
+1. Face detection
+In the past couple of years, face detection has attracted a lot of attention and caused a great impact on automated processes through artificial vision. In this video, you'll learn how to do this yourself using out-of-the-box functions from scikit-image.
+
+2. Face detection use cases
+Several social networks platforms and smart-phones are using face detection to know if there is someone in a picture and if so, apply filters, add focus in the face area, or recommend you to tag friends. You can even automatically blur faces for privacy protection. Face detection can be useful in other cases as well. Human faces are able to convey many different emotions such as happiness, sadness and many others. That's why face detection is the key first step before recognizing emotions.
+
+3. Detecting faces with scikit-image
+With scikit-image, we can detect faces using a machine learning classifier, with just a couple of lines! In this course, we won't cover machine learning concepts in depth, but it's important to know that we use a cascade of classifiers, which is like multiple classifiers in one. You can also use it for other things, like cats, objects, or profile faces, from a side view.
+
+4. Detecting faces with scikit-image
+To use the face detector, we import the Cascade class from the feature module. This detection framework needs an xml file, from which the trained data can be read. In this case we'll use frontal face files that are included in the data module of scikit-image. Then initialize the detector, using the Cascade class constructor. Great, we now have the detector ready to be used on images.
+
+5. Let's try it
+Let's try our detector on this image of myself.
+
+6. Detecting faces
+To apply the detector on images, we need to use the detect_multi_scale method, from the same cascade class. This method searches for the object, in this case a face. It creates a window that will be moving through the image until it finds something similar to a human face.
+
+7. Detecting faces
+Searching happens on multiple scales. The window will have a minimum size, to spot the small or far-away faces. And a maximum size to also find the larger faces in the image.
+
+8. Detecting faces
+So this method takes the input image as the first parameter, a scale factor, by which the searching window is multiplied in each step, a step ratio, in which 1 represents an exhaustive search and usually is slow. By setting this parameter to higher values the results will be worse but the computation will be much faster. Usually, values in the interval 1 to 1.5 give good results. Then the minimum and maximum window size are defined. These specify the interval for the search windows that are applied to the input image to detect the faces.
+
+9. Detected faces
+The detector will return the coordinates of the box that contains the face. When printing the result, we see that it's a dictionary, where r represents the row position of the top left corner of the detected window, c is the column position pixel, width is width of detected window, and height, the height of the detected window. We'll use a function that shows the original image with the detected face marked with red lines, forming a box containing the face.
+
+10. Show detected faces
+With this function I draw a rectangle around detected faces. We won't discuss this function in detail here, but you can pause the video to look at the code some more if you want.

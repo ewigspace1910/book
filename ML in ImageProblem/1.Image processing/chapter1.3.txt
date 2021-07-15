@@ -1,0 +1,39 @@
+Got It!
+1. Getting started with thresholding
+Now we are going to get started with thresholding using scikit-image!
+
+2. Thresholding
+Thresholding is used to partition the background and foreground of grayscale images, by essentially making them black and white. We compare each pixel to a given threshold value. If the pixel is less than that value, we turn it white. If it's greater; we turn it black.
+
+3. Thresholding
+Thresholding is the simplest method of image segmentation, a topic we will cover in more detail later. Thresholding let us isolate elements and is used in object detection, facial recognition, and other applications.
+
+4. Thresholding
+It works best in high-contrast grayscale images. To threshold color images, we must first convert them to grayscale.
+
+5. Apply it
+Let's see how to apply it. Once an image is loaded, we need to set the thresh value. Temporarily set it to 127, mid point between 0 and 255. We apply thresholding to an image by using the greater than operator followed by the thresh. Finally, show the thresholded image using show_image().
+
+6. Inverted thresholding
+We can also apply inverted thresholding, which is just inverting the color. We apply it just as we do in thresholding, except we use "<=" operator instead of ">". Here the resulting image is also binary but the background is black and foreground white.
+
+7. Categories
+There are two categories of thresholding in scikit-image: Global or histogram-based, which is good for images that have relatively uniform backgrounds. Adaptive or local, which is best for images where the background is not easily differentiated, with uneven background illumination. Note that local is slower than global thresholding. Here we have an image to compare. In this case, it seems that local is without a doubt the best option.
+
+8. Try more thresholding algorithms
+What if I want to try more algorithms? Well scikit-image includes a function that evaluates several global algorithms, so that you can choose the one that gives you best results: the try_all_threshold function from filters module. Here we import it, use the function by passing the image and set verbose to False so it doesn't print function name for each method. And show results.
+
+9. Try more thresholding algorithms
+It will use seven global algorithms, so here we see first the original image followed by the resulting images of the thresholding methods. We cover only the otsu. So this is a easy way the rest!
+
+10. Optimal thresh value
+When the background of an image seems uniform, global thresholding works best. Previously, we arbitrarily set the thresh value, but we can also calculate the optimal value. For that we import the threshold_otsu() function from filters module. Then obtain the optimal global thresh value by calling this function. Apply the local thresh to the image. And that's it! Lets see the image.
+
+11. Optimal thresh value
+We see the resulting binarized image, next to the original to compare it. We see how the optimal thresh is spotted by a red line in the histogram of the image.
+
+12. Optimal thresh value
+If the image doesn't have high contrast or the background is uneven, local thresholding produces better results. Import threshold_local(), also from filters. With this function, we calculate thresholds in small pixel regions surrounding each pixel we are binarizing. So we need to specify a block_size to surround each pixel; also known as local neighborhoods. And an optional offset, that's a constant subtracted from the mean of blocks to calculate the local threshold value. Here in the threshold_local function we set a block_size of 35 pixels and an offset of 10. Then apply that local thresh.
+
+13. Optimal thresh value
+Showing the original and the resulting image, we can see it works well in this image that has different lighting conditions.

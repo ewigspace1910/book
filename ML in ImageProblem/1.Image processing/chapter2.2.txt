@@ -1,0 +1,41 @@
+1. Contrast enhancement
+Now that we have seen what histograms are, we will look at one of its applications in image enhancement.
+
+2. Contrast enhancement
+Image enhancement can be extremely useful in multiple areas. Often medical images like this X-ray can have low contrast, making it hard to spot important details. When we improve the contrast,the details become more visible. It's definitely easier to spot things on this one!
+
+3. Contrast
+The contrast of an image can be seen as the measure of its dynamic range, or the "spread" of its histogram. Consider this image. The contrast is the difference between the maximum and minimum pixel intensity in the image. The histogram of this image is shown on the right. The maximum value of pixel intensity is 255 while the minimum is 0. 255 - 0 = 255.
+
+4. Contrast
+An image of low contrast has small difference between its dark and light pixel values. Is usually skewed either to the right (being mostly light), to the left (when is mostly dark), or located around the middle (mostly gray).
+
+5. Enhance contrast
+We can enhance contrast through contrast stretching which is used to stretch the histogram so the full range of intensity values of the image is filled. And histogram equalization, that spreads out the most frequent histogram intensity values using probability distribution. We'll cover histogram equalization in this video.
+
+6. Types
+In general, there are three types of histogram equalization. The standard, the adaptive, and the limited adaptive. In scikit-image we can apply standard histogram equalization, contrast stretching, and contrast limited adaptive as we can see in these images.
+
+7. Histogram equalization
+As we have seen Histogram equalization spreads out the most frequent intensity values.
+
+8. Histogram equalization
+Let's start by taking this image as a simple image.
+
+9. Histogram equalization
+To apply this type of histogram equalization import the exposure module from scikit-image. We then have access to all equalization methods. In this case, the equalize_hist function, applies normal histogram equalization to the original image. Then we show both images, the original and equalized one to see the difference.
+
+10. Histogram equalization
+We get a result that, despite the increased contrast, doesn't look natural. In fact, it doesn't even look like the image has been enhanced at all.
+
+11. Adaptive Equalization
+Another type of histogram equalization is the adaptive one. This method computes several histograms, each corresponding to a distinct part of the image, and uses them to redistribute the lightness values of the image histogram. A type of this method is the Contrastive Limited Adaptive Histogram Equalization (CLAHE) which was developed to prevent over-amplification of noise that adaptive histogram equalization can give rise to. In this image, we see the result of the CLAHE method and it may seem very similar to the standard method.
+
+12. Contrastive Limited Adaptive Equalization
+But if you look closer and compare the results, you will see that the adaptive method is not that intense, so it looks more natural. This is because it is not taking the global histogram of the entire image, but operates on small regions called tiles or neighborhoods.
+
+13. CLAHE in scikit-image
+To apply this kind of adaptive equalization we can use the equalize_adapthist function provided by scikit-image. It calculates the contrast transform function for each tile individually. We pass the original image as first parameter and a clip_limit. This clipping limit, is normalized between 0 and 1 (higher values give more contrast). Then, show the original and resulting images.
+
+14. CLAHE in scikit-image
+Comparing them, the resulting image is enhanced and we can better detail small objects and figures. Like the footprints in the ground.

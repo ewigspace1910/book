@@ -1,0 +1,29 @@
+2. Database views
+So, what are views? Wikipedia provides the following definition. Pause to read it. Essentially, views are virtual tables that are not part of the physical schema. A view isn't stored in physical memory; instead, the query to create the view is. The data in a view comes from data in tables of the same database. Once a view is created, you can query it like a regular table. The benefit of a view is that you don't need to retype common queries. It allows you to add virtual tables without altering the database's schema.
+
+1 https://en.wikipedia.org/wiki/View_(SQL)
+3. Creating a view (syntax)
+Views are simple to create. You take the query of interest and add a line before it to name the view, as such.
+
+4. Creating a view (example)
+Here's an example. This is part of last chapter's snowflake schema. Let's say analysts at your company are often running analytics on the science fiction genre. To help their workflow, you want to create a view specifically dedicated to the science fiction genre and its associated book titles and authors.
+
+5. Creating a view (example)
+The query would look something like this. To convert this query into a view, you would add a CREATE VIEW statement like so.
+
+6. Querying a view (example)
+After executing the code from the last slide, you can query the view.
+
+7. Behind the scenes
+scifi_books isn't a real table with physical memory. When we run this select statement, the following query is actually being run.
+
+8. Viewing views
+It's important to keep track of the views in your database. To get all the views in your database, you can run a query on the INFORMATION_SCHEMA.views table. Note that this command is specific to PostgreSQL. If you are using another DBMS, look at its documentation to find the equivalent command. If you run this command, you will get a long list of views. That's because DBMS's have their own built-in views. To exclude system views and to get to views you've created, use this query. It excludes views from pg_catalog and information_schema which are built-in view categories.
+
+9. Benefits of views
+Can you see why views are useful? First off, a view doesn't take up any storage except for the query statement, which is minimal. Views act as a form of access control. For example, instead of giving a user access to columns that may have sensitive information, you can restrict what they can see via a view. Perhaps most importantly, views mask the complexity of queries. Remember those snowflake schemas from the last chapter and their joins? Views are handy for views normalized past the 2NF. You can make those common joins - such as aggregating dates or genres - into views. The users of your database will thank you for views because they won't have to spend as much time thinking about how to join tables.
+
+10. Exercises
+In this chapter's exercises, we'll be using a database of Pitchfork reviews from Kaggle. Pitchfork is a music magazine that publishes reviews. The database schema looks like this. The main table Reviews holds the url of the review, the title of the work being reviewed, and the score it received. It has more information on the author of the review and date of publication. The reviewid field is a foreign key to tables: content, genres, artist, and labels. Content holds the text of the review.
+
+1 https://www.kaggle.com/nolanbconaway/pitchfork-data

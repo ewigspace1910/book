@@ -1,0 +1,41 @@
+1. Make images come alive with scikit-image
+Hi, Datacampers! Welcome! In this course, you will learn how to transform and manipulate images at your will. Let's start!
+
+2. What is image processing?
+Image processing is a method to perform operations on images, in order to enhance them or extract useful information, analyze it and make decisions.
+
+3. What is image processing?
+By quantifying the information in images, we can make calculations. Image processing is a subset of computer vision.
+
+4. Applications
+There is a wide range of applications. Such as the analysis of medical images, artificial intelligence, image restoration, surveillance and many more.
+
+5. Purposes
+The purpose of image processing can be divided into five groups. Visualization: observe objects that are not visible. Image sharpening and restoration: to create a better image. Image retrieval: to seek for the image of interest. Measurement of pattern: to measure objects. And Image Recognition: to distinguish objects in an image.
+
+6. Intro to scikit-image
+scikit-image is an image processing library in Python that is easy to use. scikit-image makes use of Machine Learning with built-in functions, and can perform complex operations on images with just a few functions. We will use scikit-image throughout this course.
+
+7. What is an image?
+Let's get started with images! A digital image is an array, or a matrix, of square pixels (picture elements) arranged in columns and rows: in other words, a 2-dimensional matrix.
+
+8. What is an image?
+These pixels contain information about color and intensity. Here's an example of the matrix for a 2D grayscale image. Here we can see that the first image is a pixelated image. The numbers that we see on top of the following image next to the first one correspond to the intensity of each pixel in the image. So at the end, an image can be treated as an intensities matrix.
+
+9. Images in scikit-image
+There are some testing-purpose images provided by scikit-image, in a module called data. If we want to load a colored image of a rocket, we can do so by: Importing data from skimage. And then from data, call a method named rocket.
+
+10. RGB channels
+2-dimensional color images are often represented in RGB—3 layers of 2-dimensional arrays, where the three layers represent Red, Green and Blue channels of the image.
+
+11. Grayscaled images
+Grayscale images only have shades of black and white. Often, the grayscale intensity is stored as an 8-bit integer giving 256 possible different shades of gray. Grayscale images don't have any color information.
+
+12. RGB vs Grayscale
+RGB images have three color channels, while grayscaled ones have a single channel. We can convert an image with RGB channels into grayscale using the function rgb2gray() provided in the color module. We can also turn grayscale to RGB using gray2rgb().
+
+13. Visualizing images in the course
+During the course, we'll usually use a preloaded function called show image to display the images using Matplotlib. This way we can focus on image processing code. This is what the show image function looks like.
+
+14. Visualizing images in the course
+So if we want to show an image that we have converted to grayscale, we just need to pass the image as the first parameter of the "show_image" function and the title "Grayscale" as the second parameter. We will then see the image displayed in the console output.

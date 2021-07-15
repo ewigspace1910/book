@@ -1,0 +1,41 @@
+1. Avoiding duplicate data
+In this lesson, we will learn how to avoid duplicate data in our results.
+
+2. What is duplicate data?
+Let's first explain what duplicate data is. In our data, we can find rows with identical information. In this example, we have two rows that have the same values in each column. We can also find rows with some common information, for instance, two or more rows with identical information, but with a different registration_code. This example is the most typical case of duplicate data, where all the important information is duplicated. But we can also have two or more rows with only some common information and different values for the rest of the columns. Duplicate data can interfere in our analysis, so it is essential to identify it.
+
+3. Finding repeating groups
+To detect duplicate data, first of all, we need to define which columns form a repeating group. A repeating group will depend on our dataset. For the flight_statistics table, we can consider that the columns that form a repeating group are the airport_code, carrier_code, and registration_date. The reason is that only once every month, the statistics of the flights for a particular airport and a specific carrier are registered. Considering this repeating group, we can see that we won't have problems to exclude from our results those rows that having the same airport_code, carrier_code, and registration_date, have a different registration_code or even different statistician name and surname. The critical information is still the same. Obviously, we won't have any problem to exclude from our results duplicate rows that have the same values for every column.
+
+4. Finding repeating groups
+But, what happens if having the same airport_code, carrier_code, and registration_date, the data of the columns canceled, on_time, delayed, or diverted are different? Which one should we maintain? We have a problem here! If we find this kind of duplicates, we will need to investigate which one is correct.
+
+5. Detecting duplicate data - ROW_NUMBER()
+Once we have found the repeating group, we are going to find the duplicate rows for that group. To do that, we will use the ROW_NUMBER() function. For the PARTITION BY argument, we will specify the columns we considered as a repeating group. So, for each row with common information in the columns considered as a repeating group, ROW_NUMBER() will give a number which begins at 1 for the first row, and provides a sequential number for each row within the same partition or repeating group. The ORDER BY clause is required. Let's demonstrate how it works.
+
+6. Detecting duplicate data - ROW_NUMBER()
+In this example, we can see that the columns that form the repeating group, airport_code, carrier_code, and registration_date, will be the partitions to which the ROW_NUMBER function is going to apply.
+
+7. Detecting duplicate data - ROW_NUMBER()
+This code will return the following output.
+
+8. Detecting duplicate data - ROW_NUMBER()
+As we can see here, ROW_NUMBER() gave the number 1 for this row
+
+9. Detecting duplicate data - ROW_NUMBER()
+and number 2 for this other row,
+
+10. Detecting duplicate data - ROW_NUMBER()
+because both rows have the same information in the columns that form the partition. The first row receives the number 1, and the second row within the same partition receives the sequential number 2. If we want to get only the duplicate rows in our results, we will need to select those rows that have row_num greater than 1. However, if we want to exclude duplicate rows, we will filter those rows with row_num equals to 1.
+
+11. Getting only duplicate rows
+To get just the duplicate rows, we can include the previous query in a WITH clause, and then select only the rows with a row_num greater than 1.
+
+12. Getting only duplicate rows
+These are all the duplicate rows that have been detected. As you can see, all of them have a row_num greater than 1.
+
+13. Excluding duplicate rows
+To exclude the duplicate rows, we can also include the same query in a WITH clause, and then select the rows with a row_num equals to 1.
+
+14. Excluding duplicate rows
+As you can see, all the rows have a row_num equals to 1.

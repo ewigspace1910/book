@@ -1,0 +1,39 @@
+Got It!
+1. Reducing parameters with pooling
+One of the challenges in fitting neural networks is the large number of parameters.
+
+2. Pooling reduces the size of the output
+One way to mitigate this is to summarize the output of convolutional layers in concise manner. To do this, we can use pooling operations.
+
+3. Max pooling
+For example, we might summarize a group of pixels based on its maximal value. This is called "max pooling". In this image,
+
+4. Max pooling
+, we might start with the top left corner,
+
+5. Max pooling
+extracting the pixels in this part of the image and,
+
+6. Max pooling
+, calculating the maximal value of the pixels there.
+
+7. Max pooling
+In the output, we replace these pixels with one large pixel that stores this maximal value.
+
+8. Max pooling
+We shift our window and calculate the maximal value in the pixels in the next window, replacing that part of the image with one large pixel with the maximal value in that part of the image.
+
+9. Max pooling
+If we repeat this operation in multiple windows of size 2 by 2, we end up with an image that has a quarter of the number of the original pixels, and retains only the brightest feature in each part of the image.
+
+10. Implementing max pooling
+To understand this operation let's see how to implement it. We start by allocating the output. This has half as many pixels on each dimension as the input. We start from the first coordinate in the output, calculating the maximum of the image in the first two coordinates on each dimension of the input. Next, we slide along the window by 2 pixels along the first dimension, calculating the maximum for this window. We keep going like that, until we are done with the first row in the input. We then move the window to the beginning of the second row in the input, calculating the maximum for coordinates in the third and fourth rows in the input for this location. We continue sliding the window along. Ultimately, in each location in the output, we calculate the maximum for a window of 2 by 2 pixels at the corresponding location in the input.
+
+11. Implementing max pooling
+Another way of implementing this operation is with a loop. In each iteration, we first select the corresponding rows: from the current row in the output, index ii, times two, and until 2 pixels beyond that. And the same for the internal loop on the column index jj. This performs the same operation that we previously broke down row by row.
+
+12. Max pooling in Keras
+We can integrate max pooling operations into a Keras convolutional neural network, using the MaxPool2D object. After importing this object, in addition to the other objects we'll need, we start off building a convolutional neural network just like before. But: after each convolutional layer, we'll add a pooling layer. The input to the MaxPool2D object, two in this case, is the size of the pooling window. That means that here pooling will take the max over a window of two by two pixels from the input for each location in the output. We add a second convolutional layer, followed by another maxpooling layer. The summarization part of the network is the same as before: a flattening layer, followed by a dense layer with softmax activation. How does this affect the number of parameters?
+
+13. Max pooling reduces the number of parameters
+Running the summary method for this model, we can see that using the pooling operation dramatically reduces the number of parameters in the model. Instead of more than 30,000 parameters that this model had with no pooling operations, we now have less than 2,000 parameters.

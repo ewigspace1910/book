@@ -1,0 +1,32 @@
+1. Comparing the similarity between strings
+In this lesson, we will learn how to check the similarity between strings using SOUNDEX and DIFFERENCE.
+
+2. Describing the problem
+As we said in previous lessons, it is common to find messy strings. Sometimes, these strings are written differently, but their sounds are similar or almost similar. With the use of the functions SOUNDEX and DIFFERENCE, SQL Server provides help to detect those strings.
+
+3. SOUNDEX
+Let's start with SOUNDEX. SOUNDEX is a phonetic algorithm that returns a four-character code used to evaluate the similarity between strings, based on their pronunciation. Although the algorithm is based on the English language, it also works with many words in other languages. For example, if we apply SOUNDEX to the string "Illinois", to this other string "Ilynois", and also to "California", we will get the following outputs. The first two strings have the same code, which means they are similar to the SOUNDEX algorithm. By contrast, "California" has another code. This string is different from the others.
+
+4. SOUNDEX - how it works
+Let's see how it works with the word "Illinois". First of all, SQL Server writes the first letter of the word, "I" in this example. Then, it replaces to zero all the vowels and the letters "h", "w", and "y", after the first letter. After that, the rest of the consonants after the first letter are replaced following this table. In this example, "l" will be replaced by 4, "n" by 5, and "s" by 2.
+
+5. SOUNDEX - how it works
+After that, SQL Server replaces the same adjacent digits with just one. Then, it removes all the zeros. Finally, if the letter's digit is the same as the first digit, it removes the first digit. It appends zeros if the code contains less than three digits, and removes final digits if the code has more than three digits. All these final steps don't apply to our example.
+
+6. SOUNDEX - Exceptions
+SOUNDEX is not 100% perfect. Although it is very useful, we need to check the results, because some exceptions may occur. Here is an example of two words, "Arizona" and "Arkansas", that sound different but return the same code.
+
+7. SOUNDEX - checking similarities
+Let's put SOUNDEX into practice. In the following code, we are getting all the values from the airport_state column that have the same SOUNDEX code between them but are written differently. To do this, we are joining the airports table with itself. The output we get is the following. We can see that SOUNDEX detected different strings for "California", "Illinois", and "Texas". Between the results, we have "New Jersey" and "New York", because SOUNDEX only applies to the first word, "New" in this example. Let's see how to avoid these results and check the strings correctly.
+
+8. SOUNDEX - checking similarities
+We included in the previous code the REPLACE function to omit spaces between words, like "New York". SOUNDEX didn't find any matches between states with more than one word, like "New York" or "New Jersey".
+
+9. DIFFERENCE
+Let's study now the DIFFERENCE function. DIFFERENCE compares two SOUNDEX values and returns an integer from 0 to 4. 0 indicates little or no similarity, while 4 represents very similar or identically matching.
+
+10. DIFFERENCE
+If we apply DIFFERENCE to these strings, the result we get is 4, which means they are very similar or identical. However, applying DIFFERENCE to these other strings, will output 1, which means low similarity.
+
+11. DIFFERENCE - checking similarities
+Similar to the SOUNDEX example, we can check similarities between states that have a DIFFERENCE of 4 but are written differently. Between the results, we can see that the pair of states "Massachusetts" and "Michigan" are completely different, although they have a value of 4. So, as in the SOUNDEX function, we always need to review the results.
