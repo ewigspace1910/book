@@ -1,0 +1,21 @@
+Got It!
+1. Image data
+Hello! My name is Stephen Bailey, and I'll be your instructor for this introductory course on biomedical image analysis in Python.
+
+2. Biomedical imaging: more than a century of discovery
+Since the first x-ray in 1895, medical imaging technology has advanced clinical care and opened up new fields of scientific investigation. The amount of imaging data is exploding: by 2020, there is estimated to be more than three and a half billion terabytes of it in the U.S. alone. This has created amazing opportunities for analysis: measuring organ shape and size; creating detailed reconstructions of anatomy; analyzing tissue composition; predicting pathology, and so much more. The complexity and variety of the data can make it an intimidating field to jump into.
+
+3. Course objectives
+Fortunately, there are fantastic tools and a wealth of resources to support you. In this course, we'll focus on several principles underlying biomedical image analysis. You'll learn how to explore multidimensional arrays, emphasize important features using masks and filters, extract specific measurements from objects, and compare multiple images or patients. While this only scratches the surface of the field, it will give you a firm foundation for advanced concepts like classification and segmentation. Throughout, we'll rely on packages in Python's core scientific computing ecosystem: ImageIO, NumPy, SciPy, and matplotlib. Let's dive in.
+
+4. Loading images
+To warm up, let's load and plot a single image. We can read in images using the ImageIO package. Its imread() function will take a single file and load it as an image object. One useful feature of ImageIO is that it can read DICOM files, the standard format for human medical imaging. The data is read in as an image object, which is a type of NumPy array.
+
+5. Loading images
+To access specific values from your image, you can slice out a single value or a range of index values along each dimension.
+
+6. Metadata
+Images are always acquired in a specific context. This information is often referred to as metadata. ImageIO loads available metadata into a dictionary, accessible through the meta attribute. This is especially important for DICOM files, which contain a lot of patient and acquisition information. Since meta is a Python dictionary, you can access specific information by indexing it with one of the available keys. This file, for example, includes a modality field. You can also call the keys method to list all of the available metadata.
+
+7. Plotting images
+Visualization is fundamental to image analysis, and we'll rely heavily on matplotlib and its imshow() function throughout this course. To draw a simple plot of a 2D image, first, import the PyPlot module from matplotlib. Next, call pyplot dot imshow() and pass in the 2D image. If the image does not have color, add "cmap equals gray" to plot it in grayscale. Next, to reduce clutter, it's common to turn off the axis ticks, labels, and frame with pyplot dot axis off. Finally, call show() to render the image. And, voila: the inside of a human being.

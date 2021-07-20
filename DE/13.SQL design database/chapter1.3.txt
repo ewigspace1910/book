@@ -1,0 +1,22 @@
+2. What is database design?
+Database design determines how data is logically stored. This is crucial because it affects how the database will be queried, whether for reading data or updating data. There are two important concepts to know when it comes to database design: Database models and schemas. Database models are high-level specifications for database structure. The relational model, which is the most popular, is the model used to make relational databases. It defines rows as records and columns as attributes. It calls for rules such as each row having unique keys. There are other models that exist that do not enforce the same rules. A schema is a database's blueprint. In other words, the implementation of the database model. It takes the logical structure more granularly by defining the specific tables, fields, relationships, indexes, and views a database will have. Schemas must be respected when inserting structured data into a relational database.
+
+3. Data modeling
+The first step to database design is data modeling. This is the abstract design phase, where we define a data model for the data to be stored. There are three levels to a data model: A conceptual data model describes what the database contains, such as its entities, relationships, and attributes. A logical data model decides how these entities and relationships map to tables. A physical data model looks at how data will be physically stored at the lowest level of abstraction. These three levels of a data model ensure consistency and provide a plan for implementation and use.
+
+1 https://en.wikipedia.org/wiki/Data_model
+4. An example
+Here is a simplified example of where we want to store songs. In this case, the entities are songs, albums, and artists with various pink attributes. Their relationships are denoted by blue rhombuses. Here we have a conceptual idea of the data we want to store. Here is a corresponding schema using the relational model. The fastest way to create a schema is to translate the entities into tables. But just because it's the easiest, doesn't mean it's the best. Let's look at some other ways this ER diagram could be converted.
+
+5. Other database design options
+For example, you could opt to have one table because you don't want to have to run so many joins to get song information. Or, you could add tables for genre and label. Many songs share these attributes, and having one place for them helps with data integrity. The biggest difference here is how the tables are determined. There are different pros and cons to these three examples I've shown. The next chapter on normalization and denormalization will expand on this.
+
+6. Beyond the relational model
+From the prerequisites, you should be familiar with the relational model. Dimensional modeling is an adaptation of the relational model specifically for data warehouses. It's optimized for OLAP type of queries that aim to analyze rather than update. To do this, it uses the star schema. In the next chapter, we'll delve into that more. As we will see in the next slide, the schema of a dimensional model tends to be easy to interpret and extend. This is a big plus for analysts working on the warehouse.
+
+7. Elements of dimensional modeling
+Dimensional models are made up of two types of tables: fact and dimension tables. What the fact table holds is decided by the business use-case. It contains records of a key metric, and this metric changes often. Fact tables also hold foreign keys to dimension tables. Dimension tables hold descriptions of specific attributes and these do not change as often. So what does that mean? Let's bring back our example, where we're analyzing songs. The turquoise table is a fact table called songs. It contains foreign keys to purple dimension tables. These dimension tables expand on the attributes of a fact table, such as the album it is in and the artist who made it. The records in fact tables often change as new songs get inserted. Albums, labels, artists, and genres will be shared by more than one song - hence records in dimension tables won't change as much. Summing it up, to decide the fact table in a dimensional model, consider what is being analyzed and how often entities change.
+
+8. Let's practice!
+Let's do some exercises!
+

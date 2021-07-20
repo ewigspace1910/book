@@ -1,0 +1,41 @@
+2. NumPy for images
+With NumPy, we can practice simple image processing techniques, such as flipping images, extracting features, and analyzing them.
+
+3. Images as NdArrays
+Imagine that we have an image and we load it using matplotlib's imread() function. If you check it's type, using the type() python function, you can see that is a numpy ndarray object. Because images can be represented by NumPy multi-dimensional arrays (or "NdArrays"), NumPy methods for manipulating arrays work well on these images.
+
+4. Colors with NumPy
+Remember that a color image is a NumPy array with an third dimension for color channels. We can slice the multidimensional array and obtain these channels separately.
+
+5. Colors with NumPy
+Here we can see the individual color intensities along the image. For example, we obtain the red color of an image by keeping the height and width pixels and selecting only the values of the first color layer. Here we use Matplotlib to display them with the default colormap. We can observe the different intensities in their tone.
+
+6. Colors with NumPy
+We can also display them using the gray colormap, specifying it with the cmap attribute, of the imshow function. We can still see the different intensities along the images, one for each color. The red, green and blue.
+
+7. Shapes
+Just like with NumPy arrays, we can get the shape of images. This Madrid picture is 426 pixels high and 640 pixels wide. It has three layers for color representation: it's an RGB-3 image. So it has shape of (426, 640, 3).
+
+8. Sizes
+And a total number of pixels of 817920.
+
+9. Flipping images: vertically
+We can flip the image vertically by using the flipud() method. As you saw in the previous video, we are using the show_image() function to display an image.
+
+10. Flipping images: horizontally
+You can flip the image horizontally using the fliplr() method.
+
+11. What is a histogram?
+The histogram of an image is a graphical representation of the amount of pixels of each intensity value. From 0 (pure black) to 255(pure white). The first image is really dark, so most of the pixels have a low intensity, from 0 to 50. While the second one, it's lighter and has most of the pixels close to 200 and 255.
+
+12. Color histograms
+We can also create histograms from RGB-3 colored images. In this case each channel: red, green and blue will have a corresponding histogram.
+
+13. Applications of histograms
+We can learn a lot about an image by just looking at its histogram. Histograms are used to threshold images (an important topic in computer vision that we will cover later in this course), to alter brightness and contrast, and to equalize an image (which we will also cover later in this course).
+
+14. Histograms in Matplotlib
+Matplotlib has a histogram method. It takes an input array (frequency) and bins as parameters. The successive elements in bin array act as the boundary of each bin. We obtain the red color channel of the image by slicing it. We then use the histogram function. Use ravel to return a continuous flattened array from the color values of the image, in this case red. And pass this ravel and the bins as parameters. We set bins to 256 because we'll show the number of pixels for every pixel value, that is, from 0 to 255. Meaning you need 256 values to show the histogram.
+
+15. Visualizing histograms with Matplotlib
+So to display it, once we obtain the blue color of the image and use the hist method, by passing the array and the bins to put in the graphic. Plot it using plt.show()

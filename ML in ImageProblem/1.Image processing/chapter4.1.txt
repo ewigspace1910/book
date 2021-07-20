@@ -1,0 +1,21 @@
+Got It!
+1. Finding the edges with Canny
+Congrats on completing chapter 3! In this final chapter, you'll learn how to detect edges, corners, and people's faces! Using building functions that do so really fast and with just a few lines of code. Edge detection is extensively used when we want to divide the image into areas corresponding to different objects.
+
+2. Detecting edges
+Most of the shape information of an image is enclosed in edges. In this image we see how the edges hold information about the domino's tokens. Representing an image by its edges has the advantage that the amount of data is reduced significantly while retaining most of the image information, like the shapes.
+
+3. Edge detection
+In the previous chapter you have seen how to detect edges using the Sobel filtering technique. In this video, you'll learn about one of the most used edge detection techniques, the Canny edge detection. This is widely considered to be the standard edge detection method in image processing. And produces higher accuracy detecting edges and less execution time compared with Sobel algorithm.
+
+4. Edge detection
+The detector can be applied with the canny function from the feature module of scikit-image. This function requires the image to be a 2-dimensional array, meaning, a grayscale image. So in this example, we convert the image from RGB-3 to grayscale, using the rgb2gray method from the color module that we already know from previous chapters. Then we apply the canny detector on the coin's image and obtain the resulting image. Let's show it and see what it looks like.
+
+5. Edge detection
+We see how the edges are highlighted with thick white lines and that some details are more pronounced than the rest of the image. We can also spot the boundaries and shapes of coins; by knowing that for each closed circle or ellipse, there's a coin.
+
+6. Canny edge detector
+The first step of this algorithm is to apply a gaussian filter in order to remove noise in the image. The same gaussian filter we have seen previously in the course with the gaussian function from the filters module. So, in the canny function you can optionally set the intensity of this Gaussian filter to be applied in the image, by using the sigma attribute. The lower the value of this sigma, the less of gaussian filter effect is applied on the image, so it will spot more edges. On the other hand, if you set a higher value, more noise will be removed and the result is going to be a less edgy image. The default value of this parameter is 1. In this example we set it to 0.5, let's see the effect in the image.
+
+7. Canny edge detector
+The resulting image has a lot more edges than the previous one and this is because noise was removed before continuing with the rest of the steps in the algorithm.

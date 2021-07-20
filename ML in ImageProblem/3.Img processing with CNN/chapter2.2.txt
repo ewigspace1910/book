@@ -1,0 +1,26 @@
+1. Convolutions
+In the neural network that we previously constructed, each unit in the first layer had a weight connecting it separately with every pixel in the image.
+
+2. Using correlations in images
+But we know that pixels in most images are not independent from their neighbors. For example, images of objects contain edges, and neighboring pixels along an edge tend to have similar patterns. How can we use these correlations to our advantage?
+
+3. Biological inspiration
+Our own visual system uses these correlations, and each nerve cell in the visual areas in our brain responds to oriented edges at a particular location in the visual field. This image depicts a small part of the visual cortex (the scale bar is 1 millimeter in size). Each part of the image responds to some part of the visual field, and to the orientation depicted by the colors on the right. Looking for the same feature, such as a particular orientation, in every location in an image is like a mathematical operation called a convolution. This is the fundamental operation that convolutional neural networks use to process images.
+
+4. What is a convolution?
+Let's start with a simple version: a convolution in one dimension. We create here an array that contains 5 zeros followed by 5 ones. This array contains an "edge" in the middle, where the values go from zero to one. The kernel defines the feature that we are looking for. In this case, we are looking for a change from small values on the left to large values on the right. We start the result as all zeros. Then, we slide the kernel along the array. In each location we multiply the values in the array with the values in the Kernel and sum them up. This is the result for that location.
+
+5. Convolution in one dimension
+In this example, the array goes between 0 and 1 twice. In this case, the edges that go from zero to one match the kernel, but the edges from 1 to 0 are the opposite of the kernel. In these locations, the convolution becomes negative.
+
+6. Image convolution
+Convolutions of images do the same operation, but in two dimensions. In this case, we convolve the image of a dress with a kernel that matches vertical edges on the left.
+
+7. Image convolution
+This means that when we convolve the image with this kernel, the left edge is emphasized. The right side of the dress is the opposite of this kernel, and the convolution is negative there.
+
+8. Two-dimensional convolution
+Now, let's look at an implementation of convolution in code. First, we create the kernel. Then, we create the array that will store the results of the convolution. We iterate over all the locations in the image. In each location, we select a window that is the size of the kernel, we multiply that window with the kernel, and then sum it up. This sum is then entered as the value of the convolved image in that location. At the end of the loop, the array will contain the results of the convolution.
+
+9. Convolution
+Here is a graphic that demonstrates the convolution operation. The kernel is the gray 3-by-3 box that slides over the blue input image at the bottom. In each location, the window is multiplied with the values in the kernel and added up to create the value of one of the pixels in the resulting green array at the top. In neural networks, we call this resulting array a "feature map", because it contains a map of the locations in the image that match the feature represented by this kernel.

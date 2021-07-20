@@ -1,0 +1,38 @@
+1. Out of range values and inaccurate data
+Welcome back. In this lesson, we will learn how to select and exclude out of range values and inaccurate data.
+
+2. Dataset - series and episodes
+Throughout this chapter, we will be working on a new dataset. It contains information about series
+
+3. Dataset - series and episodes
+and episodes.
+
+4. Out of range values
+Let's start defining out of range values. Out of range values are values that are outside the expected range of valid data. For example, a person who is 400 inches tall. If we don't detect this kind of dirty data before analyzing, it can disrupt our results. If we have the chance, we can investigate why these data are outside the expected values and correct it. We will illustrate out of range values with an example.
+
+5. Out of range values - example
+In our series table, there is a column named rating. It stores the ratings given by the audience of the series on a scale of 0 to 10. Unfortunately, in this table, there aren't any constraints that checks this range. Because of that, some values are out of this range, due to input errors.
+
+6. Out of range values - detecting the values
+If we want to detect which values are out of this range, we can use the BETWEEN logical operator in its negation. In this example, we are selecting those rows which ratings are not between the expected range. As we can see in the output, the first series has a rating of 11,4, and the second one has a rating of 11. Similarly, we can select these rows by applying the "less than" and "greater than" operators; it is, those rows which ratings are strictly less than 0 or strictly greater than 10.
+
+7. Out of range values - excluding the values
+If we choose to exclude from our results the rows that have out range values, we can do it by using the BETWEEN logical operator in its positive way. In this example, we are selecting those rows which ratings are between the expected range.
+
+8. Out of range values - excluding the values
+We can also select these rows by applying the "greater than", "equals", and "less than" operators; it is, those rows whose ratings are greater than or equal to 0 and less than or equal to 10.
+
+9. Inaccurate data
+Another kind of messy data is inaccurate data. Inaccurate data happens when two or more values are contradictory. For example, a man who is pregnant. As with out of range values, inaccurate data can lead us to wrong results. If we have the chance, we can also investigate why these data are inaccurate and correct them.
+
+10. Inaccurate data - example
+Let's illustrate inaccurate data with an example. If we look at the series table, we can see that there is a column named premiered, that stores the date on which each series was premiered. On the other hand, in the episodes table, there is a column named airdate, that stores the date when each episode was aired. It should be logical that the airdates of the episodes have the same date or later than the premiered date of the series.
+
+11. Inaccurate data - example
+However, as we can see, there are some episodes with airdates before the premiered date of the series. These dates are not accurate. Let's learn how to detect them.
+
+12. Inaccurate data - detecting the values
+To detect these inaccurate values, we can join both tables, series and episodes, by the series identifier, applying the condition that the airdate of the episodes is strictly before the premiered date of the series. This comparison can be done with the logical operator "less than".
+
+13. Inaccurate data - excluding the values
+If we choose to exclude from our results the rows that have inaccurate data, we can do it applying the condition that the airdate of the episodes is later or equals to the premiered date of the series.

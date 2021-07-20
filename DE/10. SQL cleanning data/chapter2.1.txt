@@ -1,0 +1,44 @@
+1. Dealing with missing data
+Congratulations on completing Chapter 1. In this chapter, we will learn how to deal with missing data, avoid duplicate data, and clean messy dates.
+
+2. Understanding missing data
+On some occasions, we can find that our data has missing values. In SQL Server, missing values are represented by NULL.
+
+3. Understanding missing data
+However, in other cases, it is also common to find blank values.
+
+4. Understanding missing data - Reasons
+Missing data can happen for some reason. Sometimes, it can happen intentionally. For example, a person who doesn't want to reveal the age, or a person who doesn't know the answer to a question. In other cases, an error could have occurred when inserting the data. And finally, sometimes the data simply doesn't exist. For example, the number of children of a person that doesn't have any children.
+
+5. Understanding missing data - Solutions
+We have different ways to deal with missing values. First of all, it is recommended to investigate if we can find those missing values. Sometimes we can find them in the original dataset. If we don't find the missing values, we will have the following options depending on the business assumptions behind our data. We can leave the data as it is, knowing that we have missing values in our dataset. Another option is to avoid the rows with missing data by removing them from our analysis. And finally, we can fill missing values with another value, such as a text, the average of the values, etc. In the next slides, we will learn how to remove the rows with missing values and fill NULL values with other values.
+
+6. Remove missing values - IS NOT NULL
+Let's see how to remove the rows from the airports table that have NULL values for the airport_state column.
+
+7. Remove missing values - IS NOT NULL
+In SQL Server, we can use IS NOT NULL to select the values that aren't NULL. Note that we didn't get any row with a NULL value for the airport_state column.
+
+8. Remove missing values - IS NOT NULL
+If we want to check which are the rows that have NULL values for the airport_state column, we can do it by using IS NULL.
+
+9. Remove missing values - <> ''
+As we said previously, we can find blank spaces instead of NULL values.
+
+10. Remove missing values - <> ''
+If we want to remove the rows that have blank values for the airport_state column, we can use the comparison operator to exclude them.
+
+11. Fill with other value - ISNULL
+We can substitute NULL values using the ISNULL function. ISNULL replaces the NULL value with a specified value. Note that it is written together, unlike the IS NULL predicate that we already studied.
+
+12. Fill with other value - ISNULL
+In this example, we replaced the NULL values for the airport_state column with the "Unknown" string.
+
+13. Fill with other value - ISNULL with AVG
+On some occasions, NULL values can be replaced with a number, for example, the average of the values for that column, as long as it makes sense.
+
+14. Fill with other value - ISNULL with AVG
+To get the average of the canceled column, we need to use the AVG function. If we use AVG in combination with the ISNULL function, we will get the average value in case there is a NULL value.
+
+15. Fill with other value - COALESCE
+Finally, another way of replacing NULL values can be performed using COALESCE. COALESCE evaluates the arguments between parenthesis and returns the first argument that is not NULL. In this example, we used COALESCE to evaluate the values of airport_state, airport_city, and the "Unknown" string. For the first row, we can see that as the airport_state is not NULL, we get the value "Utah". In the second row, as the airport_state is NULL, COALESCE evaluates airport_city. airport_city is not NULL, so it returns "Philadelphia". In the last row, as both airport_state and airport_city are NULL, we get the string "Unknown".

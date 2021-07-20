@@ -1,0 +1,26 @@
+2. What did we learn?
+These algorithms are the best we currently have for many computational tasks. Here, you learned about image classification. Classification is a particularly useful task and one that convolutional neural networks excel at. You learned how to set up a training set, a validation set and a test set and how to use them in training a model for classification and how to evaluate it. You learned about the fundamental operations of these networks: convolutions. The development of convolutional layers for neural networks ushered in the current golden age of computation with neural networks, so understanding how they work is particularly valuable, even if you continue to learn about other kinds of neural networks. One of the things that is remarkable about CNNs is that they have a very large number of parameters. This is one of the reasons that large amounts of data are usually required to effectively and accurately train a neural network. We looked at a couple of approaches to reduce the number of parameters: one is to tweak your convolutions, and adapt them to your problem. For example, using strided convolutions. Another approach is to use pooling layers. We also looked at a couple of approaches to improve your network, using regularization. Finally, you learned about ways to understand your network and visualize both the progress of learning, as well as the final result of learning: the parameters of the trained network.
+
+3. Model interpretation
+If you found this topic to be interesting, you might want to read this paper by Chris Olah and his colleagues that explores different aspects of visualization of neural network results. This is an exciting time to learn about CNNs, because the technology is rapidly evolving, and some of the most exciting developments are yet to come.
+
+4. Road
+Where does the road lead to from here?
+
+5. What next?
+There is a wealth of methods and ideas for you to dive into. Here are a few things to learn about next. In this course, you learned about simple architectures where one layer always connects only to the next. But there are other architectures that provide a variety of computational benefits. For example, you might want to learn about residual networks.
+
+6. Residual networks
+These include connections that skip over several layers, and they are called residual networks because the network will use this skipped connection to compute a difference between the input of a stack of layers and their output. Learning this difference, or residual, turns out to often be easier than learning the output. This means that these networks have been surprisingly effective at tasks such as classification.
+
+7. What next?
+Another topic you might want to explore further is transfer learning: in this approach an already-trained network is adapted to a new task. You've already learned how to read in weights into a network that you've defined. Now imagine training it again on another classification task. Sounds weird, but it's a great strategy for cases where you don't have a lot of data. In addition to convolutional networks that perform classification, there are so-called fully convolutional networks that take an image as input and produce another image as output.
+
+8. Fully convolutional networks
+For example, these networks can be used to find the part of an image that contains a particular kind of object, doing segmentation rather than classification.
+
+9. Generative adversarial networks
+A particularly interesting kind of networks are a generative adversarial networks. These complex architectures can be used to train a network to create new images that didn't exist before.
+
+10. What next?
+And there are many many other topics to explore. Whichever way you decide to turn next,

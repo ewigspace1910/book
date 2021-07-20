@@ -1,0 +1,29 @@
+1. Superpixels & segmentation
+Hi! In this video, you'll learn more about image segmentation. One of the most fundamental and studied topics in image processing.
+
+2. Segmentation
+The goal is to partition images into regions, or segments, to simplify and/or change the representation into something more meaningful and easier to analyze.
+
+3. Segmentation
+For example, before a tumor is analyzed in a computed tomography, it has to be detected and somehow isolated from the rest of the image. Or before recognizing a face, it has to also be picked out from its background. Previously we learned about Thresholding, which is the simplest method of segmentation. Separating foreground from background. Now we'll learn about separating more than that.
+
+4. Image representation
+Consider how we represent images. They are represented as a grid of pixels. The issue is that they're not a completely natural representation of an image. If I were to take a single pixel from the image on the left and then showed it to you on the right, would you be able to tell that the pixel came from a puppy and that this single pixel holds a logical meaning? A single pixel, standing alone by itself, is not a natural representation.
+
+5. Superpixels
+So, we can explore more logical meanings in an image that's formed by bigger regions or grouped pixels. These are known as superpixels. A superpixel is a group of connected pixels with similar colors or gray levels. These carry more meaning than their simple pixel grid counterparts.
+
+6. Benefits of superpixels
+Superpixel segmentation is dividing an image into superpixels. It has been applied to many computer vision tasks, like visual tracking and image classification. Some advantages for using them are that You can compute features on more meaningful regions. And that you can reduce an image from thousands of pixels down to some regions for subsequent algorithms, so you have computational efficiency.
+
+7. Segmentation
+Two types of segmentation are, Supervised, where some prior knowledge is used to guide the algorithm. Like the kind of thresholding in which we specify the threshold value ourselves. And unsupervised where no prior knowledge is required. These algorithms try to subdivide images into meaningful regions automatically. The user may still be able to tweak certain settings to obtain the desired output. Like the otsu thresholding we used in first chapter.
+
+8. Unsupervised segmentation
+Lets focus on a unsupervised segmentation technique based on superpixels, called Simple Linear Iterative Clustering or SLIC. It segments the image using a machine learning algorithm called K-Means clustering. It takes in all the pixel values of the image and tries to separate them into a predefined number of sub-regions.
+
+9. Unsupervised segmentation (SLIC)
+We can find the algorithm in the segmentation module as the "slic" function. This method returns the segmented regions, also known as labels. Here we use this function, with default parameters and obtain the segments. We'll use the label2rgb method from the color module to return an image where the segments obtained from the slic method will be highlighted, either with random colors or with the average color of the superpixel segment. In this example we'll use the average color. So we pass the segments or labels, the image, and set the kind parameter to average avg. Finally, we show the resulting segmented image.
+
+10. Unsupervised segmentation (SLIC)
+You can see how local regions with similar color and texture distributions are part of the same superpixel group.

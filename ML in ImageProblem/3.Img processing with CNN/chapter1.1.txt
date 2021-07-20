@@ -1,0 +1,38 @@
+1. Introduction to CNNs
+Hello! My name is Ariel Rokem and I am a data scientist. In this course, you will learn about convolutional neural networks, or CNNs. Imagine that you work for a company that is building a self-driving car. One of the challenges you face is that your car needs to quickly be able to determine what is happening around it.
+
+2. Stop
+For example, your self-driving car should be able to tell whether the sign at an intersection is a stop sign,
+
+3. Yield
+, or a yield sign. CNNs are powerful algorithms for processing images. In fact, these algorithms are currently the best algorithms we have for automated processing of images, and they are used by many different companies to do things like identifying the objects in an image. After completing this course, you will be able to build an algorithm that processes images of different objects and can distinguish between them.
+
+4. Software and pre-requisites
+We will use Keras, which is a Python-based library that implements the building blocks you need to build your own CNNs. I assume that you have taken DataCamp's Deep Learning course which introduces Keras. Because CNNs are a type of machine learning algorithm, I also assume that you have a working knowledge of basic principles of machine learning, such as overfitting, and model evaluation through cross-validation.
+
+5. Images as data
+Images contain data. Using Matplotlib, you can import an image into memory from a file and then display it using a plotting command, as shown here.
+
+6. Images as data
+, but the computer doesn't see the image. All it sees is an array of numbers. Color images are stored in 3-dimensional arrays. The first two dimensions correspond to the height and width of the image (the number of pixels). The last dimension corresponds to the red, green and blue colors present in each pixel.
+
+7. Images as data
+To examine the red, green and blue data in a particular pixel in the image, we index into both of the spatial dimensions of the image. For example, when we index on both of the spatial dimensions, we can choose a pixel that is inside the stop sign, by setting the row index to 1000 and the column index to 1500. This pixel has a high intensity in the red channel, so this is its color.
+
+8. Images as data
+On the other hand, the pixel with row index 250 and column index of 3500 is in the part of the image containing the sky, and has a high intensity in the blue channel, so it has this color.
+
+9. Modifying image data
+We can also change the image by changing the array data. For example, here we set the green and blue values of the pixels to zero. The result is an image that contains only the information in the red channel.
+
+10. Changing an image
+Alternatively, we could set all the pixels within some part of the image to have no red and no blue, but full intensity in the green channel. This results in an image with a green square in it.
+
+11. Black and white images
+In this course, we will mostly look at black and white images. For example, consider these three images of three different items of clothing: a dress, a t-shirt and a shoe.
+
+12. Black and white images
+What the computer sees are the numbers that represent the intensity of the image in each pixel. High numbers represent parts of the image that are brighter, and low numbers represent parts of the image that are darker.
+
+13. Black and white images
+In these images as well, we can select a part of the image, using indexing on the rows and columns of the array and slicing, and change part of the array, using assignment.

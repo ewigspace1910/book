@@ -1,0 +1,20 @@
+1. Tracking learning
+During learning, the weights used by the network change, and as they change, the network becomes more attuned to the features of the images that discriminate between classes. This means that the loss function we use for training becomes smaller and smaller. Looking at the change in the loss with learning can be helpful to see whether learning is progressing as expected, and whether the network has learned enough.
+
+2. Learning curves: training
+As long as learning is progressing well, we might expect the loss function to keep going down. For example, here is a curve showing the categorical cross-entropy loss in a network that is learning to classify different types of clothing, measured on the training set. You can see that loss rapidly decreases in the first few epochs of training, after which learning slows down. This is a sign that learning is going rather well.
+
+3. Learning curves: validation
+On the other hand, if we add the validation loss to this plot, we can see that learning is progressing to some level of loss and then flattens out. What is going on? This is a form of overfitting. Because neural networks have so many parameters that can be adjusted, the weights can be adjusted to accurately classify, but this performance does not generalize well outside of the training set. When validated against a separate set of data, loss cannot become better.
+
+4. Learning curves: overfitting
+In fact, if we keep training for many epochs, the validation accuracy can start increasing back up again. This is a sign that we have passed the point at which the model weights are being adjusted in a useful way, and we are starting to over-fit to the specifics of the training data.
+
+5. Plotting training curves
+To generate these curves, we need a model like the ones that you have seen before. We capture the results of fitting our model into a 'training' variable, which has a dictionary that stores the learning curves. We can plot the loss in the training set. And also add a plot of the loss in the validation set.
+
+6. Storing the optimal parameters
+How do we use the best parameters before the network starts over-fitting? By using the callbacks module from Keras which contains functions that can be executed at the end of each training epoch. One of these callbacks is a ModelCheckpoint object that can be used to store the weights of a network at the end of each epoch of learning. When it is initialized, an hdf5 file is created. Here we call it weights dot hdf5. The callback monitors the validation loss, and will only overwrite the weights whenever the validation loss shows improvement. That is, the validation loss decreases. This means that if the network overfits, the weights will be stored for the epoch at which the validation loss was the smallest, before it started rising back up. The checkpoint object is stored in a list and passed as input to the model fitting procedure. After all epochs of fitting are done, this file contains the best weights.
+
+7. Loading stored parameters
+To use these weights, we'll need to initialize the model again with the same architecture, the same layers, with the same number of units in each. We can then use the model's load_weights() method to bring the model weights back to their value when the model was at its best during training. We can then use the weights in all kinds of ways. For example, we can use the model weights to predict the classes of a separate test image data set, using the predict_classes() method. Each entry in the result is the column corresponding to the clothing article in the one-hot encoded array.

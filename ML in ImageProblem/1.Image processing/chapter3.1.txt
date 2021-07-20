@@ -1,0 +1,27 @@
+Got It!
+1. Image restoration
+Congrats on completing chapter 2! In this chapter, we'll learn about image restoration, segmentation, noise and how to find contours in images! You have learned some awesome techniques for image processing so far. In this video, you will learn how to show what you thought was lost.
+
+2. Restore an image
+Have you ever wondered if it's possible to restore a damaged or defect image? This could have happened because your laptop memory got corrupted. Or, it could also be a picture of your grandparents that over time has been scratched and now is somewhat deteriorated. Whatever happened, the cool thing is that yes, you can restore them.
+
+3. Image reconstruction
+Besides fixing damaged images, image restoration or reconstruction, is also used for text removing, deleting logos from images and even removing small objects, like tattoos you prefer not to show on a picture.
+
+4. Image reconstruction
+Reconstructing lost or deteriorated parts of images is known as inpainting. The reconstruction is supposed to be performed in a fully automatic way by exploiting the information presented in non-damaged regions of the image.
+
+5. Image reconstruction
+In scikit-image, we can apply inpainting with the inpaint biharmonic function, from the restoration module. It needs the location of the damaged pixels to be filled, as a mask image on top of the image to work with. A mask image is simply an image where some of the pixel intensity values are zero, and others are non-zero.
+
+6. Image reconstruction in scikit-image
+To use this function we first need to import the module and function. Having the image with the defect already loaded, we need to set the mask with the location of the damaged pixels in the image. Remember that images are matrix of pixels. For this, in the course, we use the get_mask() function. This is something that we'll take a closer look at in a moment. Once we have the mask, we can invoke the inpaint_biharmonic function to apply it to the image with the defect. This will be passed as the first parameter, then the mask, and optionally we can set a boolean for the multichannel. Set it to true if the image is colored. Then we can look at the resulting image.
+
+7. Image reconstruction in scikit-image
+We look at the original image with the defect and the resulting restored image to compare them. In this example, we can see how the masked pixels get inpainted by the inpainting algorithm based on the biharmonic equation assumption.
+
+8. Masks
+Imagine you have an old picture of your parents you want to fix. In this image, we intentionally added the missing pixels by setting them to black. In case you want to remove an object you can manually delineate it in the mask. And if you want to automatically detect it, you would need to use Thresholding or segmentation to do so. Something we will learn later on. In the right image we see the damaged areas of the image as a mask.
+
+9. Masks
+The scikit-image inpainting function requires the mask to be an array of pixels that need to be inpainted. This mask has to be the same shape as one of the image channels. Unknown pixels have to be represented with 1 and known pixels with 0. So we add the missing pixels by copying the image and turning the pixels into a numpy array of zeros, meaning it's empty. We only copy the width and height dimensions of the image, excluding the color dimension, in this case RGB-3. And then, set the 1s in the specific areas we want to be treated as lost.

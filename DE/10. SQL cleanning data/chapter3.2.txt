@@ -1,0 +1,21 @@
+Got It!
+1. Converting data with different types
+In this lesson, we will focus on converting data from one type into another type.
+
+2. Introduction to undesirable data types
+In the last lesson, we learned how to select and exclude out of range values and inaccurate data by using BETWEEN and comparison operators. We worked with the rating column of the series table, whose type was a float number.
+
+3. Introduction to undesirable data types
+Now suppose that the rating column was designed as varchar instead of float. Varchar is a variable-size string data, so we may not perceive the differences between these two types unless we explore the table definition or perform forbidden operations to any of these types. So, what would happen if we try to execute the same queries we performed in the last lesson using BETWEEN and the comparison operators with this new type? Let's discover it.
+
+4. Undesirable data types - examples
+If we try to select the rows from the series table which ratings are on a scale of 0 to 10, using the BETWEEN operator or the comparison operators, we will get the following output. As we can see, SQL Server tries to convert the varchar values of the rating column to integer values.
+
+5. Undesirable data types - examples
+Similarly, if we try to get the average of the rating column, we will get this output. The average operation cannot be performed with varchar data. So, how can we solve this problem?
+
+6. Solving type conversion problems
+To convert the values of the rating column, we can use the CAST or the CONVERT functions we already learned in the previous chapter. Within the two functions, we have to specify into which type we want to convert the rating column. In these cases, we are going to convert the type of the rating column into a float number. Running any of these queries, we will get the expected result; it is the content of the series table with ratings on a scale of 0 to 10.
+
+7. Solving type conversion problems
+Additionally, if we also want to calculate the average of the rating column, we will have to use the CONVERT or CAST functions for that operation. As we can see, we correctly got the expected result.

@@ -1,0 +1,29 @@
+2. Noise
+How can an image have noise? Well images are signals and real-world signals usually contain departures from the ideal signal, which is the perfect image, as we observe with our eyes in real life. Such departures are referred to as noise. We can see how this image has some color grains when zoomed in.
+
+3. Noise
+More specifically, noise is the result of errors in the image acquisition process that result in pixel values that do not reflect the true intensities of the real scene. In this image we can see how there is a variation of brightness and color that does not correspond to reality, which is produced by the camera.
+
+4. Apply noise in scikit-image
+We can add noise to an image using scikit-image, with the random noise function from the "util" module. The image of a dog has already been preloaded. Now, we need to import the util module and the random_noise function. We can then add random noise of various types to the image by using this function. After doing this, we obtain a new image named noisy_image. To compare the original and resulting noisy image we can show them side-by-side using the show_image function we introduced in previous videos.
+
+5. Apply noise in scikit-image
+By using the random_noise function, we obtain the original image with a lot of added noise, that is distributed randomly. This type of noise is known as "salt and pepper" because that's in fact what it looks like. So we now know how to "mess up" a picture and use it for testing purposes.
+
+6. Reducing noise
+Most of the times we will want to remove or reduce the noise of images instead of adding it in. Like in this example, you can see a noisy image of me that is being denoised. For that, we can use several algorithms in scikit-image. The higher the resolution of the image, the longer it may take to eliminate the noise.
+
+7. Denoising types
+Some types of denoising algorithms are: The total variation filter. This filter tries to minimize the total variation of the image. It tends to produce “cartoon-like” images, that is, piecewise-constant images. Bilateral filtering smooths images while preserving edges. It replaces the intensity of each pixel with a weighted average of intensity values from nearby pixels. In this course, we'll focus on these two. But there are also The wavelet denoising filter and Non-local means denoising.
+
+8. Denoising
+We can perform total variation filter denoising with the denoise tv chambolle function from the restoration module. When applying this function, we can optionally set the denoising weight. The greater the weight, the more denoising but it could also make the image smoother. We can also specify if the image is multichannel (colored) or not. The final step is to show the original image compared with the resulting one.
+
+9. Denoising
+We see that we obtain a denoised image with the edges preserved but a little bit smooth or blurry.
+
+10. Denoising
+Bilateral filter denoising is accessible through the denoise bilateral function also from the restoration module. We apply it to the noisy image, set multichannel to the appropriate value, and we can leave other options to the default. Now we'll see the original and the resulting one to compare.
+
+11. Denoising
+The resulting image is less smooth than the one from the total variation filter. And preserves the edges a lot more.

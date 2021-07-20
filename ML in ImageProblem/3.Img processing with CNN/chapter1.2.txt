@@ -1,0 +1,29 @@
+2. Image classification
+We have images of three different classes: dresses, t-shirts and shoes. We'd like to build an algorithm that can distinguish between these classes. In machine learning, this is called a classification task.
+
+3. Image classification: training
+In the training phase, we present the algorithm with samples from these three classes,
+
+4. Image classification: training
+together with the class labels for each image.
+
+5. Image classification: training
+Over the course of training, the algorithm adjusts its parameters to learn the patterns in the data that distinguish between the three different classes of clothing.
+
+6. Image classification: evaluation
+At the end of training, we would like to know how well our classifier does. To avoid an estimate that is overly optimistic because of overfitting, we evaluate it by testing it on a portion of the data that has been set aside in advance for this purpose.
+
+7. Image classification: evaluation
+In this case, the classifier is able to correctly classify some of the images, but incorrectly classifies an image of a dress as a t-shirt, and an image of a t-shirt as a shoe.
+
+8. Representing class data: one-hot encoding
+How do we represent data for classification? Consider the following series of labels. One mathematically convenient way of representing this data is called one-hot encoding.
+
+9. Representing class data: one-hot encoding
+In this one-hot encoding array, each row represents one sample, and each column corresponds to one of the classes. In each row, all of the values are set to 0, except in the column corresponding to the class from which this image is taken. For example, here is a one-hot encoding of three images, a t-shirt, a dress, and a shoe.
+
+10. One-hot encoding
+To generate a one-hot encoding of these samples we generate an array of categories. We initialize an array of zeros, and then we iterate over the list of labels. For each sample, we find the index into the categories array that corresponds to the current sample. We set the item in the corresponding row and column to 1 and continue on to the next label, until we have iterated over all labels.
+
+11. One-hot encoding: testing predictions
+For example, we can use the one-hot encoded array to determine how many predictions were correct. In this case, we predicted two samples incorrectly, out of 8 samples in the test set. The sum of the product of the two arrays is 6, which is the number of correct classifications.

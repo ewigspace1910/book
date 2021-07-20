@@ -1,0 +1,53 @@
+1. Splitting data of one column into more columns
+In this lesson, we will understand how to split data stored in one column into more columns.
+
+2. Splitting products and units
+In the paper_shop_monthly_sales table, we can see that the values for the names of the products and the units are in the same column, separated by a hyphen. Suppose that we want to split the names of the products and the units into two columns. Let's discover how to do it.
+
+3. Using SUBSTRING and CHARINDEX
+To simplify the process, let's first start by splitting the name of the products. Instead of having the name and the units of the products in one column, we will split them into two columns. To do it, we can use the SUBSTRING function. SUBSTRING returns some characters of a string from a start position and gets from that string as many characters as we specify in the length parameter. We will also use the CHARINDEX function, which returns the position of a substring in a string. We can optionally determine the position where the search will start.
+
+4. Using SUBSTRING and CHARINDEX
+With these two functions, we can extract the name of the product using this query.
+
+5. Using SUBSTRING and CHARINDEX
+For the "notebooks hyphen 150" string,
+
+6. Using SUBSTRING and CHARINDEX
+starting from position 1,
+
+7. Using SUBSTRING and CHARINDEX
+we want to extract as many characters as the length resulting from applying CHARINDEX minus 1.
+
+8. Using SUBSTRING and CHARINDEX
+In this example, CHARINDEX returns 10, because the substring hyphen "-" is in the 10th position in the string "notebooks hyphen 150". So, as we are subtracting 1, this will result in a length of 9 characters, getting the following result. Once we have the name of the product, let's see how to extract the units.
+
+9. Using SUBSTRING and CHARINDEX
+To extract the units, we are going to use again SUBSTRING, CHARINDEX, and the LEN function we studied previously. If we want the result to be an integer, we can cast it as INT.
+
+10. Using SUBSTRING and CHARINDEX
+Starting from position 11,
+
+11. Using SUBSTRING and CHARINDEX
+we are going to extract until the length of 13 characters. This will be the result.
+
+12. Using SUBSTRING and CHARINDEX
+The complete query will be the following.
+
+13. Using LEFT, RIGHT and REVERSE
+We can get a similar result using the LEFT, RIGHT, and REVERSE functions. LEFT gets a number of characters from the left side of a given string. RIGHT gets a number of characters from the right side of a given string. REVERSE reverses a given string. Let's see how to apply all these functions.
+
+14. Using LEFT, RIGHT and REVERSE
+In this example, we are trying to get the name of the product by using the LEFT function and the units by using the RIGHT function.
+
+15. Using LEFT, RIGHT and REVERSE
+The number of characters to get from the left side will be the result of the CHARINDEX function minus 1, it is, 9.
+
+16. Using LEFT, RIGHT and REVERSE
+The REVERSE function reverses the string "notebooks hyphen 150",
+
+17. Using LEFT, RIGHT and REVERSE
+and CHARINDEX will return that the hyphen is in the fourth position of the reversed string.
+
+18. Using LEFT, RIGHT and REVERSE
+By subtracting 1, we indicate that we are going to take from the string the first three characters starting from the right side. This will be the result.
