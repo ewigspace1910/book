@@ -1,0 +1,111 @@
+Got It!
+1. Transaction isolation levels
+In this final chapter, we will study what concurrency is and how it can affect transactions.
+
+2. What is concurrency?
+Concurrency happens when two or more transactions that read or change shared data are executed at the same time. Depending on the purpose of the transactions, we may want to isolate our transaction from other transactions.
+
+3. Transaction isolation levels
+We can achieve different levels of isolation using the Transaction isolation levels that SQL Server provides. These are: READ COMMITTED, which is the default level, READ UNCOMMITTED, REPEATABLE READ, SERIALIZABLE, and SNAPSHOT. This is the syntax for setting an isolation level. It starts with SET TRANSACTION ISOLATION LEVEL followed by the specific isolation level.
+
+4. Knowing the current isolation level
+If we want to know the current transaction isolation level of our session, we can select the transaction_isolation_level column from sys.dm_exec_sessions. This column returns a different value depending on the transaction isolation level. In this example, the current isolation level is READ COMMITTED.
+
+5. READ UNCOMMITTED
+In this lesson, we will explain READ UNCOMMITTED, and the rest of the isolation levels will be explained in the next lessons. READ UNCOMMITTED is the least restrictive isolation level. It allows you to read rows modified by another transaction which hasn't been committed or rolled back yet.
+
+6. READ UNCOMMITTED
+Under READ UNCOMMITTED, it is possible to encounter dirty, non-repeatable, or phantom reads. These are called concurrency phenomena because they occur when two or more transactions are running concurrently, so data that might have been changed by one transaction is read by another.
+
+7. Dirty reads
+To understand what dirty reads are, let's suppose that account 5 has $35,000. One person starts a transaction, Transaction1, and updates the current_balance of account 5 to $30,000, but Transaction1 doesn't commit or rollback yet. After this update, another transaction, Transaction2, selects the current_balance of account 5, under READ UNCOMMITTED. As this isolation level allows to read uncommitted changes, Transaction2 sees that the current_balance of account 5 is $30,000, that is, a dirty read. After that, if Transaction1 rollbacks, the current_balance of account 5 doesn't change. However, Transaction2 still thinks that the current_balance is $30,000.
+
+8. Non-repeatable reads
+READ UNCOMMITTED also allows non-repeatable reads. Let's suppose that Transaction1 selects the current_balance of account 5, which is $35,000. After that, Transaction2 updates the current_balance of account 5 to $30,000 and commits.
+
+9. Non-repeatable reads
+If Transaction1 wants to select the current_balance of account 5 again, it will output $30,000, resulting in a different value from the first time it selected the current_balance of account 5. This difference can cause problems if we make a business decision based on the first result.
+
+10. Phantom reads
+Finally, let's explain phantom reads. Let's imagine one person starts Transaction1 under READ UNCOMMITTED and selects accounts with a balance between $45,000 and $50,000. There is only one account that matches that criterion. After some seconds, another person opens Transaction2 and inserts one account which fulfills the selection criteria of Transaction1, adding one account with a balance of $45,000 and commits.
+
+11. Phantom reads
+After that, if Transaction1 wants to select accounts with a balance between $45,000 and $50,000 again, it will get one additional account, the phantom read. This result is different from the first one. This difference can also cause problems if we make a business decision based on the first result.
+
+12. READ UNCOMMITTED - summary
+Let's finish with the pros, cons, and when to use READ UNCOMMITTED. READ UNCOMMITTED can return the results of a query faster than using other isolation levels. As we will see, other isolation levels can block other transactions, so the information may not be returned immediately. However, it allows dirty, non-repeatable, and phantom reads. You can use READ UNCOMMITTED when you don't want to be blocked by other transactions, but don't mind concurrency phenomena. You can also use it when you explicitly want to watch uncommitted data.
+
+--------------------------
+2. READ COMMITTED
+READ COMMITTED is the default isolation level in SQL Server. Under this isolation level, you can't read data modified by other transaction that hasn't committed or rolled back yet. This is the syntax for setting the READ COMMITTED isolation level.
+
+3. READ COMMITTED - isolation level comparison
+If you remember from the previous lesson, we learned that under the READ UNCOMMITTED isolation level, we could find dirty reads, non-repeatable reads, and phantom reads. The READ COMMITTED isolation level is more restrictive than READ UNCOMMITTED in the sense that READ COMMITTED prevents dirty reads. Let's demonstrate this behavior.
+
+4. READ COMMITTED - preventing dirty reads
+Let's suppose that account 5 has $35,000. One person starts Transaction1 and updates the current_balance of account 5 to $30,000, but Transaction1 doesn't commit or rollback yet. After this update, another transaction, Transaction2, selects the current_balance of account 5, under the READ COMMITTED isolation level. As this isolation level doesn't allow us to read uncommitted changes, Transaction2 is blocked and has to wait until Transaction1 commits or rollbacks, preventing the dirty read.
+
+5. READ COMMITTED - preventing dirty reads
+After that, when Transaction1 commits or rollbacks, Transaction2 immediately gets the output of the select query.
+
+6. READ COMMITTED - selecting without waiting
+Let's see how READ COMMITTED behaves when two transactions select data but don't change that data. In this example, Transaction1 starts and selects the current_balance of account 5, but doesn't commit or rollback yet. After that, Transaction2 selects the current_balance of account 5, under the READ COMMITTED isolation level. Since Transaction1 just made a selection without updating or deleting data, it didn't block Transaction2. Transaction2 can immediately get the result without waiting.
+
+7. READ COMMITTED - summary
+As we have seen, READ COMMITTED prevents dirty reads. However, it allows non-repeatable and phantom reads. You can also be blocked by another transaction. You can use READ COMMITTED if you want to ensure that you only read committed data, not non-repeatable and phantom reads.
+
+8. REPEATABLE READ
+Let's study the REPEATABLE READ isolation level. As with READ COMMITTED, you can't read uncommitted data from other transactions. Besides, if a transaction reads some data under this isolation level, other transactions cannot modify that data until the REPEATABLE READ transaction finishes.
+
+9. REPEATABLE READ - isolation level comparison
+Let's review the isolation levels we learned previously. Under the READ UNCOMMITTED level, dirty reads, non-repeatable reads, and phantom reads can happen. The READ COMMITTED isolation level prevents dirty reads but still can have non-repeatable and phantom reads. With the REPEATABLE READ isolation level, we can prevent dirty reads as READ COMMITTED does, but we can also prevent non-repeatable reads. Let's demonstrate how this isolation level can prevent non-repeatable reads.
+
+10. REPEATABLE READ - preventing non-repeatable reads
+In this example, Transaction1, under the REPEATABLE READ isolation level, selects the current_balance of account 5, getting the result. After that, Transaction2 starts and tries to update the current_balance of account 5 to $30,000. However, Transaction2 is blocked and has to wait to perform the update until Transaction1 finishes.
+
+11. REPEATABLE READ - preventing non-repeatable reads
+Now, if Transaction1 fires the same select statement again, it gets the same result as the first select statement, without getting a non-repeatable read.
+
+12. REPEATABLE READ - preventing non-repeatable reads
+When Transaction1 finishes, Transaction2 can finally perform the update.
+
+13. REPEATABLE READ - summary
+As we have seen, REPEATABLE READ prevents other transactions from modifying the data you are reading. This prevention results in not having non-repeatable reads. It also prevents dirty reads. However, it allows phantom reads. You can be blocked if you are trying to modify the data that a REPEATABLE READ transaction is reading. You can use REPEATABLE READ if you want to ensure you only read committed data and don't want other transactions to modify what you are reading. You don't care if phantom reads occur.
+----------------------------
+2. SERIALIZABLE
+SERIALIZABLE is the most restrictive isolation level. Here you can see the syntax for setting SERIALIZABLE.
+
+3. Isolation level comparison
+SERIALIZABLE, similar to REPEATABLE READ and READ COMMITTED, prevents dirty reads. As REPEATABLE READ, SERIALIZABLE prevents non-repeatable reads, and it also prevents phantom reads.
+
+4. Locking records with SERIALIZABLE
+We can lock records under SERIALIZABLE, using a query with a WHERE clause based on an index range. This query will lock those records so that no other transaction can insert or change this data. However, if the query doesn't have a WHERE clause based on an index range, the query will lock the complete table. Let's look at both cases in action and demonstrate how the SERIALIZABLE isolation level prevents phantom reads.
+
+5. SERIALIZABLE - query based on an index range
+Let's start with a query based on an index range. In this example, transaction 1, under the SERIALIZABLE isolation level, selects those records from the customers table whose customer_id is between 1 and 3. customer_id is an index, so only these records will be locked. With this configuration, no other transaction will be able to modify these records or insert new records with a customer_id between 1 to 3 until transaction 1 finishes. Note that this query returned only one customer.
+
+6. SERIALIZABLE - query based on an index range
+After this selection, transaction 2 starts. It tries to insert a new record into the customers table, with the customer_id equals to 2. As this customer_id is between 1 and 3, matching the requirements of the select query of transaction 1, this operation will have to wait until transaction 1 finishes.
+
+7. SERIALIZABLE - query based on an index range
+If within Transaction1 we select the customers whose customer_id is between 1 and 3 again, we will get the same result we got the first time we selected the customers with a customer_id between 1 and 3. We avoided the phantom record.
+
+8. SERIALIZABLE - query based on an index range
+When transaction 1 finishes, the insert statement is executed.
+
+9. SERIALIZABLE - query based on an index range
+If transaction 2 had inserted a customer with the customer_id equals to 200, it would have added the record instantly. That's because the customer_id doesn't match the requirements of the select query of transaction 1.
+
+10. SERIALIZABLE - query not based on an index range
+Let's show an example where there is a query that is not based on an index range. This example shows a transaction which selects, under the SERIALIZABLE isolation level, every field from the customers table. As it selects without an index range, the complete table will be locked. After that, transaction 2 tries to insert a customer. As the complete table is locked, it will have to wait until transaction 1 ends.
+
+11. SERIALIZABLE - query not based on an index range
+If transaction 1 fires the same select query again, we will get the same result we got in the first select query. We avoided the phantom record.
+
+12. SERIALIZABLE - query not based on an index range
+Finally, transaction 1 finishes and the insert statement is executed.
+
+13. SERIALIZABLE - summary
+Let's summarize SERIALIZABLE. It prevents dirty, non-repeatable, and phantom reads, giving good data consistency. By contrast, you can be blocked by a SERIALIZABLE transaction. You can use it when data consistency is a must.
+
+-------------------

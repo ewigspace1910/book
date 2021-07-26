@@ -1,0 +1,48 @@
+1. Introduction
+Hi! My name is Florin Angelescu and I will be your instructor for this course on Building and Optimizing SQL Server Triggers. After completing this course, you will feel confident implementing and using triggers in your day-to-day tasks. Let's get started!
+
+2. What is a trigger?
+A trigger is a special type of stored procedure that is automatically executed when events (like data modifications) occur on the database server.
+
+3. Types of trigger (based on T-SQL commands)
+In terms of Transact-SQL (T-SQL) commands, there are three types of trigger in SQL Server: - Data Manipulation Language (DML) triggers are executed when a user or process modifies data through an INSERT, UPDATE, or DELETE statement. These triggers are associated with statements related to tables or views. - Data Definition Language (DDL) triggers fire in response to statements executed at the database or server level, like CREATE, ALTER, or DROP. - Logon triggers fire in response to LOGON events when a user's session is established. We will cover all these trigger types in more detail in later lessons.
+
+4. Types of trigger (based on behavior)
+Another way to classify triggers is based on their behavior. A trigger can behave differently in relation to the statement that fires it, resulting in two types of triggers. The first type, an AFTER trigger, is used when you want to execute a piece of code after the initial statement that fires the trigger. An example use case of this type of trigger is to rebuild an index after a large insert of data into a table. Another example is using a trigger to send alerts when UPDATE statements are run against the database. You'll see more examples as you progress through the course.
+
+5. Types of trigger (based on behavior)
+The second trigger type is the INSTEAD OF trigger. As its name suggests, an INSTEAD OF trigger will not perform the initial operation, but will execute custom code instead. Some examples of using this behavior are to prevent inserting data into tables, prevent updates or deletions, or even prevent tables from being dropped. You can notify the database administrator of suspicious behavior while also preventing any changes. As with the AFTER triggers, there are more possible use cases than the examples provided here. Now, let's see how we actually create a trigger.
+
+6. Trigger definition (with AFTER)
+Because a trigger is a SQL Server object, we add a new one by using the CREATE statement. In this case, we use the CREATE TRIGGER statement to add a new DML trigger. After naming the trigger, we have to link it to an existing object; in this example, it's the "Products" table. The next part focuses on setting the trigger behavior. We use an AFTER trigger for this example. We also need to specify the event that fires the trigger. It can be either an INSERT, UPDATE, or DELETE statement. Let's stick with an INSERT for now. The AS keyword marks the beginning of our trigger workflow. The actions performed by the trigger are mentioned after this keyword.
+
+7. Trigger definition (with INSTEAD OF)
+Here, another example of a DML trigger uses an INSTEAD OF statement to prevent deletions from the table. Any attempt to remove rows from the table will fail due to the use of INSTEAD OF.
+
+8. AFTER vs. INSTEAD OF
+Understanding the difference between the AFTER and INSTEAD OF behaviors is very important. When the AFTER keyword is used, the trigger will perform the defined actions only after the event that fired it finishes. When INSTEAD OF is used, the event that fired the trigger will not run, and only the trigger actions will be performed.
+
+---------------------
+
+
+------------------
+1. Trigger alternatives
+So far we've talked about the types of triggers and the scenarios that best fit their use. But as with any feature, triggers are not always the best solution in SQL Server. In this lesson we will compare triggers with other objects and take a look at the appropriate situations for using them.
+
+2. Triggers vs. stored procedures
+The first comparison of triggers is with regular stored procedures. The trigger is a stored procedure as well, but a special kind. What makes it so special? A trigger is fired when a defined database or server event occurs. Regular stored procedures run when called explicitly. A trigger runs only when the event that fires it is starting. Triggers don't allow input parameters or transaction statements (like BEGIN TRANSACTION or COMMIT). They also cannot return output values. On the other hand, regular stored procedures allow input parameters, transaction statements, and the possibility to return output.
+
+3. Triggers vs. stored procedures
+These considerations impact the real-life use cases for triggers and regular stored procedures. We use triggers for audit and to enforce integrity in most cases, and we use regular stored procedures for more general tasks.
+
+4. Triggers vs. computed columns
+The second comparison of triggers is with computed columns. Computed columns are a good way to automate calculation of the values contained by some columns. Computed column values are determined based on values from other columns, but only from the same table. This limitation can be overcome by using triggers. A trigger can use columns from other tables as well to calculate values. While this calculation will be done with INSERT or UPDATE statements when using a trigger, for a calculated column it will be part of the table definition.
+
+5. Example of a computed column
+In this example, the column "TotalAmount" is a computed column. Its value comes from the multiplication of the "Quantity" and "Price" columns from the same table. But if those two columns were not part of the same table, we wouldn't be able to do the calculation using a computed column.
+
+6. Using a trigger as a computed column
+In that case, we could replace the computed column with this trigger definition. Here, the Price column is not part of the "SalesWithoutPrice" table. The trigger determines the "TotalAmount" by using the "Price" column from another table ("Products" in this example).
+
+7. Let's compare them in practice!
+Now that you've seen how triggers can substitute for other database objects, let's see how to use them in practice.

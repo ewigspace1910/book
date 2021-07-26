@@ -1,0 +1,26 @@
+1. AFTER triggers (DML)
+AFTER triggers can be used for both DML statements and DDL statements. However, this lesson will focus on DML AFTER triggers.
+
+2. Definition and properties
+An AFTER trigger is used for DML statements to perform an additional set of actions (one or more). This set of actions is performed after the DML event that fired the trigger is finished. The DML events that can make use of an `AFTER` trigger are INSERT, UPDATE, and DELETE statements run against tables or views. The set of actions is comprised of T-SQL code and is defined when the trigger is created.
+
+3. AFTER trigger prerequisites
+Let's break down the list of database objects and events involved when working with triggers. To make use of an INSERT, UPDATE, or DELETE statement we need to have a table or view to work with. Remember the fact that a trigger needs to be attached to a database object? This means a table is needed for the trigger creation process. We will use the "Products" table for this example. Here is a preview of its columns and contents.
+
+4. AFTER trigger prerequisites
+Once you have a table defined for the scope of the trigger, you should create a description of what you are trying to achieve with the trigger. In this example, we want to keep some details of products that are not sold anymore. These products will be removed from the "Products" table, but their details will be kept in a "RetiredProducts" table for financial accounting reasons. You can see that we already have the answer to the question, "What kinds of DML statements should fire the trigger?" Since rows will be removed from the Products table, the answer is DELETE statements. The description of the trigger will also help us in deciding what actions will be performed by the trigger. In this case, the trigger will save information about the deleted rows (from the "Products" table) to the "RetiredProducts" table. The trigger should have a uniquely identifying name&mdash;for this example, it will be "TrackRetiredProducts".
+
+5. AFTER trigger prerequisites summary
+To recap, our new trigger will fire whenever rows are removed from the `Products` table. The deleted rows' information will be saved to the "RetiredProducts" table. With all this information in hand, we can now create the AFTER trigger.
+
+6. AFTER trigger definition
+To create a trigger, we use the CREATE TRIGGER statement followed by the trigger name. We attach the trigger to the "Products" table. We choose the trigger type (an AFTER trigger in this case) and specify the DML statement that will fire the trigger (DELETE). And then we start the section that defines the actions to be performed by the trigger. Notice that we are not getting the information from the "Products" table, but from a table called "deleted".
+
+7. "inserted" and "deleted" tables
+DML triggers use two special tables: "deleted" and "inserted". These tables are automatically created by SQL Server and you can make use of them in your trigger actions. Depending on the operation you are performing, they will hold different information.
+
+8. "inserted" and "deleted" tables
+The "inserted" table will store the values of the new rows for INSERT and UPDATE statements. For DELETE statements, this table is empty. The "deleted" table will store the values of the modified rows for UPDATE statements or the values of the removed rows for DELETE statements. The "deleted" table is empty for INSERT statements.
+
+9. The complete AFTER trigger
+The "deleted" table holds the information we need for the rows that will be removed from "Products". We get the relevant information directly from this table.
