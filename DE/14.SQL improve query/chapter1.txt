@@ -1,0 +1,115 @@
+1. Introduction
+Hi. Welcome. My name is Dean Smith. I am the founder of Atamai Analytics, and I'll be your instructor for this course. When writing an SQL query, there are often many ways to achieve the same results. In this course, we'll look at good coding practices and different ways we can improve query performance to achieve the same outcome.
+
+2. Earthquakes database
+We'll be using three simple databases. The first is the Earthquakes database which consists of three tables. Earthquakes: lists all recorded earthquakes between 1900 and 2018 with a magnitude of 7 or more. Cities: lists world cities with associated data and statistics. And Nations: which contains all the world's nations and related data and statistics. The Earthquakes table is related to Cities, via a country code and city name, and Cities is related to Nations via a country code.
+
+3. NBA Season 2017-2018 database
+The second is the NBA Season 2017-2018 database, which consists of three related tables: Teams, Players and PlayerStats. Each table contains data from the 2017-2018 season of the US National Basketball Association league, or NBA, for short.
+
+4. Customer Orders database
+And finally the Customer Orders database, which consists of two related tables. The Customers table contains sales customer IDs and associated data. And the Orders table contains sales orders, and associated data, for each customer. This database is a subset of the freely available Northwind sample database from Microsoft.
+
+5. Is this easy to read?
+In this first lesson, we'll apply formatting and commenting to make the code easy to read and understand. Unlike many other programming languages, SQL syntax is case-insensitive, which means it doesn't matter if the case of the syntax is upper, lower or a mixture, it will still work the same. Check this query out. Is it easy to read? When writing queries, it is good practice to stick to a consistent format. Consistent formatting makes queries easier to read, easier to understand, and easier to debug.
+
+6. Suggestions
+The main thing is to be consistent with our formatting across queries. Here are some suggestions, all of which we will use in this course. Use UPPER CASE for all SQL syntax. Create a new line for each major processing syntax, such as SELECT, FROM, and WHERE. Apply an indent to sub-queries, ON statements, AND/OR conditions, and to avoid long single lines of code, for example, many column names. Complete the query with a semi-colon. And alias where required, using AS.
+
+7. Much better...
+Here is the same query from two slides back. This query looks much better. It's easier to read and understand.
+
+8. Commenting blocks
+So, what is the purpose of this query? Adding comments is an excellent way to convey what the query is about or information about certain parts of the query. Code or text that is within a comment, or commented out, will not be executed when the query is run. To comment a block, or multiple lines, enclose the code or text in a forward slash plus star and star plus forward slash.
+
+9. Commenting blocks
+Here, a block comment, above the query, is used to describe what this query should return.
+
+10. Commenting lines
+To comment on a single line, instead of an entire block, place two dashes in front of the code or text. Common uses for commenting single lines include:
+
+11. Commenting lines
+conveying information about a particular line of code,
+
+12. Commenting lines
+marking a section break or comment in a query,
+
+13. Commenting lines
+and commenting out a line of code that will not be executed at run-time but may be reused later on, for example, when debugging a query.
+
+----------------
+1. Aliasing
+In this lesson, we'll discuss how to use aliasing to avoid some kinds of errors and how it can make code easier to read and understand.
+
+2. What is aliasing?
+Aliasing refers to providing a short name, code, or simple identity to tables, columns, and sub-queries in a query. Aliases are temporary and only applied during the running of the query; they do not alter the table or column names in the database. They can be handy for making code in a query easier to read. And, in many cases, are required, for example, a new column or sub-query, that will be re-used in another part of the query. Let's look at some reasons why we need to use aliasing.
+
+3. Why use aliasing?
+We use aliasing to: Avoid repetitive use of long table or column names. Easily identify joined tables and associated columns. Identify new columns. Identify sub-queries. Avoid ambiguity when columns from joined tables share the same name. And rename columns.
+
+4. Joined tables - ambiguous column name
+In this example, we want to know the 2017 population of each Nation capital. We can get this by joining the Nations and Cities tables from the Earthquakes database. When run, it returns an error because both tables have a column named Pop2017. These refer to 2017 census populations. In the Nations table, it is the population of each Nation, and in the Cities table, it is the population of each City. The query needs to know which is which. In this case, we want the City population.
+
+5. Joined tables - aliasing table names
+Aliasing tables can correct this; Nations as n and Cities as c. Now if we look at the SELECT statement, we see aliases used to indicate the source table of each selected column with the column name prefixed with the alias of the table name. The Cities table has the c alias, and therefore the 2017 population column is identified as c.Pop2017. Note, there are no rules to what aliases should be. Just make sure they're intuitive and consistent.
+
+6. Renamed columns
+To make the output a little easier to read we can choose to rename columns by aliasing the source columns in the SELECT statement. In this example, we renamed CountryName to Country, Code2 to CountryCode and Pop2017 to Population.
+
+7. New columns
+Anytime a new column is created it should be given an alias. By doing this indicates what information is in the column and, it is also required if the column is referenced or used elsewhere in the query. In this example, we're creating a new column which is the maximum magnitude earthquake by Country and nearest population. We alias the new column as MaxMagnitude.
+
+8. Sub-queries
+When using sub-queries, we need to use an alias to refer to it in other parts of the query. In this example, we want a query that returns the biggest earthquake magnitude where a country capital is the nearest population to the epicenter. We join the Nations table, aliased as n, to a sub-query, aliased as e.
+---------------
+1. Query order
+If SQL syntax is not in a specific order in the query, running the query will raise an error. The order of the syntax, as written in the query, is different from the processing order in the database. In this lesson, we'll examine the effects of query processing order in the database versus the order of SQL syntax in a query.
+
+2. Big earthquakes query
+Here's a simple query that returns all earthquakes with a magnitude of 9 or more.
+
+3. Syntax order
+The syntax in this query, from start to the end, begins with SELECT, identifying the columns to be returned: Country, Place, and Magnitude.
+
+4. Syntax order
+We identify the name of the data source next with FROM, which is the Earthquakes table.
+
+5. Syntax order
+We apply a filtering condition on the Earthquakes table with WHERE in this case Magnitude greater than or equal to 9.
+
+6. Syntax order
+The query ends with ORDER BY which orders the final results. In the example, this is the largest magnitude descending.
+
+7. Processing order
+In contrast, the processing order of the query in the database is different. The data source is processed first with FROM.
+
+8. Processing order
+The filtering condition is applied next by processing WHERE.
+
+9. Processing order
+Only when the data has been extracted and filtered with FROM and WHERE is SELECT processed, telling the database what columns to return from the data that was extracted and filtered.
+
+10. Processing order
+Once we have our required rows and columns, ORDER BY can be processed to sort the final output.
+
+11. Processing errors
+This query has several errors, and we'll use to demonstrate how a query is processed. When a query is run it returns a single error message only. The error messages reflect the processing order. Only after correcting an error in a preceding syntax can the following SQL syntax be processed. Take note of each error message.
+
+12. Processing FROM
+FROM is processed first and because there is no table in the database called LargeEarthquakes it cannot be processed. It should be Earthquakes.
+
+13. Processing WHERE
+WHERE is processed next. There is no column in the Earthquakes table called Strength for WHERE to apply a filter condition. It Should be Magnitude.
+
+14. Processing SELECT
+SELECT is only processed after FROM and WHERE. The column PlaceName cannot be selected for the output because it does not exist. It's is a mistake, it should be Place, not PlaceName.
+
+15. Processing ORDER BY
+ORDER BY is processed last. Magnitud is misspelled.
+
+16. Error free
+Finally, once all the errors fixed, it runs as expected.
+
+17. Logical processing order
+Here is the logical processing order for the most commonly used SQL Syntax in a query. This is the order the database processes the syntax in a query. Note, how far down the order SELECT occurs. We can imagine that all processing before SELECT is concerned with finding, merging, aggregating and filtering the data. Processing after SELECT is more concerned with actions on the final data extracted. The syntax after SELECT tends to be quite expensive on the database processing resources and we should only use where necessary. We'll look at this in a later chapter. As data scientists, working on real-world, large data sets, having an understanding of the processing order can help determine why a query will not execute and also help to look at ways to optimize the query for performance.
+
