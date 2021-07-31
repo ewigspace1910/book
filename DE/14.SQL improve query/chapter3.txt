@@ -35,5 +35,81 @@ Correlated sub-queries can be quite inefficient because the sub-query executes f
 Often the results from a correlated sub-query can be replicated using an INNER JOIN. Because a correlated sub-query must execute for each row in the outer query, the query may take some time to complete especially if the outer query contains many rows. In this case, consider using an INNER JOIN, which only makes one pass through the data. In this example, we replaced a correlated sub-query with an INNER JOIN between the Customers and Orders tables.
 
 ---------
+1. Presence and absence
+A common question that data scientists ask when analyzing SQL databases is whether the data in one table is present or absent in a related table. Fortunately, this is an easy question to answer using SQL. However, depending on the requirements there may be more than one method and some methods may be more efficient than others. In this lesson, we’ll discuss what we mean by, "Is the data present or absent in related tables?" and we’ll look at using INTERSECT and EXCEPT to help us determine this.
 
+2. Venn diagram - presence
+First, what do we mean by data is present, or absent in related tables? We’ll use Venn diagrams to demonstrate this. Here, the overlapping circles represent the outputs of queries on two tables. Where the outputs intersect is where we will find the same data present in both tables.
+
+3. Venn diagram - absence
+If we take the portion in the left output that does not intersect the right output, then we say that the data present in the table we query on the left, is absent in the table we query on the right.
+
+4. Customer Orders database
+Let's apply this concept to our Customer Orders database. Any customers placing orders will have their customer information in the Customers table and their order information in the Orders table. We say these tables are related because they both contain CustomerID. Customers that have not placed any orders will have their customer information in the Customers table but not in the Orders table. If we are working on a sales project, we may ask "Who is ordering and who is not?"
+
+5. INTERSECT
+We can find out which customers have placed orders by using the INTERSECT operator. We SELECT CustomerID from the Customers table, the left query,
+
+6. INTERSECT
+add INTERSECT and then SELECT CustomerID from the Orders table, the right query.
+
+7. EXCEPT
+To check for the absence of customers in the Orders table, that are present in the Customers table,
+
+8. EXCEPT
+we substitute INTERSECT with EXCEPT.
+
+9. INTERSECT and EXCEPT
+INTERSECT and EXCEPT are great for data interrogation. One feature they provide is removing duplicates meaning that the results will only contain unique values of data that is present or absent. One disadvantage of INTERSECT and EXCEPT is the number and order of columns in the SELECT statements must be the same between queries. We'll discuss this disadvantage in upcoming lessons.
 -----
+Got It!
+1. Alternative methods 1
+In this chapter, we’ve already looked at how we can use INTERSECT with EXCEPT to determine if data in one table is present, or absent, in a related table. In this lesson we’ll examine alternative methods: EXISTS, NOT EXISTS, IN and NOT IN.
+
+2. EXISTS
+Let's start with EXISTS. EXISTS filters the outer query when there is a match of data between the outer query and a sub-query. EXISTS evaluates for either TRUE or FALSE on a match, therefore we can specify anything in the SELECT statement of a sub-query. In this example, if CustomerID from the Customers table matches CustomerID from the Orders table, a one is returned indicating it is TRUE and the Customers table is filtered on the match.
+
+3. IN
+Next IN. IN works in a similar way with sub-queries. However, we need to specify the columns, to match on, in the WHERE filter condition of the outer query, and the SELECT statement of the sub-query. Here we are looking for a match of CustomerID from the Customers table with CustomerID from the sub-query, which in this case is just the Orders table.
+
+4. EXISTS vs. IN
+In our two examples of EXISTS and IN, the results are identical. Is one method better than the other? It depends. The sub-query used with EXISTS looks like a correlated sub-query which we said previously can be inefficient. Technically yes, it is a correlated sub-query. However, EXISTS will stop searching the sub-query when the condition is TRUE whereas IN, with a sub-query, will collect all the results from the sub-query before further processing, which is potentially slower. For this reason, consider using EXISTS instead of IN with a sub-query.
+
+5. NOT EXISTS
+NOT EXISTS and NOT IN are used to do the opposite of EXISTS and IN. In a query, substitute EXISTS and IN with NOT EXISTS and NOT IN respectively to check for the presence of data in one table that is absent in another. This example uses NOT EXISTS to return Customer details from the Customers table where the Customer is absent from the Orders table.
+
+6. NOT IN
+And this example uses NOT IN to perform the same check. Here we need to specify the column we want to filter on in the WHERE filter condition.
+
+7. NOT IN and NULLs
+One major issue with using NOT IN is the way it handles NULL values. If the columns in the sub-query, being evaluated for a non-match, contain NULL values, no results are returned. In this example, we want to know which Nation capitals, from the Nations table, are absent from the NearestPop column in the Earthquakes table — using NOT IN returns no results. Does that mean every capital city has been near to a recorded earthquake?
+
+8. Handling NOT IN NULLs
+No. It is because NearestPop column contains NULL values. To handle NULL values, the sub-query needs an IS NOT NULL filter. Here, we filter the sub-query to remove NULL values. Because of this issue, we should always consider using NOT EXISTS instead of NOT IN with a sub-query.
+
+9. EXISTS, NOT EXISTS, IN and NOT IN
+An advantage of EXISTS, NOT EXISTS, IN and NOT IN over other methods is the results can contain any column from the outer query, and in any order. Compare this to INTERSECT and EXCEPT where the number and order of columns in the SELECT statement must be the same between queries. As previously discussed, one disadvantage of NOT IN is the way it handles NULL values in the sub-query.
+-----------
+1. Alternative methods 2
+Another way to determine if data in one table is present, or absent, in a related table, is with joins. In this lesson, we’ll discuss the INNER JOIN and the exclusive LEFT OUTER JOIN. We’ll finish off with a review of the different methods presented in this chapter and the advantages and disadvantages of each one.
+
+2. INNER JOIN
+When joining queries, with an INNER JOIN, the left query joins the right query through related columns. An INNER JOIN will match values in the related columns and return the results of the match. Therefore, this is a check for the presence of data in related tables. In this example, the Customers and Orders tables both contain the column CustomerID. This is the column which relates these tables.
+
+3. LEFT OUTER JOIN
+To check for the presence of data in one table that is absent in another table with a JOIN, we can use an exclusive LEFT OUTER JOIN. An inclusive LEFT OUTER JOIN returns all the rows in the left query whereas an exclusive LEFT OUTER JOIN returns only rows in the left query that are not present in the right query. We can demonstrate this concept with Venn diagrams. The highlighted areas represent the results of the join between queries.
+
+4. Exclusive LEFT OUTER JOIN
+To make an exclusive LEFT OUTER JOIN we add IS NULL to a WHERE filter condition of the right query to restrict it to rows that do not match. This example returns Customer data from the Customers table that is absent from the Orders table.
+
+5. Review: INTERSECT and EXCEPT
+To end this chapter let’s review the different methods to determine if data in one table is present, or absent, in a related table and the advantages and disadvantages of each one. First, INTERSECT and EXCEPT. INTERSECT checks for the presence and EXCEPT for the absence. The advantages are that they are great for data interrogation and they remove duplicates from the returned results. A disadvantage is that the number and order of columns in the SELECT statement must be the same between queries.
+
+6. Review: EXISTS and NOT EXISTS
+Next: EXISTS and NOT EXISTS. Both of these operators use a sub-query in the WHERE filter condition. EXISTS checks for the presence and NOT EXISTS for the absence. One advantage is that the sub-query with stop searching as soon as it evaluates to TRUE, which is a match for EXISTS, and non-match for NOT EXISTS. Another advantage is the results can contain any column from the outer query, and in any order, which is an advantage over INTERSECT and EXCEPT. Restricting results to columns from the outer query only is also a disadvantage, compared to a JOIN.
+
+7. Review: IN and NOT IN
+Next: IN and NOT IN. IN checks for the presence and NOT IN for the absence. An advantage is the results can contain any column from the outer query. Like EXISTS and NOT EXISTS this is an advantage over INTERSECT and EXCEPT. Like EXISTS and NOT EXISTS, restricting results to columns from the outer query only is a disadvantage compared to a join. Another disadvantage is no results returned with NOT IN if the column being evaluated in the sub-query contains nulls.
+
+8. Review: INNER JOIN and exclusive L.O.J
+And finally, the INNER JOIN and the exclusive LEFT OUTER JOIN. INNER JOIN checks for the presence and exclusive LEFT OUTER JOIN for the absence. One advantage of joins is that the results can contain any column, from all joined queries, in any order. Compare this to EXISTS, NOT EXISTS, IN, and NOT IN where the results are restricted to columns from the outer query only. A possible disadvantage of the exclusive LEFT OUTER JOIN is the requirement to add the IS NULL WHERE filter condition. In a large complex query, this could be easily missed.
