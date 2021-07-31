@@ -1,0 +1,96 @@
+1. Deleting and altering triggers
+You've learned a lot about creating various types of triggers, and had some practice. But what happens when you don't want a trigger anymore? Or when you decide to change the trigger actions? You'll learn how it's done in this lesson.
+
+2. Deleting table and view triggers
+It's easy to delete a trigger in SQL Server. The syntax is straightforward: DROP TRIGGER followed by the trigger name. This syntax is applicable when you are removing triggers attached to tables or views. In this example, the trigger "PreventNewDiscounts" will be deleted.
+
+3. Deleting database triggers
+If you want to remove a database-level trigger, you have to make that explicit in the syntax. You will use DROP TRIGGER with the trigger name as you did before, but this time the syntax will be expanded with the ON DATABASE statement. This will inform SQL Server to look at the database level for the trigger to be deleted. In the second example, the trigger "PreventViewsModifications" will be deleted at the database level.
+
+4. Deleting server triggers
+A slightly different syntax should be used if you want to delete triggers at the server level. As before, you'll use DROP TRIGGER and the trigger name, but then you'll instruct SQL Server to search for the trigger ON ALL SERVER. In this case, the trigger "DisallowLinkedServers" will be deleted from the server.
+
+5. Disabling triggers
+A deleted trigger can never be used again, unless you recreate the trigger. Deleting triggers is okay when you no longer need them, but what if you just want to avoid them for a brief period? Luckily, SQL Server offers the possibility to disable triggers. A disabled trigger still exists as a SQL Server object, but as long as it's disabled it will not be fired. The syntax to disable a trigger is also straightforward, but note that when disabling you need to specify the object the trigger is attached to, even if it is a table. To switch off a table-level trigger, use DISABLE TRIGGER and the trigger name, and specify the name of the table (for example, "ON Discounts"). Replace that with the ON DATABASE statement for database-level triggers, or the ON ALL SERVER statement for triggers created at the server level.
+
+6. Enabling triggers
+When you want a disabled trigger to start working again, you simply re-enable it. This is accomplished by using the ENABLE TRIGGER syntax, followed by the trigger name and the scope of the trigger: specify the name of the table or view the trigger is attached to, or use ON DATABASE or ON ALL SERVER. Now all the triggers we disabled previously will be working again.
+
+7. Altering triggers
+There will be situations where you need to modify a trigger. It might be malfunctioning, or you might want to add new functionality. Whatever the reason, at some point you're likely to end up having to change triggers, either during development or later. In this example, a simple trigger is created on the "Discounts" table to prevent any deletions. You run the code and create the trigger, but you notice you forgot to include the word "remove" between "to" and "data" in the print statement. To fix the error, simply drop the existing trigger, then fix your code and run it again.
+
+8. Altering triggers
+This can become a hassle in the development phase, when you want to test the trigger and make changes immediately. To avoid this create-and-drop flow, you can use the `ALTER` statement to modify the definition of an existing trigger. Simply replace the CREATE keyword with ALTER, while keeping everything else the same (except for the changes you wish to make, of course!). This example shows how you can add the word "remove" to the message the trigger prints using ALTER.
+
+-------------
+1. Trigger management
+As you saw in previous lessons, you can end up having lots of triggers in your database. One of the main challenges is the ability to manage all these triggers and have a good overview. You will learn how it's done in this lesson.
+
+2. Getting info from sys.triggers
+All the necessary information about existing triggers can be extracted from SQL Server system tables or views. These objects are used to store information about everything that is happening in SQL Server. We will first turn our attention to the "sys.triggers" view and explore the information it can provide us.
+
+3. Getting info from sys.triggers
+"sys.triggers" contains 13 columns, but we will only look at the most important ones. The "name" column contains the trigger name (given when the trigger is created). The "object_id" column contains a unique identifier for the trigger object. There are a few double columns, where one column contains an integer code and the other column holds the text explanation. For example, the "parent_class" column contains an integer representing the trigger type. If it's a table trigger, the value will be 1, and for a database trigger the value will be 0. The column "parent_class_desc" gives a textual description of the trigger type. The "parent_id" column will tell you the ID of the object the trigger is attached to.
+
+4. Getting info from sys.triggers
+The "create_date" column stores the trigger creation date, while the "modify_date" column tells you when the trigger was last modified. If the trigger is disabled, the "is_disabled" column will have the value 1. Otherwise, it will be 0. Similarly, the value in the "is_instead_of_trigger" column will be 1 for INSTEAD OF and 0 for AFTER triggers.
+
+5. Getting info from sys.server_triggers
+The "sys.server_triggers" view holds information about server-level triggers. It has exactly the same structure as "sys.triggers", and the columns hold similar information.
+
+6. Getting info from sys.trigger_events
+What about identifying the events that will fire a trigger? This information is stored in "sys.trigger_events".
+
+7. Getting info from sys.trigger_events
+Among the most useful columns in this view is "object_id", which identifies the trigger. The columns "type" and "type_desc" will tell you which events will fire a trigger. The columns "event_group_type" and "event_group_type_desc" will point you to any group events that will fire the trigger.
+
+8. Getting info from sys.trigger_events
+Trigger group events are special events that are used to fire a trigger. They can contain multiple regular events. The advantage is that you do not need to specify the events individually. For example, the group DDL_TABLE_VIEW_EVENTS contains more than a dozen events related to table and view interactions like CREATE, DROP, and ALTER.
+
+9. Getting info from sys.server_trigger_events
+A similar view can be used to extract information about the server-level triggers. The view is called "sys.server_trigger_events".
+
+10. Getting info from sys.trigger_event_types
+As mentioned before, you do not need to memorize all the existing events that can be used to fire triggers. The full list is accessible in the "sys.trigger_event_types" view, which shows the event types as numbers and as text. It will also show the parent type when the event is part of a larger group. In this example, CREATE_TABLE, ALTER_TABLE, and DROP_TABLE have the value "10018" in the "parent_type" column. In the last row shown here you can see that this type is actually the DDL_TABLE_EVENTS group.
+
+11. Trigger management in practice
+In practice, all of this information has to be packed into a useful form. For example, if you want to see a list of triggers along with their firing events and the objects they're attached to, you need to combine information from multiple views. You can get the trigger name and type from "sys.triggers". If you join the output with "sys.trigger_events" based on the "object_id", you can determine the firing events for each trigger. If you further join the "parent_id" of the trigger with the "object_id" from "sys.objects", you can extract the name and type of the object the trigger is attached to. The second join is chosen to be a LEFT JOIN because database-level triggers do not appear as attached to an object. A LEFT JOIN will still keep the results in the case of non-matching join parameters. If we'd used an INNER JOIN, the results would've been filtered only for matching rows and the database triggers would have been filtered out from the list.
+
+12. Trigger management in practice
+This is the query result. There are no values for "AttachedTo" and "ObjectType" for database-level triggers, because they are not attached to any kind of object. They simply exist on the database. This script is just one of many you can use in the real world. An essential thing to remember is that the views seen in this lesson are usually combined to get more detailed results, not used in isolation.
+-----------
+. Troubleshooting triggers
+In this lesson, you will learn how to troubleshoot and optimize triggers. You will learn how to keep a history of trigger runs, and how to search for triggers causing issues.
+
+2. Tracking trigger executions (system view)
+One important factor when troubleshooting triggers is to have a history of their execution. This allows you to associate the timing of trigger runs with issues caused by triggers. SQL Server provides information on the execution of triggers that are currently stored in memory. The information can be seen in "sys.dm_exec_trigger_stats". Unfortunately, when a trigger is removed from the memory, the information about that trigger is removed from the view as well. This leaves you with a major problem regarding tracking trigger execution history. There is no other option to see the history of trigger runs, unless you create a custom solution.
+
+3. Tracking trigger executions (custom solution)
+For example, suppose we want to create a permanent record of executions of the trigger "PreventOrdersUpdate", designed to prevent any updates to the "Orders" table.
+
+4. Tracking trigger executions (custom solution)
+We can use the "TriggerAudit" table to store information on trigger execution. To enable this, we will update the trigger definition to specify that when it executes, the trigger name and the current date and time will be inserted into the "TriggerAudit" table. We'll enhance the trigger definition with the new code using the ALTER statement, as shown here.
+
+5. Tracking trigger executions (custom solution)
+An attempt to update the quantity for the order with number 784 will result in the "PreventOrdersUpdate" trigger being fired. The trigger will throw an error message saying that updates are not permitted on the "Orders" table.
+
+6. Tracking trigger executions (custom solution)
+However, with our change to the trigger definition in place, it will also insert information about the trigger execution into the "TriggerAudit" table. If we check the contents of that table, we will see the information about this trigger execution. We now have a permanent record that we can use to track the history of trigger runs. A solution like this will allow you to associate the timings of trigger executions with issues potentially caused by the trigger in future investigations. If the date and time of the issue are similar to the date and time when the trigger was executed, you can assume the trigger might be causing the problem and investigate further.
+
+7. Identifying triggers attached to a table
+Sometimes you may have issues with certain tables and suspect triggers to be the root cause. But how can you investigate them if no documentation is available? In this example, we want to find out what triggers are attached to the `Products` table. Starting from the table name, we can query the "sys.objects" view to find the table ID of "Products". We can then use this ID to determine what triggers are attached to the table, and get some information about them.
+
+8. Identifying triggers attached to a table
+We enhance the script further by joining the first query with the "sys.triggers" view. This will help us to find the triggers attached to the "Products" table. The join is made by matching the "parent_id" column of the trigger with the "object_id" column of the "Products" table. We add the following information to our script: the trigger name (from the "name" column), whether it's disabled (the "is_disabled" column), and whether it's an INSTEAD OF trigger (the "is_instead_of_trigger" column). Columns with the "o" prefix are coming from "sys.objects" and columns with the "t" prefix are coming from "sys.triggers".
+
+9. Identifying triggers attached to a table
+The end result is starting to look better, as we now have some insights on the existing triggers attached to the "Products" table.
+
+10. Identifying events capable of firing a trigger
+Now we'll add one more important column with another INNER JOIN on "sys.trigger_events".
+
+11. Identifying events capable of firing a trigger
+The addition of the "type_desc" column brings us details on the events capable of firing the triggers.
+
+12. Viewing the trigger definitions
+The last important information to add is the trigger definitions. To troubleshoot a trigger's results or behavior, you need to know what it's intended to do. To view the trigger definition code, we will make use of the OBJECT_DEFINITION function. This function will return the definition for an object ID passed as an argument. In this particular example, it will be the ID of the trigger.

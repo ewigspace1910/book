@@ -1,0 +1,66 @@
+2. Raise errors statements
+SQL Server provides two statements to raise errors. The first one is the RAISERROR statement, which will be studied in this lesson. The second one is the THROW statement, which will be explained in the next lesson. Microsoft suggests using the THROW statement in the new applications, but it is still common to see the RAISERROR statement in our current applications.
+
+3. RAISERROR syntax
+This is the RAISERROR syntax. It starts with the word RAISERROR. Notice it only has one E, not two. The first parameter can be a message string, a message id, or a variable that contains the message string. The second parameter is the severity, and the third parameter is the state. After these parameters, you can optionally add arguments, like strings or numbers. If the message string has some parameter placeholders such as %s or %d, these arguments will replace them. We will explain it in detail in the next slides. Finally, you can specify additional options. These options won't be covered in this course, so for further information, you can have a look at Microsoft documentation.
+
+4. RAISERROR with message string
+Let's see an example of the RAISERROR statement with message string. In the first line, we check if there is any staff member whose id is 15. If there isn't, we invoke RAISERROR with three parameters. The first parameter is the message text 'No staff member with such id'. The second one, 16, is the severity level. Finally, the last one is the state. If we execute this example, as there is no staff member whose id is 15, we will get the following output. If we don't specify an error number, the error number will always be 50000.
+
+5. RAISERROR with message string
+Let's change the message text included on the previous RAISERROR statement and add some parameter placeholders. Instead of 'No staff member with such id', let's change the words 'staff member' by the % symbol, followed by the letter s. Let's also include %d. %s is used for string values, and it will be replaced by the penultimate parameter of this function, 'staff member'. %d is used for integer values, and it will be replaced by the last parameter of this function, 15. If we execute this example, we will get this output. If you want to include the % character in your message, you will have to write it twice. Apart from the letters s and d, the % symbol can be followed by other characters for other purposes. You can deepen your knowledge by looking at Microsoft documentation.
+
+6. RAISERROR with error number
+In the RAISERROR statement, we can also specify an error number instead of a message string. This error number comes from sys.messages. We will learn more about the use of sys.messages in the lesson dedicated to the FORMATMESSAGE function.
+
+7. RAISERROR - Example with TRY...CATCH
+Let's include the RAISERROR statement inside a TRY...CATCH construct to see what happens. In this example, the severity level of the RAISERROR statement is 9. If you remember from the previous chapter, severity levels lower than 11 are not catchable by the CATCH block. So here, this error won't be caught by the CATCH block. This will be the output.
+
+8. RAISERROR - Example with TRY...CATCH
+However, if we set up the severity level between 11 and 19, the error will be caught by the CATCH block. In this example, the severity level is 16, so the output will be "You are in the CATCH block".
+
+------------------------------------
+
+2. THROW syntax
+As we said in the previous lesson, Microsoft recommends using the THROW statement over the RAISERROR statement. Let's see the THROW syntax. It starts with the word THROW and can optionally be followed by a list of parameters. The first parameter is the error number, the second parameter is the message, and the third parameter is the state. Unlike the RAISERROR statement, the THROW statement allows re-throwing an original error caught by a CATCH block. Let's see some examples.
+
+3. THROW - without parameters
+The THROW statement can be invoked without parameters within a CATCH block. In this example, we intentionally created an error, dividing the price of the orders by zero. This error makes the control pass to the CATCH block, invoking the THROW statement without parameters. The THROW statement re-throws the original error caused in the TRY block and stops the execution, so the select statement "This line is executed!", isn't executed. The re-thrown error has the same error number, severity, and state as the original one.
+
+4. THROW - ambiguity
+You have to be careful when using a statement before the THROW statement. In such a case, the statement must always end with a semicolon. Otherwise, SQL Server will have unexpected behavior. In this example, the select statement that goes before the THROW statement doesn't end with a semicolon. SQL Server thinks that the word THROW is an alias for the select statement. So, if we execute this example, we will get the following output. We can see that the THROW statement wasn't executed.
+
+5. THROW - ambiguity
+Let's correct this script and add a semicolon after the select statement, before the THROW statement. If we execute this code, we will see the text 'This line is executed' with no column name, as it doesn't have an alias. Now, the THROW statement is executed, so we get the information about the error.
+
+6. THROW - with parameters
+The THROW statement can also be used with parameters for the error_number, message, and state. This syntax can be included within a CATCH block or outside of it. Here is an example of the use of the THROW statement. The first parameter, 52000, is the error number. This number can be greater than or equal to 50000. The second parameter, 'This is an example', is the message. Unlike the RAISERROR statement, the THROW statement does not allow the inclusion of parameter placeholders such as %d or %s. However, we will learn how to do something similar in the next lesson. Finally, the third parameter is the state, 1 in this example. This code generates the following output. The THROW statement doesn't allow the specification of the severity. SQL Server always sets it to 16.
+
+7. THROW - with parameters
+You can include the THROW statement with parameters within a TRY block. In this example, as there isn't any staff whose id is 15, the THROW statement with parameters is invoked. As SQL Server always sets the severity of the THROW statement to 16, the control passes to the CATCH block, showing the error message.
+
+----------------------------------------
+
+2. Parameter placeholders in RAISERROR and THROW
+As we learned in the previous lesson, the THROW statement does not allow parameter placeholders such as %s or %d as the RAISERROR statement does. However, there are two ways to customize our errors for the THROW statement.
+
+3. Ways of customizing error messages
+The first one is by using a variable and concatenate strings. The second one is by using the FORMATMESSAGE function.
+
+4. Using a variable and the CONCAT function
+Let's see how to use a variable to do it. In this example, we declared two variables, @staff_id, with a value of 500, and @my_message. With the use of the CONCAT function, we concatenate in the second variable, @my_message, the text 'There is no staff member for id', with the value of the variable @staff_id, and finally, with the text '. Try with another one.'. After that, the code checks if it exists any staff member whose id has the value of the variable @staff_id. If there isn't any, the THROW statement is executed, passing the variable @my_message as the message parameter. If we execute this code, as there isn't any staff member with that @staff_id, we have the following output: 'There is no staff member for id 500. Try with another one.'
+
+5. The FORMATMESSAGE function
+The second way of customizing an error message is by using the FORMATMESSAGE function. This is the syntax. It starts with the word FORMATMESSAGE followed by a message string or a message number. After that, you can optionally add arguments to replace the parameter placeholders of the first parameter.
+
+6. FORMATMESSAGE with message string
+Let's see how to use the FORMATMESSAGE function with the message string option. In this example, we assign the result of the FORMATMESSAGE function to the variable @my_message. Note that in the first parameter of the FORMATMESSAGE function, we included the parameter placeholders %d and %s. The value of the variable @staff_id will replace %d, and the text 'Try with another one.' will replace %s. After that, the code also checks if there is any staff member whose id has the value of the variable @staff_id. If there isn't any, the THROW statement is executed, passing the variable @my_message as the message parameter. If we execute this code, as there isn't any staff member with that @staff_id, we have the following output.
+
+7. FORMATMESSAGE with message number
+Now, let's see how to use the FORMATMESSAGE function with a message number. The possible message numbers are cataloged in the sys.messages view. It contains a row for each message_id or language_id of the error messages in the system. We can choose any message_id or add a new message to this view to customize our errors.
+
+8. FORMATMESSAGE with message number
+To add a new message to sys.messages, we need to do it by executing the sp_addmessage stored procedure. The first three parameters of this stored procedure, message id, severity, and message text are mandatory. The number of the message id must be greater than 50000. You can optionally specify the language. If you don't, it will be the default language of the session. In this course, we are not covering the rest of the parameters.
+
+9. FORMATMESSAGE with message number
+Let's add a new message to sys.messages by executing the stored procedure sp_addmessage. In this example, the message id is 55000; the severity, 16; the message text, 'There is no staff member for id %d. %s' and finally, the language is American English. Now, that we have the message, we can use it in the FORMATMESSAGE function, passing the number 55000 as the first parameter.

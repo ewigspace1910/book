@@ -1,0 +1,83 @@
+1. AFTER triggers (DML)
+AFTER triggers can be used for both DML statements and DDL statements. However, this lesson will focus on DML AFTER triggers.
+
+2. Definition and properties
+An AFTER trigger is used for DML statements to perform an additional set of actions (one or more). This set of actions is performed after the DML event that fired the trigger is finished. The DML events that can make use of an `AFTER` trigger are INSERT, UPDATE, and DELETE statements run against tables or views. The set of actions is comprised of T-SQL code and is defined when the trigger is created.
+
+3. AFTER trigger prerequisites
+Let's break down the list of database objects and events involved when working with triggers. To make use of an INSERT, UPDATE, or DELETE statement we need to have a table or view to work with. Remember the fact that a trigger needs to be attached to a database object? This means a table is needed for the trigger creation process. We will use the "Products" table for this example. Here is a preview of its columns and contents.
+
+4. AFTER trigger prerequisites
+Once you have a table defined for the scope of the trigger, you should create a description of what you are trying to achieve with the trigger. In this example, we want to keep some details of products that are not sold anymore. These products will be removed from the "Products" table, but their details will be kept in a "RetiredProducts" table for financial accounting reasons. You can see that we already have the answer to the question, "What kinds of DML statements should fire the trigger?" Since rows will be removed from the Products table, the answer is DELETE statements. The description of the trigger will also help us in deciding what actions will be performed by the trigger. In this case, the trigger will save information about the deleted rows (from the "Products" table) to the "RetiredProducts" table. The trigger should have a uniquely identifying name&mdash;for this example, it will be "TrackRetiredProducts".
+
+5. AFTER trigger prerequisites summary
+To recap, our new trigger will fire whenever rows are removed from the `Products` table. The deleted rows' information will be saved to the "RetiredProducts" table. With all this information in hand, we can now create the AFTER trigger.
+
+6. AFTER trigger definition
+To create a trigger, we use the CREATE TRIGGER statement followed by the trigger name. We attach the trigger to the "Products" table. We choose the trigger type (an AFTER trigger in this case) and specify the DML statement that will fire the trigger (DELETE). And then we start the section that defines the actions to be performed by the trigger. Notice that we are not getting the information from the "Products" table, but from a table called "deleted".
+
+7. "inserted" and "deleted" tables
+DML triggers use two special tables: "deleted" and "inserted". These tables are automatically created by SQL Server and you can make use of them in your trigger actions. Depending on the operation you are performing, they will hold different information.
+
+8. "inserted" and "deleted" tables
+The "inserted" table will store the values of the new rows for INSERT and UPDATE statements. For DELETE statements, this table is empty. The "deleted" table will store the values of the modified rows for UPDATE statements or the values of the removed rows for DELETE statements. The "deleted" table is empty for INSERT statements.
+
+9. The complete AFTER trigger
+The "deleted" table holds the information we need for the rows that will be removed from "Products". We get the relevant information directly from this table.
+--------------------
+
+1. INSTEAD OF triggers (DML)
+In contrast with AFTER triggers, INSTEAD OF triggers can only be used for DML statements (not DDL). This is because they were designed to work with DML statements: INSERT, UPDATE, and DELETE.
+
+2. Definition and properties
+An INSTEAD OF trigger will perform an additional set of actions when fired, in place of the event that fired the trigger. That event is not run when using an INSTEAD OF trigger. This is the main difference between the two trigger types. In terms of the DML statements that are able to fire an INSTEAD OF trigger, we have the same list: INSERT, UPDATE, and DELETE.
+
+3. INSTEAD OF trigger prerequisites
+As before, let's explore the steps we would perform to create an `INSTEAD OF` trigger. For this example, we will use the "Orders" table that holds details of the orders placed by the Fresh Fruit Delivery company's customers.
+
+4. INSTEAD OF trigger prerequisites
+Following the same steps for our analysis, we know that our target table is the "Orders" table. The trigger we will create should prevent updates to existing entries in this table. This will ensure that placed orders cannot be modified;this is a rule enforced by the company. This means that the trigger will fire as a response to UPDATE statements. The chosen name for the trigger is "PreventOrdersUpdate". Having an informative name is important when creating triggers. It's good if the name can set some expectations about what the trigger is intended to achieve.
+
+5. INSTEAD OF trigger definition
+Now that we have gathered all the needed details, we can start creating the trigger. The trigger definition is quite straightforward: do not allow row updates on the "Orders" table. You should already be familiar with the CREATE TRIGGER syntax from past examples. Here we use "PreventOrdersUpdate" for the trigger name. As we know from the preceding analysis, the trigger will be attached to the "Orders" table and it will be executed when UPDATE statements are run. We also want to inform the end user about the rule we set in place through the trigger, so we're going to use the RAISERROR syntax to throw an error message as output. The numbers after the error message represent the "severity" and the "state" of the thrown error. The severity of the error in this example is 16. This is the most common value; it means we are throwing a medium-level error. The state parameter is used to identify the error statement in the SQL code if it is used multiple times. We will be using the value 1 because the error is used only one time and can be easily identified in the SQL code. A further explanation of the `RAISERROR` function is outside the scope of this course.
+
+----------------
+
+1. DDL triggers
+So far, we've only talked about DML triggers. But as mentioned earlier, triggers also come in Data Definition Language (DDL) flavors. In this lesson, you are going to learn how to create DDL triggers and how they are different from DML triggers.
+
+2. Definition and properties
+The simplest way to illustrate the specific properties of DDL triggers is to compare them with DML triggers. The biggest difference is indicated by the names of the trigger types. _DML triggers_ respond to events associated with DML statements: INSERT, UPDATE, and DELETE. On the other hand, DDL triggers respond to events associated with DDL statements like CREATE, ALTER, and DROP. While DML triggers can be used with both the AFTER and INSTEAD OF keywords, the DDL triggers accept only the AFTER keyword. DML triggers are attached to tables or views, while DDL triggers are created at the database or server level. Furthermore, we can make use of the "inserted" and "deleted" special tables when working with DML triggers, but there are no special tables for use with DDL triggers. That said, you can use your own defined tables to keep track of changes when using DDL triggers.
+
+3. AFTER and FOR
+When dealing with DDL triggers, you'll often see syntax like this. You might expect the AFTER keyword to come before CREATE_TABLE, but the FOR keyword is used instead.
+
+4. AFTER and FOR
+That's because for SQL Server triggers, the `FOR` and `AFTER` keywords have the same result. To minimize the potential for confusion, people often use the FOR keyword for DDL triggers and the AFTER keyword for DML triggers. We'll stick to that convention here, but be aware that both versions are correct and will behave in the same way.
+
+5. DDL trigger prerequisites
+Let's do a quick analysis of an example DDL trigger. We'll create a trigger that will log information about table changes in a database. The trigger will be created at the database level. The changes will be written to a dedicated log table and will include details about the creation, alteration, and deletion of tables. The trigger name will be "TrackTableChanges".
+
+6. DDL trigger definition
+Creating a DDL trigger is not much different from creating a DML trigger. We start with the CREATE TRIGGER syntax, only this time we attach the trigger at the database level. As mentioned, we use the FOR keyword for DDL triggers. After the keyword, we include the DDL statements that will fire the trigger. Note that although the DDL statements included in the trigger definition resemble the actual DDL syntax, an underscore is used between the words instead of a space. The statement that is going to perform the data insert comes next. This statement will log the information from the EVENTDATA function, as well as details about the user performing the change. The EVENTDATA function actually holds information about the event that runs and fires the trigger. Pretty cool, right?
+
+7. Preventing the triggering events for DML triggers
+The `INSTEAD OF` statement cannot be used to prevent the triggering action from happening for DDL triggers. So are DDL triggers used only as AFTER triggers? The answer is no. You can define a trigger to roll back the statements that fired it. In this example, we don't want the users to remove tables from the database, so we set DROP_TABLE as the event firing the trigger. When the trigger fires we throw an error but also roll back the initial operation, so the table deletion does not take place. We now have a database trigger that prevents the firing event from happening. It's that simple.
+
+----------------
+
+Got It!
+1. Logon triggers
+In this lesson, you will learn about a special type of trigger called the logon trigger.
+
+2. Definition and properties
+Like other triggers, logon triggers perform a set of actions when fired. Their defining characteristic is that they are fired by LOGON events. A LOGON event occurs when a user logs on and creates a connection to SQL Server. The trigger is fired after the authentication phase (meaning after the username and password are checked), but before the user session is established (when the information from SQL Server becomes available for queries). This is important to know when using these triggers to audit and control server sessions.
+
+3. Logon trigger prerequisites
+A logon trigger can only be attached at the server level, and the firing event can only be LOGON. When you create a logon trigger, you define the set of actions to be performed by the trigger when it's fired. We will just audit the logon sessions in this example, and we'll use "LogonAudit" as the trigger name. Now let's see how to create the trigger.
+
+4. Logon trigger definition
+We start with the same syntax we used for the other triggers and pass in the name we chose. Logon triggers are attached at the server level, so we use the ALL SERVER syntax. When the event that fires the trigger starts, the trigger will be executed under the same credentials (username and password) as the firing event. Regular users don't usually have access to sensitive information like logon details, so we instruct the trigger to run under the "sa" account. This is a built-in administrator account that has full permissions on the server; running it under this account ensures that the trigger will be able to extract information about the logon details. This information will be stored into the "ServerLogonLog" table.
+
+5. Logon trigger definition summary
+To summarize, we are creating a trigger called "LogonAudit" at the server level. To avoid permission issues, the trigger will be executed as the "sa" account with administrator privileges. The trigger will be fired for LOGON events and it will store details about the user connecting to SQL Server into the "ServerLogonLog" table.

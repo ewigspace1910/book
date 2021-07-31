@@ -1,0 +1,52 @@
+2. Topics covered
+In this course, you will study how to handle errors in SQL Server, which will be covered in Chapters 1 and 2. In chapter 3 you will learn what transactions are and how to work with them. In the last chapter, chapter 4, you will understand what concurrency is and how it can affect transactions.
+
+3. Dataset: Electric bike store
+We will practice the concepts related to error handling with a dataset based on an electric bike store. It contains information about products,
+
+4. Dataset: Electric bike store
+buyers,
+
+5. Dataset: Electric bike store
+staff,
+
+6. Dataset: Electric bike store
+and orders.
+
+7. Getting an error
+Let's start with an example where an error occurs. In the products table, there is a Trek Powerfly 5 - 2018 bicycle. In this table, there is a constraint which checks that every product name must be unique. So, what happens if I try to insert again a new product with the name Trek Powerfly 5 - 2018? We get this error. We can handle this kind of error using a TRY...CATCH construct.
+
+8. The TRY...CATCH syntax
+If you have experience with other programming languages, this syntax may look familiar to you. With this TRY...CATCH structure you can implement error handling. A TRY...CATCH structure is made up of a TRY block and a CATCH block. A TRY block starts with BEGIN TRY and ends with END TRY. A CATCH block starts with BEGIN CATCH and ends with END CATCH. You can enclose your statements within the TRY block. In the CATCH block, you can place your error handling code. If an error occurs in the TRY block, then the CATCH block takes the control. The CATCH block is only skipped if there is no error in the TRY block. Let's see some examples.
+
+9. Example with TRY...CATCH
+Let's go back to the example where we got an error. Remember we tried to insert a new bicycle with a name that was already in the products table. Let's enclose this insert statement by a TRY block. If the insert statement is correct, the select statement will display the text 'Product inserted correctly!'. However, if an error occurs, the control will pass to the CATCH block, printing 'An error occurred! You are in the CATCH block'. In this case, as there is an error because we are trying to insert a duplicate name, the output will be: An error occurred! You are in the CATCH block. Notice we didn't get the same error message as we did without the TRY...CATCH construct. Instead, we got the message from the select statement. We can also use the PRINT function instead of the SELECT statement just for printing the text. For the purpose of this course, we will only use the SELECT statement.
+
+10. Example with TRY...CATCH
+In this example, we are going to see what happens if we insert one product with a name which doesn't exist in the database. The insert statement is executed correctly, and the output is: Product inserted correctly! We can see that the control doesn't pass to the CATCH block because there are no errors.
+
+11. Nesting TRY...CATCH
+A TRY block or a CATCH block can nest another TRY...CATCH construct. In this example, the CATCH block has another TRY...CATCH construct to handle errors encountered by the CATCH code. Let's imagine that there is an error when trying to insert the product. The control passes to the CATCH block, and the insert error statement is executed. Then, if another error occurs, the second CATCH block will be executed.
+
+
+______________________________________
+2. Getting an error - review
+Before learning these functions, let's recall first what happens if we don't surround our code by a TRY...CATCH construct, and we get an error. In the output, we get the complete error with the error number, severity, state, line, and message.
+
+3. Getting an error - review
+However, if we surround the same code by a TRY...CATCH construct it seems that we lost the original error information, getting just what we code in the CATCH block. The information we lost can be useful sometimes. Luckily, we can still retrieve it using some functions in our CATCH blocks.
+
+4. Error functions
+Let's see these functions. The ERROR_NUMBER function returns the number of the error. ERROR_SEVERITY returns the severity of the error. Remember that you can only catch those errors with a severity between 11 and 19. The ERROR_STATE function returns the state of the error. ERROR_LINE returns the number of the line where the error occurred. ERROR_PROCEDURE provides the name of the stored procedure or trigger where the error happened. It returns NULL if the error didn't happen within a stored procedure or a trigger. Finally, the ERROR_MESSAGE function returns the text of the error message.
+
+5. Error functions - examples
+Let's see some examples. In this example, we added to the CATCH block the functions we just explained. We added them using the SELECT statement. If we execute this code, we get the following output. We can see the error number, severity level, error state, error line, and message. Notice that error procedure is NULL because this block of code is not within any stored procedure or trigger.
+
+6. Error functions - examples
+If we compare this last output with the original error, we can see that the information is the same. The only difference is the error line. That's because in the example we just did, we added TRY syntax to the first line, so the INSERT statement is now on the second line.
+
+7. Error functions - examples
+Let's see what happens when we try to use these functions outside a CATCH block. If we execute this code, all these functions will return NULL values.
+
+8. Error functions in nested TRY...CATCH constructs
+You can also use these functions in nested TRY...CATCH constructs. In this example, the CATCH block has another TRY...CATCH construct to handle errors encountered by the CATCH code. Let's imagine that there is an error when trying to insert the product. The control passes to the CATCH block, and the insert error statement is executed. Then, another error occurs. Let's suppose that it happens because the text ERROR! exceeds the limit of characters. Consequently, the second CATCH block will be executed, showing the following output. This error information is about the last error that occurred, not about the first one.

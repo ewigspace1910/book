@@ -1,0 +1,86 @@
+Got It!
+1. Known limitations of triggers
+Nothing is perfect in real life&mdash;including triggers. Let's recap the advantages of triggers and learn about their most common limitations.
+
+2. Advantages of triggers
+Triggers provide numerous advantages. As we've seen, they can be used successfully for database integrity purposes. Business rules can be enforced and stored directly in the database when using triggers. This makes it simpler to change or update the applications that are using the database, because the business logic is kept in the database itself. Triggers give you control over which statements are allowed in a database (a good feature when permission schemes don't offer you enough flexibility). Triggers can help you implement complex business logic fired by a single event. And they are also used to audit the database for changes or user activity.
+
+3. Disadvantages of triggers
+Triggers also have some disadvantages. First, they are difficult to view and detect. It can be hard for an administrator to have a clear overview of the existing triggers in a database and their behavior. This means triggers are not easy to manage in a centralized manner. Triggers are also invisible to client applications. When debugging code, triggers are difficult to trace in most situations. And for some triggers, their complex code can make it hard to follow their logic when troubleshooting. Triggers can also affect server performance when they are overused or poorly designed. Before learning some best practices to overcome their limitations, let's see how to get a good overview of all your triggers.
+
+4. Finding server-level triggers
+Triggers can be difficult to manage when they are undocumented, when they have complex logic in their design, and because they can be created on many levels (server, database, table). Luckily, SQL Server offers system views that gather all the information about triggers in one place. For example, this is the statement you need to run to get all the information about server-level triggers.
+
+5. Finding database and table triggers
+A similar view will get you details on both database-level triggers and table triggers. The type of the trigger (database or table) can be determined from the "parent_class_desc" column.
+
+6. Viewing a trigger definition (option 1)
+If you only want to look at a couple of triggers, using the graphical interface of SQL Server Management Studio is a good solution: just right-click on the trigger name and script the trigger definition. A smarter approach is needed, however, when you want to view the definitions for lots of triggers in the database.
+
+7. Viewing a trigger definition (option 2)
+If you turn your attention to SQL system views again, you'll find there are several ways to extract trigger definitions. SQL system views are like virtual tables in the database, helping you to reach information that cannot be reached otherwise. This example is based on the "sql_modules" system view. It extracts the definition of a trigger based on its ID, but you don't actually need to know the ID; you can use the function OBJECT_ID to get a trigger's ID using its name. This example returns the definition for only one trigger, but the code can be adjusted to output more than one result.
+
+8. Viewing a trigger definition (option 3)
+You can also get the definition of a trigger using the OBJECT_DEFINITION function. You need to pass in the ID of the trigger as the function parameter. To get the ID, use the OBJECT_ID function first, passing it the trigger name.
+
+9. Viewing a trigger definition (option 4)
+The last option you can use is the "sp_helptext" procedure, which uses a parameter called "objname". You can pass the name of the trigger directly to this parameter to get the trigger definition. In practice, the use of the "sp_helptext" procedure is not that common, mostly because procedures cannot be used inside of SELECT syntax. Use of the OBJECT_DEFINITION function or the "sys.sql_modules" view is more widespread. Which one you choose is a matter of personal preference.
+
+10. Triggers best practice
+We've seen a couple of helpful hints on how to discover and analyze existing triggers in a database, but the following tips should also always be taken into account: - Make sure your database design is well-documented, so that it's clear for anybody working with it. - Keep your trigger design simple&mdash;avoid complex logic where possible. - Avoid overusing triggers when they are not needed.
+---------
+1. Use cases for AFTER triggers (DML)
+In this lesson, we are going to see the most popular use cases for AFTER triggers in real-world scenarios.
+
+2. Keeping a history of row changes
+A common use for AFTER triggers is to store historical data in other tables. In practice, this usually means having a history of changes performed on a table. For example, here we have the "Customers" table containing information about existing customers. The customers' details may change over time, and the information in the table will need to be updated. It is considered a good practice to keep an overview of the changes for the most important tables in your database.
+
+3. Keeping a history of row changes
+To start with the "CustomersHistory" table holds exactly the same details as "Customer", but it keeps a record of any changes that are made.
+
+4. Keeping a history of row changes
+Suppose the phone number for the customer eFruits changes. After the change, the tables will hold the following details for this customer. The "Customers" table always shows the current information. The "CustomersHistory" table shows all the changes that have occurred for the customer, along with the change date.
+
+5. Keeping a history of row changes
+The result you saw previously is obtained using a trigger. The trigger will be fired for both INSERT and UPDATE statements. You can include both statements, comma-separated, as the firing actions. This will ensure that when new rows are added to the "Customers" table they are copied to the "CustomersHistory" table, and any changes to the details of existing customers will also end up in the history table. The INSERT statements will be taken care of using the "inserted" special table.
+
+6. Table auditing using triggers
+Another major use of AFTER triggers is to audit changes occurring in the database. Auditing means tracking any changes that occur within the defined scope. In this example, the scope of the audit is comprised of very important tables from the database. A trigger will be created on the "Orders" table. It will fire for any DML statements. Inside the trigger, we will declare two Boolean variables that will check the special tables "inserted" and "deleted". When one of the special tables contains data, the associated variable will be set to "true". The combination of values will tell us if the operation is an INSERT, UPDATE, or DELETE. A table called "TablesAudit" will be used to track the changes. The trigger will insert into that table information about the rows being modified, the user making the change, and the date and time of the change.
+
+7. Notifying users
+A simple and effective use case of triggers is to have them send notifications. Most of the notifications will be about events happening in the database and will be sent to interested users. For example, the Sales department must be notified when new orders are placed. A trigger attached to the `Orders` table will execute a procedure that sends an email when INSERT statements are executed.
+-----
+1. Use cases for INSTEAD OF triggers (DML)
+If AFTER triggers are used mostly for auditing and logs, the story is different with INSTEAD OF triggers. We are going to learn the details in this lesson.
+
+2. General use of INSTEAD OF triggers
+The use cases for these triggers are suggested by their name: INSTEAD OF. These kinds of triggers focus on preventing certain operations from happening in your database. If you can control the permitted statements inside your database and set some rules, you can enforce data integrity through triggers as well.
+
+3. Triggers that prevent changes
+In this example, updates to the "Products" table are not permitted for regular database users. When a non-administrator runs an UPDATE statement, the trigger will raise an error using the RAISERROR function. An error message will be included to inform the user that they aren't allowed to make any changes to this table. The restriction is applied because the table contains information about stock. An incorrect UPDATE statement could wreak havoc by concealing the real stock numbers.
+
+4. Triggers that prevent and notify
+In this second example, the trigger doesn't just raise an error message to prevent the deletion of a customer. An alert destined for the database administrator is also sent. When a user tries to remove a customer from the "Customers" table, an email will be sent to the database administrator. The removal action is, of course, denied with an error message. The body of the message is stored in the "EmailBodyText" variable and will include the name of the user who attempted to make the change. After raising the error, the trigger executes the "SendNotification" procedure to send the email alert to the database administrator.
+
+5. Triggers with conditional logic
+INSTEAD OF triggers should not always be considered as objects that deny operations on the database. They can be used to decide whether or not some operations should succeed. In this example, we create a new trigger on the "Orders" table. It makes no sense for an order to be placed if there is insufficient stock of the product. An INSTEAD OF trigger can check whether there is sufficient stock for an order, through an IF statement. The process used to decide what the trigger will do is called "conditional logic". It gets this name because operations will be performed or not based on logical conditions, like the IF statement. In this example, the IF statement checks for the condition where the order quantity is higher than the existing stock level. If the condition is true, an error will be raised and the order will be denied. If the condition is false, indicating that there is sufficient stock, the initial INSERT operation is executed. The initial INSERT operation can only be executed if stated explicitly in the trigger code.
+
+6. Triggers with conditional logic
+Here's what the conditional logic used in the trigger looks like. First, the INSERT operation fires the trigger. The trigger then verifies whether there is sufficient stock of the product included in the INSERT operation. If the condition is true, the order is placed by adding a new row in the "Orders" table. If it's false, the trigger throws an error and the INSERT operation is dropped.
+
+-------------------
+Got It!
+1. Use cases for DDL triggers
+Now it's time to look at some use cases for DDL triggers. This lesson will only give you an overview of DDL triggers at the database and server level. The topic is more complex than what you will be learning here, but this lesson will provide you with the fundamentals to get you started.
+
+2. DDL trigger capabilities
+DDL triggers can be created at the database level or at the server level. Where the trigger is created will influence the types of statements able to fire it. For example, a trigger created at the database level can respond to statements related to tables, view interactions, and index management, as well as more specific statements to do with permissions management or statistics. At the server level, we can use triggers for database management and to control server permissions and the use of credentials. Don't worry about remembering exactly which DDL statements can be used to fire database- or server-level triggers; you can always check the online documentation from Microsoft for a full list of DDL events.
+
+3. Database auditing
+So what exactly can we do with database-level triggers? Well, we can keep a trace of any activity happening at the database level. This is called a _database audit_. We are going to use a group event to fire our "DatabaseAudit" trigger: DDL_TABLE_VIEW_EVENTS. This DML event includes any operations dealing with tables, views, indexes, or statistics. The advantage of using a group event is that you can specify a single event to cover all the cases that should fire the trigger (in this case, more than a dozen statements). We are going to insert details about the operations performed in the database into the "DatabaseAudit" table. The details of the operations will be extracted using the EVENTDATA function. This function returns information about an operation in XML format. In order to extract specific information in clear text, we call the `value` function. For example, the first call of the EVENTDATA and "value" functions will get the "EventType" from the XML and convert it to the SQL NVARCHAR data type. The same logic is applied for the other columns.
+
+4. Database auditing
+Here's what the "DatabaseAudit" table looks like after using the trigger. All the user actions are kept in the table. Any breaking changes can then be traced back to the responsible person.
+
+5. Preventing server changes
+Remember, it is not possible to use INSTEAD OF for DDL triggers. But that doesn't mean you cannot prevent operations from happening when using DDL triggers. DDL triggers are used in the real world to prevent database or server changes that could lead to data loss. The trigger in this example prevents database deletion. As you can see, it uses the ROLLBACK statement to prevent DROP operations on databases. The statement that fired the trigger was prevented without the use of INSTEAD OF.

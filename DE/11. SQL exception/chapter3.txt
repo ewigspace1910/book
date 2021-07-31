@@ -1,0 +1,87 @@
+2. Dataset: bank transactions
+We will practice concepts related to transactions with a dataset based on bank account transactions. The dataset contains information about customers,
+
+3. Dataset: bank transactions
+accounts,
+
+4. Dataset: bank transactions
+and transactions.
+
+5. What is a transaction?
+So, what is a transaction? A transaction is the execution of one or more statements, such that either all or none of the statements are executed.
+
+6. What is a transaction?
+Let's see an example. Imagine we want to transfer $100 from account A to account B. First, we have to subtract $100 from account A and after that, add those $100 to account B. If the second operation fails, we can't subtract $100 from account A. These two operations must behave as an atomic operation, we execute both of them or none of them. They need to be in the same transaction.
+
+7. Transaction statements - BEGIN a transaction
+SQL Server defines some transaction statements. BEGIN TRAN or TRANSACTION is used to set the starting point of a transaction. You can optionally add a name for the transaction and the WITH MARK option. These options won't be covered in this course.
+
+8. Transaction statements - COMMIT a transaction
+COMMIT, optionally followed by TRAN or TRANSACTION, marks the end of a successful transaction. When executed, the effect of the transaction cannot be reversed. You can optionally add the name of the transaction and set to on or off the WITH DELAYED_DURABILITY option. These options won't be covered in this course.
+
+9. Transaction statements - ROLLBACK a transaction
+ROLLBACK TRAN or TRANSACTION reverts a transaction to the beginning of it or a savepoint inside the transaction. After ROLLBACK TRAN or TRANSACTION, you can optionally add the transaction or the savepoint name. We will define savepoints in the next lesson.
+
+10. Transaction - example
+Let's see all these statements. In this example, we try to transfer $100 from account 1, with $24,400, to account 5, with $35,300. We mark the start of the transaction with BEGIN TRAN. The first operation updates account 1 subtracting $100. Then, we register that movement into the transactions table. After that, we add $100 to account 5 and then register the movement into the transactions table. Finally, COMMIT TRAN confirms the changes.
+
+11. Transaction - example
+By executing this code, we can see that account 1 decreases by $100 and account 2 increases by $100. Besides, two rows are inserted into the transactions table.
+
+12. Transaction - example
+Let's change the previous example using ROLLBACK TRAN instead of COMMIT TRAN to revert all the changes as if nothing had happened.
+
+13. Transaction - example
+Accounts 1 and 5 have the same balance as they had before the execution of the script. Besides, no rows are inserted into the transactions table.
+
+14. Transaction - example with TRY...CATCH
+Let's surround the previous code with a TRY...CATCH. We start the transaction within the TRY block. If everything between BEGIN TRAN and COMMIT TRAN executes without errors, the changes will be confirmed. However, if there is an error, the CATCH block will take the control and revert the changes with the ROLLBACK TRAN statement.
+
+15. Transaction - example with TRY...CATCH
+Executing this code, as there are no errors, account 1 decreases by $100 and account 2 increases by $100. Besides, two rows are inserted into the transactions table.
+
+16. Transaction - example with TRY...CATCH
+Let's introduce an error in the previous script, inserting $100 into the transactions table for account 500, which doesn't exist. If we execute this code, as there is one error, the CATCH block will take the control, executing the ROLLBACK TRAN statement. All the changes are reverted as if nothing had happened.
+
+17. Transaction - example with TRY...CATCH
+Accounts 1 and 5, have the same balance as they had before the execution of the script.
+
+18. Transaction - without specifying a transaction
+Finally, let's see what happens if we don't explicitly specify a transaction. SQL Server considers each statement as an individual transaction. The three first statements are executed correctly, but the last statement fails, and this row is not inserted.
+
+19. Transaction - without specifying a transaction
+Account 1 decreases by $100, and account 2 increases by $100. However, only one row is inserted into the transactions table, resulting in an inconsistent state.
+
+---------------
+
+Got It!
+1. @@TRANCOUNT and savepoints
+In this lesson, you will understand @@TRANCOUNT and savepoints.
+
+2. @@TRANCOUNT
+@@TRANCOUNT returns the number of BEGIN TRAN statements that are active in your current connection. It returns a value greater than zero if you are in an open transaction, and zero if you are not. It can be modified by the BEGIN TRAN statement, which increases the @@TRANCOUNT value by 1. The COMMIT TRAN statement decreases the @@TRANCOUNT value by 1. The ROLLBACK TRAN statement decrements the @@TRANCOUNT to 0, except if there is a savepoint. Let's see an example of @@TRANCOUNT in a nested transaction.
+
+3. Nested transactions
+In this example, we can see a nested transaction. There is a BEGIN TRAN after another BEGIN TRAN, before COMMIT TRAN and ROLLBACK TRAN. Initially, the @@TRANCOUNT value is 0, as there is no open transaction yet. After that, a BEGIN TRAN statement is executed, incrementing the @@TRANCOUNT value by 1. Then, a DELETE statement deletes every row from the transactions table. After that, another transaction is open, incrementing the value of @@TRANCOUNT by 1. The next statement deletes every row from the accounts table. Then, a COMMIT TRAN statement is executed, decrementing the value of @@TRANCOUNT by 1. If the value of @@TRANCOUNT is 1 before executing the COMMIT TRAN statement, the current transaction is closed, and the changes are confirmed. However, if its value is greater than 1, like in this example where it is 2, the COMMIT TRAN statement decrements @@TRANCOUNT by 1 but doesn't commit the deletion of the table. The transaction is still active. Finally, ROLLBACK TRAN decreases the value of @@TRANCOUNT to 0 and reverts all the uncommitted statements, including the deletion of the accounts table.
+
+4. Nested transactions
+Let's check the content of transactions and accounts. We see that the rows of these tables were not deleted.
+
+5. Nested transactions
+Let's change the previous example using COMMIT TRAN instead of ROLLBACK TRAN in the penultimate statement. The last COMMIT TRAN statement will be executed when the @@TRANCOUNT value is 1, so it will commit the deletion of the tables.
+
+6. Nested transactions
+If we check the content of transactions and accounts, we can see that the rows of these tables were deleted.
+
+7. @@TRANCOUNT in a TRY...CATCH construct
+We can use @@TRANCOUNT in a TRY...CATCH construct to determine whether any transactions are still open, by checking if the @@TRANCOUNT value is greater than 0. If there are any open transactions, we can commit or rollback the changes.
+
+8. Savepoints
+Let's study savepoints. Savepoints are markers we can set within a transaction. They allow us to rollback to the different savepoints we set. Savepoints start with the words SAVE TRAN or TRANSACTION followed by the name.
+
+9. Savepoints
+Let's see an example that uses savepoints. This code opens a new transaction, and after that, marks the savepoint1. Then, the data of a new customer is inserted. Next, another savepoint, savepoint2, is marked, and the data of another customer is inserted. After that, ROLLBACK TRAN savepoint2 rollbacks the changes between the declaration of savepoint2 and the rollback of savepoint2. In other words, ROLLBACK TRAN rollbacks the insertion of the customer 'Zack Roberts'. ROLLBACK TRAN savepoint1, rollbacks the changes between savepoint1 and savepoint2, it is the data of 'Mark Davis'. Then, a new savepoint, savepoint3 is marked. Then the code inserts the data of another customer. Finally, the COMMIT TRAN statement is executed. If we execute this code, we can see that only the last insert statement took place, because savepoint1 and savepoint2 were rolled back.
+
+10. Savepoints
+If we select the value of @@TRANCOUNT after every savepoint rollback, we can see that these statements don't decrease the value of @@TRANCOUNT. In this example, we see that the outputs of both are 1.
+-----------------

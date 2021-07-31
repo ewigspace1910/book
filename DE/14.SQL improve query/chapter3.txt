@@ -1,0 +1,39 @@
+1. Sub-queries
+Welcome to chapter three. A sub-query is another query within a query. Sub-queries are used to retrieve information from another table, or query, that is separate to the main query. In this lesson, we’ll examine the different types of sub-queries and their potential impacts on query performance.
+
+2. How do sub-queries look?
+How do sub-queries look? A sub-query generally has it’s own SELECT statement and returns results just like a regular query.
+
+3. How do sub-queries look?
+However, results from a sub-query are used by an outer query. A sub-query is processed first before returning the results for processing by the outer query. Therefore, a query, that contains a sub-query runs from the inside out. SQL practitioners will often indent sub-queries to identify them from outer or other queries. In the following three examples, the sub-query is in red text and outer query in blue. The most common places to use a sub-query are:
+
+4. Sub-query with FROM
+First, with FROM: The sub-query acts as a virtual table or data source. In this example, the sub-query calculates a new column from the Orders table, NumDays which is the difference in days, from ordering to shipping. The new column is then used by the outer query to filter for NumDays of 35 or more.
+
+5. Sub-query with FROM
+The results of this query show seven customers had to wait 35 days or more for their order to be shipped.
+
+6. Sub-query with WHERE
+Second, with WHERE, to return a filter condition to the outer query. In this example, the sub-query returns Customer IDs from the Orders table where freight weight is greater than 800 kilograms. The CustomerIDs are then used as a filter on the Customers table in the outer query.
+
+7. Sub-query with WHERE
+The results of this query show three customers having made orders with a freight weight of more than 800 kilograms.
+
+8. Sub-query with SELECT
+And third, with SELECT, to derive a new column. In this example, the sub-query is calculating the average freight weight for each Customer from the Orders table. The new column, AvgFreight, is added to the SELECT statement of the outer query.
+
+9. Sub-query with SELECT
+The results return the AvgFreight column along with CustomerID and CompanyName from the Customers table.
+
+10. Types of sub-queries
+There are two types of sub-queries: uncorrelated and correlated. Uncorrelated sub-queries do not contain a reference to the outer query and therefore can run independently of the outer query. On the other hand, correlated sub-queries include a reference to the outer query and therefore cannot run independently of the outer query. Uncorrelated sub-queries are commonly found with WHERE and FROM and correlated sub-queries with WHERE and SELECT.
+
+11. Sub-query performance
+Correlated sub-queries can be quite inefficient because the sub-query executes for each row in the outer query. Compare this to the uncorrelated sub-query where the sub-query executes only once and returns the results to the outer query for processing.
+
+12. Sub-query vs. INNER JOIN
+Often the results from a correlated sub-query can be replicated using an INNER JOIN. Because a correlated sub-query must execute for each row in the outer query, the query may take some time to complete especially if the outer query contains many rows. In this case, consider using an INNER JOIN, which only makes one pass through the data. In this example, we replaced a correlated sub-query with an INNER JOIN between the Customers and Orders tables.
+
+---------
+
+-----

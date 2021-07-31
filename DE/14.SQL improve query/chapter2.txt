@@ -1,0 +1,133 @@
+Got It!
+1. Filtering with WHERE
+Welcome to chapter two. In this first lesson, we'll discuss how to use WHERE correctly in a query.
+
+2. How WHERE works
+WHERE is used in a query to filter out individual rows from a data source specified in the FROM statement. In this example, we are using a WHERE filter condition to restrict the PlayersStats table to only rows where Position equals SG, for Shooting Guard.
+
+3. How WHERE works
+The PlayerStats table is scanned, and only the rows that meet the WHERE filter condition are extracted.
+
+4. WHERE processing order
+Remember from the previous chapter WHERE is processed after FROM, but before SELECT. Let's look at an example of this. Here, we apply a filtering condition to a new calculated column, TotalRebounds, and WHERE is used to filter the results where TotalRebounds is greater than or equal to 1000. The query looks right, but when run, returns an error. The TotalRebounds column is created in the SELECT statement. But remember, WHERE is processed before SELECT, so WHERE does not know about the new column yet.
+
+5. Using a sub-query
+We can still achieve the desired results by creating the new calculated column in a sub-query first. Here, we have the sub-query, after FROM, that creates the new column TotalRebounds, which then becomes available to be used in the WHERE filter condition in the outer query.
+
+6. Using a sub-query
+Now the query runs with no error message. Using sub-queries will be discussed in more detail later in this course.
+
+7. Calculations on columns
+But why use a sub-query to get the TotalRebounds column, in the previous example, when we could've just used the same calculation in the WHERE filtering condition. This is still valid and will return the same results. However, WHERE will run that calculation on every row to check if the row meets the condition or not. For a simple calculation, like the one in the example, this is not a big issue. But if the calculation is complex, it could increase the time it takes the query to run. Note, also, the unnecessary repeating of the calculation in the SELECT statement, and the WHERE filtering condition.
+
+8. Functions on columns
+Similarly, functions applied to a column in the WHERE filtering condition will also run on every row. Simple functions on small data sets will not show any noticeable effect on performance. However, applying complex or multiple functions to a column, or columns, in the WHERE filtering condition, could noticeably increase the time it takes the query to run, especially on large data sets.
+
+9. WHERE simplified
+You should always try and make your query as simple as possible, while still getting what you want. One way to do this is by avoiding using calculations and functions in the WHERE filtering condition. Here, simply applying a wildcard filter avoided using a function, while still returning the same result.
+
+10. Summary
+Let's summarize what we've learned. WHERE is processed before SELECT and will return an error if the syntax order is not correct. Calculations or functions on columns in the WHERE filtering condition could increase the time it takes the query to run. And remember, there may be a simpler way to apply a WHERE filter condition.
+
+--------------------
+1. Filtering with HAVING
+In this lesson, we'll examine the differences between WHERE and HAVING and some best practices for how and how not to use them.
+
+2. HAVING processing order
+HAVING, like WHERE is also used to filter a query. Although they both occur after FROM and before SELECT in the processing order, that's where the similarity stops.
+
+3. Grouping with WHERE row filter
+Remember from a previous lesson, WHERE is used to filter individual rows. HAVING, on the other hand, is used to filter grouped or aggregated rows. Here is an example from the PlayerStats table. I want to know the sum of total points, by Team, but restricted to shooting guards. We use WHERE to filter just for rows where the Position equals SG. This works because the filter condition is on individual rows.
+
+4. Row filtering with HAVING
+But, we're grouping by Team. I could also use HAVING to restrict rows to only shooting guards. This query produces the same results, but it is not the correct way to use HAVING. In this case, WHERE is more efficient because rows are filtered first before grouping and summing. Using HAVING in this way would filter the individual rows after grouping, therefore, unnecessarily tying up resources and potentially increasing the time it takes for a query to run. Don't use HAVING to filter individual or ungrouped rows.
+
+5. Aggregating by group
+So what is the point of HAVING? HAVING is generally used to apply a numeric aggregate filter on grouped rows. Let's say we want a query that returns all rebound statistics by Team, where team offensive rebounds are 1000 or more. First, we create a query that calculates rebound statistics grouped by team.
+
+6. Group filtering with WHERE
+We have the column ORebound, for offensive rebounds already, therefore, we can apply a WHERE filter so that ORebound is greater than or equal to 1000. The query looks right and runs without error. No teams meet that condition. But, take a closer look at the query. This filter is not the one we want. We want a filter for Team offensive rebounds not individual players which is what this one does. I am pretty confident no single player had 1000 or more offensive rebounds in a season. We need to use HAVING because the filter is on a grouped numeric aggregate.
+
+7. Without an aggregate function
+Can we substitute WHERE for HAVING and use the same filter condition? No. Merely doing this will raise an error when we run the query. A numeric column that is using a HAVING filtering condition must be enclosed in an aggregate function. Also, note here the position of HAVING in this query, it is always after GROUP BY.
+
+8. With an aggregate function
+When applied correctly, as in this example, we enclose the filtering column in the SUM() aggregate function. One team meets the condition - incidentally, the team I support. Go OKC!!
+
+9. Summary
+Let's summarize what we've learned. Do not use HAVING to filter individual or ungrouped rows. Use WHERE to filter individual rows and HAVING for a numeric filter on grouped rows. We can only apply HAVING to a numeric column in an aggregate function filter.
+
+-------------
+1. Interrogation after SELECT
+If we are creating a query, we may want to interrogate the data first. What does it look like? How many columns are there? What columns are required? And what columns can we join on?
+
+2. Processing order after SELECT
+Previously we said that any syntax processed after SELECT is mainly concerned with actions on the final data extracted. Most of these actions are commonly used to interrogate the data before working on a query. We also said that these processes tend to be quite expensive as they can potentially tie up database processing resources and, therefore, are likely to increase the time it takes a query to run. In this lesson, we’ll look at some ways to interrogate data and the effects these may have on performance.
+
+3. All is not always good
+One of the first things we learn when taking a course in SQL is SELECT star from a table. SELECT star returns all rows and all columns from the table. This is great for data interrogation and getting to know your data but potentially bad for performance especially if that table has millions of rows and many columns. We could be waiting for a while.
+
+4. All you need is better
+Our query should only select the columns we need.
+
+5. All in a JOIN
+Another problem with SELECT star is that, in joins, it returns duplicates of the joining columns. In this example, the PlayerName column is in both the Players and PlayerStats tables.
+
+6. All you need in a JOIN
+We need to explicitly state the columns to be returned and from what tables. This is where aliasing is useful.
+
+7. Rows at the TOP
+Is there a way to restrict the number of rows returned but still provide us enough to interrogate the data adequately? Yes, we can use the TOP function. Although TOP is one of the last syntaxes to be processed in a query, we use at the beginning of the query, just after SELECT. TOP can be useful to limit the exact number or rows returned.
+
+8. Percentage at the TOP
+or, used in conjunction with PERCENT, a proportion of the rows to be returned. Because TOP only processes rows, we still need to specify the columns we require either using star, for all columns or explicitly identifying them after TOP. SELECT TOP 5 will return the first five rows and SELECT TOP 1 PERCENT will return the first 10,000 rows in a million-row table.
+
+9. There is no top or bottom
+What if we want to check the last rows of the table instead? TOP is only for the top of the data set right? Technically, yes. But there is no top or bottom. By using ORDER BY, and experimenting with ASC and DESC, we can view a subset of the data set sorted by any column, in the SELECT statement, ascending or descending.
+
+10. The other row limiters
+ORDER BY is supported by most major database vendors. However, when interrogating data, by limiting rows returned, be aware that TOP is specific to Microsoft SQL Server. In other courses, we may have been introduced to LIMIT or ROWNUM. These perform the same function but are specific to PostgreSQL and Oracle respectively. Also, their position in the query is quite different.
+
+11. Where to use ORDER BY
+Use ORDER BY with caution. It’s works well for interrogating data but slows performance in a query. Often data scientists will only use SQL to extract data from a database and use some other program like R or Python to perform analytics on the data output. If a data set requires sorting before analysis, these programs are a lot more efficient at this. Unless there is a good reason to sort the data in a query, or you want to interrogate the data, leave ORDER BY out.
+-------------------
+Got It!
+1. Managing duplicates
+A common problem that SQL practitioners come across is duplicate rows in the results of a query. Duplicate rows can be the result of a poor database design, a poorly designed query, or both. In any case we may need a mechanism to remove duplicates. In this lesson, we'll look at the roles of DISTINCT() and UNION in removing duplicates and their potential effects on performance.
+
+2. Query returning duplicates
+If we run a simple query on the PlayerStats table that returns the name of each player that participated in the 2017-2018 NBA season, there are 605 rows returned. But there is a problem. Team is also a column in the table and players could’ve played for multiple teams that season, so our simple query produces duplicate player name rows.
+
+3. Removing duplicates with DISTINCT()
+We can remove duplicate rows by enclosing the PlayerName column in the DISTINCT() clause after SELECT.
+
+4. GROUP BY instead of DISTINCT()
+But could we have just used GROUP BY instead? Yes, And there would not be much difference in the time it takes for either query to run. If we want to remove duplicates and return unique rows, then use DISTINCT().
+
+5. GROUP BY instead of DISTINCT()
+However, if we're going to apply an aggregate function, for example, we want the count of teams each player played for, we’ll need to use GROUP BY.
+
+6. Is there another way?
+Often there is an easier way to get the results we want. In this case we wanted to know the players that participated in the 2017-2018 NBA season. By looking at the database, we see that we could’ve simply queried the Players table, where PlayerName is the unique key, so there are no duplicate rows.
+
+7. Fruits tables
+We can also produce duplicates when we append queries together to form one data set. Appending is different from a join because when we append we are combining the query rows, rather than joining on key columns. Appending rows together may create the issue of duplicates as we can see in this example.
+
+8. Duplicate fruits
+The rows for Strawberry and Orange duplicate when we append.
+
+9. Remove duplicates with UNION
+In SQL we use the UNION operator for appending. UNION will do the work of checking and removing duplicate rows for us.
+
+10. What about UNION ALL?
+In some cases, we may require the returned results to contain duplicate rows, or we may know that there will be no duplicate rows when we append queries. In this case, we can use UNION ALL which returns all rows regardless if there are duplicates or not. Interrogating the data before creating your query will give you an idea of whether UNION or UNION ALL is the appropriate operator to use for appending queries.
+
+11. DISTINCT() and UNION
+Using DISTINCT() and UNION in queries, to remove duplicate rows, should be used with caution. Depending on the design of the database, both may use an internal sort mechanism to order and check for duplicates. This sorting has the potential to increase the time it takes a query to run significantly.
+
+12. Using DISTINCT()
+When using DISTINCT(), check if there is an alternative way to achieve the results we want, for example, there may be another table, with the column we require, as the unique key. Or, use GROUP BY if the query is using an aggregate function.
+
+13. Using UNION
+When appending data, we need to ask ourselves if duplicates are OK or whether the appending queries will not produce duplicates. In these cases, consider using UNION ALL which does not make use of the internal sort. We’ll look at this internal sorting and how it affects performance later in this course.
+---------------------
