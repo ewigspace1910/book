@@ -1,0 +1,96 @@
+Got It!
+1. Python on the command line
+Although data processing is more productive on the command line, complex data work like predictive modeling is still easier in Python. In this chapter, we will learn how to run Python on the command line, so that we can combine the best of both worlds.
+
+2. Python basics
+Python comes pre-installed with MacOS and Linux, but needs to be installed for Windows. The most common way to interact with Python is via GUI interfaces like Jupyter Notebook, but the more efficient way is to access Python directly on the command line. Let's explore how to do this.
+
+3. Using Python documentation
+man python calls up the documentation and option flags. Since Python 2 and Python 3 have different syntax, it's helpful to check on the Python version by using dash-capital-V or dash-dash-version. Here, we have Python 3.5.2 installed.
+
+4. Using Python documentation
+Likewise, it is possible to have multiple copies of the same version of Python co-existing on your machine. To see which Python version you're using, type which python. Here, we're using the native Python in user bin. However, if you installed Python through Anaconda, that will create a different copy of Python on top of the native Python that came with your computer. Here, we're using Anaconda's Python.
+
+5. The Python interactive session
+One way to interact with Python on the command line is with an interactive Python session by typing python in the terminal and pressing Enter. You will know this is a success if you see a printout with the Python version, followed by the cursor blinking after 3 re-direct signs.
+
+6. The Python interactive session
+The 3 re-direct signs serve as a reminder that you are inside the interactive session. As long as you are inside the session, you can only write Python syntax. For example, we can type print open parenthesis quotation marks hello world end quotation marks end parenthesis, which is Python syntax. The terminal will echo back hello world. To exit the session, type exit open close parentheses and press Enter. Notice that in the next line, the three re-directs are replaced with a dollar sign, which indicates we're back in normal command line.
+
+7. Python interactive session alternative
+The interactive session is easy to use, but it isn't helpful for code reproducibility. To execute the same Python command multiple times and on-demand, we need a second way to use Python on the command line. This is done by saving code in a Python script and calling this script when we are ready to execute. Let's dig further.
+
+8. Python script execution on the command line
+We can create the Python file using any text editor like Sublime, nano, Vim, or Emacs. Make sure that the file ends in a dot-py extension.
+
+9. Python script execution on the command line
+If our script is very short, we can simply echo this command and re-direct it into the Python file. This one-liner does two things: It instantiates a new file called hello underscore world dot py and populates the file with the print command. The benefit of this method is that we never leave the command line causing less disruption to our workflow. Let's sanity check and print the file content.
+
+10. Python script execution on the command line
+With the Python script created, we still need to call it to execute. First, we check that we are in the same file directory as the Python script we created. Then, we tell our terminal to execute this file using Python by calling `python` followed by the Python file hello underscore world dot py. Now, our terminal echoes hello world back to us.
+
+---------------
+
+1. Python package installation with pip
+In this lesson, let's learn about pip, the standard package manager for Python.
+
+2. Python standard library
+Python comes by default with a collection of built-in functions such as the print function and built-in packages such as the math or os library. However, because Python is a general-purpose language, packages for specific use cases need to be separately installed by the user. This includes data science packages such as scikit-learn and statsmodels. The installation is handled through pip, the standard package manager for Python.
+
+3. Using pip documentation
+First things first, read the documentation through pip dash-h. pip has a variety of commands and option flags designed to manage Python packages.
+
+4. Using pip documentation
+Secondly, note that you can print the pip version the same way you print the Python version. It's important that the pip version is compatible with the Python version. Here, we see that pip 19 dot 1 dot 1 is compatible with Python 3 dot 5.
+
+5. Upgrading pip
+If pip is giving you an upgrade warning, you can upgrade pip using itself via pip install dash-dash upgrade pip.
+
+6. pip list
+Before we do any installing, it's a good idea to see what is already installed. Using pip list on the command line prints an alphabetical list of all the Python packages in your current Python environment.
+
+7. pip install one package
+To install a library that is not currently installed, as indicated by pip list, the syntax is pip-install followed by the library name. In this case, we are installing scikit-learn. You might notice from the logs though, it looks like more than one Python package is being installed in this one single pip-install call. This is because pip will automatically install scikit-learn as well as any other Python packages that it is dependent on to operate. We call these other packages: dependencies.
+
+8. pip install a specific version
+By default, pip-install will always install the latest version of the library. Here, we have installed Scikit-Learn version zero dot twenty one dot 3.
+
+9. pip install a specific version
+If we wish to install an older version of scikit-learn, we simply have to specify it during the install statement, with double equal signs, like so.
+
+10. Upgrading packages using pip
+If your package is already installed, and simply out of date, upgrade the package the same way you upgraded pip earlier. Pip will automatically take care of any dependency upgrades as well.
+
+11. pip install multiple packages
+To pip install more than one Python package, the packages can be listed in-line with the same pip install command as long as they are separated by spaces. Here, we are installing both scikit-learn and statsmodels in one go. We can also upgrade multiple packages in one command.
+
+12. pip install with requirements.txt
+If you want to install many packages at once, you can save them one package per line in a text file called requirements-dot-txt. If we preview the file, it looks like this. It's conventional for Python package developers to create a requirements file listing all dependencies for pip to find and install.
+
+13. pip install with requirements.txt
+The dash-r option flag in pip allows pip install to install packages from the file specified after the option flag. Keep in mind that naming this file requirements-dot-txt is convention, but not required. In our example, pip install dash-r requirements will have the same effect as pip install scikit learn statsmodel. However, imagine how much messier this could be if we had, say, 10 packages to install? Using the requirements file method is much cleaner.
+
+14. Let's practice!
+In this lesson, we learned about Python package manager pip, a crucial building block in understanding data science pipelines using Python. Let's put this into practice!
+------
+--------------
+1. Data job automation with cron
+We’ve built out an entire pipeline in previous lessons, from data processing using csvkit, Python installation using pip, and executing pre-written Python code via the command line. Now we are at the last step, automating the entire process, so that we can set it and forget it.
+
+2. What is a scheduler?
+What we need is a scheduler. Schedulers runs jobs like Python models on a pre-determined schedule and allows us to automate our data pipeline. There are quite a few commercial and open source solutions on the market. Some of the popular ones are Airflow, Luigi, and Rundeck. However, cron is still a very strong contender among these commercial options because it is simple, free, customizable, 100% command-line, and native to MacOS and Linux systems.
+
+3. What is cron?
+cron is a time-based job-scheduler that comes pre-installed in Unix-like operating systems. This means that cron already exists in MacOS and Linux systems, but not in Windows. For Windows users, you can use cron by installing Cygwin. Or, you can use the native Windows Task Scheduler. cron can be used to automate a variety of jobs, from system maintenance tasks, to bash scripts to Python files. This means we can use it to automate our bash scripts for pulling data using csvkit. We can also use it to run our Python models.
+
+4. What is crontab?
+To schedule tasks, we need a central file to keep records of all our jobs, when to run them, and other instructions specific to the schedule. This file is called the crontab file. To see what is currently in this central file, type crontab-dash-l This will display all, if any, tasks currently scheduled via cron. It looks like we have no tasks scheduled. To see what other option flags are available with crontab, type man crontab
+
+5. Add a job to crontab
+We can add a job to crontab the same way we added a print function to a Python file. By either opening up crontab using a text editor like nano, Vim, or Emacs, or by echoing the scheduler command directly into crontab. Once this is done, we can verify that the command is correctly saved by running crontab dash-l again. This time, we see that the Python job is properly scheduled.
+
+6. Learning to time a cron job
+Let's dig deeper into fine-tuning when to schedule a job. First, keep in mind that cron has a 60-second granularity limit, which means that the most frequent job we can schedule is one run every minute. Second, there are five time component locations. Each asterisk is indication of a time component. Starting from left to right, are minutes, hours, day, month, and day of the week.
+
+7. Learning to time a cron job
+Let's take a look at an example: Asterisk is a wild card that is synonymous with "always on" in cron scheduler. Placing five asterisks before the Python file create-model-dot-py means we are scheduling Python to run this script every minute of every hour of every day of every month and every day of the week. In short, we run this model every minute until forever. For scheduling jobs in other frequencies, maybe every day, every month, or every 3 hours, check out the website crontab-dot-guru to help you write out the cron jobs.

@@ -1,0 +1,105 @@
+Got It!
+1. Basic variables in Bash
+Let's learn how to create some basic variables in Bash scripts.
+
+2. Assigning variables
+Assigning variables is similar to other languages. You can assign the variable name using the equals notation. Here we make a variable 'var1' and assign the string 'Moon' to be its value. Then, you can reference that variable with the dollar sign notation.
+
+3. Assigning string variables
+You can name the variables as you like and it is good practice to name them something which makes sense. Let's create variables for a person's first and last name and then echo out using the dollar sign notation. Nice! We were able to access and print both variables.
+
+4. Missing the $ notation
+The dollar-sign notation is very important, otherwise Bash doesn't understand you are referencing a variable. Here we create the same variables but don't reference with the dollar sign notation. Bash just thinks we are echoing out three strings, not variables.
+
+5. (Not) assigning variables
+Bash is not as forgiving as other languages. You must not add spaces around the equals sign. See here we add some spaces in the variable assignment. When we run the script, there is this error.
+
+6. Single, double, backticks
+In Bash, using different types of quotation marks can mean different things, when creating variables and printing. Single quotation marks means that whatever is between them is interpreted literally. Double quotations is similar to single quotation marks, but it will understand dollar-sign notation and backticks that occur between the quotation marks. The last way is quite special and powerful. Backticks creates a shell within a shell. That is, it sends whatever is between the backticks out to a new shell and takes the results back into the variable. Let's see these methods in action.
+
+7. Different variable creation
+Let's see the effect of different types of quotation marks for variable creation. Firstly we create a variable called now_var and assign the string NOW. We then create a variable using single quotes around a dollar-sign notation call to this variable. You can see that the use of single quotes treats what we gave it literally, it doesn't understand there is text inside that variable. We also create a variable with double quotes in the same way. the double quotes understands our variable call and returns the NOW text inside that variable.
+
+8. The date program
+We will use the date program to demonstrate the use of backticks for variable creation. The normal output of this program is as follows. In terminal, type the word date. You will get the current date and time returned as a string.
+
+9. Shell within a shell
+Now let's use the powerful shell-within-a-shell construct. We create a variable similar to before. However, instead of using single quotes, we use use backticks around the word date and echo the resulting variable. We can see the result includes the current date and time. What actually happened here is that a mini shell was opened between those backticks and called the date program. The result of this call was then saved back as a string in-line. Congratulations - the shell-within-a-shell is a powerful and useful construct to add to your toolkit!
+
+10. Parentheses vs backticks
+There is an alternate way to invoke a shell-within-a-shell. This uses a dollar sign around parenthesis as can be seen here. We create two variables around the date command and echo them both. You can see the result is exactly the same. Either method works. The backticks method is more backwards compatible as it is older. Though the parenthesis method is more modern and has some advantages, discussed in the link here.
+-----------
+1. Numeric variables in Bash
+As data people, I am sure you want to learn about using numeric variables in Bash. Let's get started!
+
+2. Numbers in other languages
+Working with numeric variables is not natively built into Bash as it is in other languages. In R or Python REPL you may be used to just typing arithmetic like this. And getting the result you want.
+
+3. Numbers in the shell
+You cannot natively do arithmetic in Bash. If you try the following in the Bash terminal. You will get an error like this.
+
+4. Introducing expr
+A useful command-line program is expr. This is a program just like cat and grep which can be used for basic arithmetic. Now if we do the following in a terminal, we get the result we want. Nice!
+
+5. expr limitations
+Expr has a big limitation though. It cannot handle decimal places. If you do the following in the terminal, this will be the error you get. However, there is a solution!
+
+6. Introducing bc
+Another useful command-line program is bc which stands for 'basic calculator'. You can enter bc just like a REPL in the command line. In this picture you can see bc being invoked, entering five plus seven, which returns twelve. Then the word quit exits back to the shell.
+
+7. Getting numbers to bc
+You can use bc without opening the program using piping since bc accepts arguments of numbers and operations. Here we send the string five plus seven point five into bc using a pipe. The return is exactly what we want, the decimal number returned.
+
+8. bc scale argument
+bc also has a useful argument 'scale' which allows you to specify how many decimal places for the return value. Here we know the answer is three point three repeated. But by default, bc will return the value three for this division. Let's see what happens if we echo in the scale argument. Note the use of the semi-colon to separate lines in the terminal. Now, we get the result we were expecting to three decimal places.
+
+9. Numbers in Bash scripts
+You can assign numeric variables much the same way as the string variables you did previously. Remember not to have spaces around the equals sign. In this example, we set a string variable of a dog's name and a numeric variable of the dogs age. You could have also used quotes around the six, but this would make it a string variable so may limit what you could do later! Then we echo the sentence noted. Since we used double quotes, we can use dollar-sign notation to interpolate the variable names within the echo call. This returns the correct sentence.
+
+10. Double bracket notation
+There is a special variant on the single bracket notation discussed in the previous lesson for numeric variables. Here we use expr to add two numbers. However, we can achieve the same result using double parentheses, as seen here. We get back the same result for both calls. Beware this method uses expr, not bc. So you cannot use decimals with this method.
+
+11. Shell within a shell revisited
+Do you remember when we used single parentheses or backticks to create a shell-within-a-shell in the last lesson? This is very useful for numeric variables and calculations. Here we create two variables. Some accuracy scores for two models. We can use the single bracket notation to create a shell-within-a-shell, where we echo the sum of these to bc. On the next line, we do something more complex, building on the first line and adding a division after the sum to get the average. Again, the shell-within-a-shell returns the value inside the echo call. We see the sum and average printed out in-line.
+--------------
+1. Arrays in Bash
+In this lesson we'll explore arrays. Let's get started!
+
+2. What is an array?
+There are two types of arrays in Bash. The first and most common is a numerical-indexed array. These are known as lists in Python or vectors in R. You may be familiar with creating these in Python, or R.
+
+3. Creating an array in Bash
+There are two ways to create a numerical-indexed array in Bash. You can construct the array without any data elements. You use the word 'declare', the 'a' flag and an array name. Or you could create and add elements at the same time like this, similar to string or numerical variable creation. Remember, don't add space around the equals sign.
+
+4. Be careful of commas!
+Unlike many programming languages, Bash separates array elements with spaces and not commas. This is not correct. This is correct as it uses spaces between array elements.
+
+5. Important array properties
+Bash has some useful array properties. You can return all array elements by indexing into the array using the at symbol. The length of an array is returned by adding a pound symbol to the front of a call to the entire array.
+
+6. Manipulating array elements
+Accessing an array element uses square bracket syntax. In our example, to return the third element we would write this. The third element is returned successfully. Bash uses zero-indexing for arrays. This is just like Python (but different from R).
+
+7. Manipulating array elements
+You can change array values using index notation. Here, we create an array. Then change the first element to be 999 and print to confirm. Don't use the $ index notation when overwriting a single element as this won't work.
+
+8. Manipulating array elements
+You can also slice out parts of an array using this notation. The notation adds to the call to print the entire array with a colon, number, colon, number. N and M mean the starting index and the number of elements to return after that index. Here, we start at the third index ( or fourth element) and return 2 elements. Which returns as so.
+
+9. Appending to arrays
+Appending to arrays uses the plus-equals syntax, ensuring the elements you want to add are surrounded by parentheses. In this example we create an array of numbers, and add ten to the end. Then we print out to check. Indeed, ten is added to the end.
+
+10. (Not) appending to arrays
+What happens if you don't wrap the elements you want to append in parentheses? Let's see. We repeat the same example, but don't use parentheses when adding 10. The string 10 is just added to our first element. This is not what we want at all.
+
+11. Associative arrays
+The second type of array in Bash is an associative array. It's index is made of strings that are keys with associated values. This is similar to a dictionary in Python or a list in R. Note this is only available in Bash 4 onwards. In Python you would create a dictionary like so. And a list like this in R.
+
+12. Creating an associative array
+Creating an associative array has slightly different syntax to a normal array. You must use the declare syntax. Either declare first and then add elements later or declare and add in one line. You set keys using square brackets and the values after the equals sign. You may add multiple elements at once.
+
+13. Associative array example
+Let's make an associative array of properties about a city. We declare first using the correct flag and call the array city_details. We set the keys to be the 'city_name' and the 'population' with these associated values. We can index into this array using any of the keys. Here we index using the city_name key and it returns what we expect. New York.
+
+14. Creating an associative array
+The second method is to declare and add elements all on the same line. Everything else such as rules rules around square parentheses, equals signs etc. are followed. Associative arrays have an extra property to normal arrays. You can return the keys using an exclamation sign like here. We see the keys returned.

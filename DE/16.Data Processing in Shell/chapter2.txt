@@ -1,0 +1,106 @@
+1. Getting started with csvkit
+Welcome back! In this lesson, we will explore the basics of csvkit for data processing on the command line.
+
+2. What is csvkit?
+Data processing on the command line is computationally efficient and also quite simple once you are familiar with the syntax. Yet, generations of data professionals gravitate toward Python since it comes pre-built with libraries specific for data handling that bash commands lack. csvkit helps to bridge this gap by bringing a suite of data commands to the command line. Developed by Wireservice using Python, csvkit offers a variety of data conversion, processing and cleaning capabilities that rivals Python, R, and even SQL.
+
+3. csvkit installation
+Because csvkit is written in Python, it can be installed with the Python package manager, pip. The syntax is: pip install csvkit If csvkit is already installed. To upgrade it, run: pip install dash-dash-upgrade csvkit For full instructions, please refer to the tutorial.
+
+4. Browsing the csvkit manual
+Unlike most command-line tools, csvkit, as a whole, does not respond to the man command. Documentation is web-based.
+
+5. in2csv: converting files to CSV
+For each command in the csvkit suite, however, this is different. For example, in2csv is a useful command in csvkit suite that converts tabular data files, like text or Excel, into CSV. There is both a web-based documentation as well as command-line manual, use in2csv-dash-dash-help, or in2csv-dash-h, which prints the log below.
+
+6. in2csv: converting files to CSV
+The syntax involves calling in2csv, followed by the name of the file you wish to convert, in this case, SpotifyData-dot-xlsx. The redirect operator is followed by the name of the newly created CSV file SpotifyData-dot-csv. Please note that in2csv-SpotifyData-dot-xlsx alone just prints to console the data on the first Excel sheet and does not generate a new file. The redirect operator is crucial for redirecting and saving the output in the new file SpotifyData-dot-csv.
+
+7. in2csv: converting files to CSV
+What if the data we want is not in the first sheet? csvkit does let us specify which sheet to convert in an Excel file. First, use the dash-dash-names or dash-n option to print all sheet names in Spotify-data-dot-xlsx. Then, we use dash-dash-sheet to specify that we want to convert worksheet-one-underscore-popularity. Note the quotation marks around the sheet name. We re-direct the output of the conversion to Spotify underscore popularity dot csv.
+
+8. in2csv: converting files to CSV
+Please remember that in2csv does not print any logs to console. For sanity check, we run ls to confirm that the new CSV has been created.
+
+9. csvlook: data preview on the command line
+There are various ways to preview data on the command line, such as cat, less, or more. csvlook, also in the csvkit suite, prints CSV files to the command line in a Markdown-compatible, fixed-width format that's easier on the eye. For documentation, use csvlook dash-h.
+
+10. csvlook: data preview on the command line
+Let's test this out on our newly created CSV file. csvlook Spotify underscore popularity dot csv prints the following output. Pretty great, right?
+
+11. csvstat: descriptive stats on CSV data files
+Our last command for this lesson is csvstat. csvstat is similar to the describe() method in Python's Pandas library. It intelligently deciphers the data type in each column of the CSV file and prints descriptive summary statistics for each column according to its data type, such as mean, median, and unique value counts. For documentation, use csvstat dash-h.
+
+12. csvstat: descriptive stats on CSV data files
+Using the popularity CSV again, this is 1. Filtering data using csvkit
+In the previous lesson, we set ourselves up for success by preparing our data using csvkit. Now we will dig deeper and learn how to use csvkit's data filtering commands.
+
+2. What does it mean to filter data?
+Because our data files are tabular, we can filter by creating a subset of the original data by column or row. We can use the csvcut command to filter data by column. We can use csvgrep to filter by row.
+
+3. csvcut: filtering data by column
+csvcut can filter and truncate CSV files by either column name or column position. For full documentation, use csvcut-dash-h.
+
+4. csvcut: filtering data by column
+If you don't have column names or positions memorized, that's perfectly okay. csvcut has a dash-dash-names or dash-n option, which prints a list of the column names and positions. Using csvcut dash-n Spotify-underscore- music-attributes-dot-csv, we see that Spotify-music-attributes has 3 columns, track-id, danceability, and duration-underscore-ms.
+
+5. csvcut: filtering data by column
+By referring to the output of csvcut-dash-n, we can now filter the data more easily. Suppose we want to return only the first column track_id, we can do so by referring to that column by position using: csvcut dash-c one Spotify-underscore- music-attributes-dot-csv
+
+6. csvcut: filtering data by column
+We can generate the same output by referring to the column name by replacing the 1 with the column name, in double parentheses. Now our code reads: csvcut dash-c quotation-marks-track- underscore-id-end quotation-marks Spotify-underscore- music-attributes-dot-csv The output is the same as before.
+
+7. csvcut: filtering data by column
+You can specify more than one column for filtering. To return the second and third columns, separate the column numbers by commas. Note that there is no space between the numbers two and three. Inserting a space will generate an error. The code reads: csvcut dash-c two-comma-three Spotify-underscore- music-attributes-dot-csv
+
+8. csvcut: filtering data by column
+Same as before, we can generate the same output by replacing the column numbers with names. Note again, that column names are wrapped in double quotations, and the columns are separated by comma, not space. The output is the same as before.
+
+9. csvgrep: filtering data by row value
+csvgrep is our go-to in csvkit for filtering data by row value. Despite its name, csvgrep can filter by both exact match or regex fuzzy match. It's important to remember that csvgrep must be paired with one of these three options dash-m, dash-r, or dash-f. We will focus on dash-m in this lesson. As always, please use the dash-h option for more documentation.
+
+10. csvgrep: filtering data by row value
+Let's say, we want to filter by a certain track-id. We can do so by first isolating the column with csvgrep dash-c quotation marks track id end quotation marks. Then we pass in the exact value that we want to filter by using dash-m followed by the track-id value, with no quotation marks. Finally we pass in the dataset Spotify underscore popularity dot csv. This will return the entire row or rows that contains this track-id. Similar to column filtering with csvcut, we can pass the column location instead. Keeping everything else the same, we replace track-id with the column position number 1 instead. This will give us the same output.
+
+11. Let's do data filtering with csvkit!
+We just keep adding more csvkit commands to our data processing toolkit! Let's put these skills to good use with some exercises!a portion of the summary statistics csvstat prints out for the first column, track id.
+
+13. Let's try some csvkit!
+In this lesson, we learned three commands in the csvkit suite, in2csv, csvlook, and csvstat. Let's put our new knowledge to practice!
+
+----
+1. Stacking data and chaining commands with csvkit
+In this lesson, let's explore some more advanced techniques in csvkit, whether it is to chain multiple commands together, or to process more than one file at a time.
+
+2. csvstack: stacking multiple CSV files
+The csvstack command stacks the rows from two or more CSV files together. This is often used when you have files with the same schema but have been downloaded in chunks due to downloading restrictions such as API request restrictions. The full documentation can be found using csvstack dash-h. But first, let's go over some finer points.
+
+3. csvstack: stacking multiple CSV files
+Suppose we have two files, Spotify rank six dot csv and Spotify rank seven dot csv and we want to stack them together to create one file. csvstack can do this, but first, we need to make sure that the input files have the same number of columns, in the same column order, with the same data types. Let's preview Spotify-rank-six.
+
+4. csvstack: stacking multiple CSV files
+Let's preview Spotify-rank-seven. It looks like both files share the same schema. We are ready for csvstack.
+
+5. csvstack: stacking multiple CSV files
+The syntax for stacking is: csvstack Spotify underscore six dot csv Spotify underscore seven dot csv redirect Spotify underscore all ranks dot csv. Because both files contain two rows each, this results in a four row file for Spotify-all-ranks.
+
+6. csvstack: stacking multiple CSV files
+However, it's not always clear how to trace back which row in the final stacked file came from which source file. To keep a record of the source of the data row, use csvstack's option dash-g followed by a user entered value to create a source column called group. We do this by inserting the following syntax after csvstack: dash-g quotation marks rank six end quotation marks, comma, quotation marks rank seven end quotation marks Please note that the backslash is for line overflow. Now when we preview the new Spotify-AllRanks file, we see that there's a new column, by default, named group, that has the value Rank6 for every row that came from Spotify-rank-six-dot-csv and the value Rank7 for every row that came from Spotify-rank-seven-dot-csv.
+
+7. csvstack: stacking multiple CSV files
+Finally, if we want to rename the column from group to something else, we can also do so by adding dash-n followed by the new column name. Here, by adding dash n quotation marks source end quotation marks, we have renamed the column from group to source.
+
+8. chaining command-line commands
+The more we use command-line tools, the more we start structuring complex commands. Just like in English where we start combining independent sentences with conjunctions to form complex sentences, in command-line, we use operators to chain together commands in the same line. The semi-colon operator links and runs multiple commands in a single line in the command-line, sequentially. Here, we will get both csvlook and csvstat outputs for the same file. The double AND operator also links commands together, but the second command will only execute if the first command succeeds. Here, csvstat will only run after csvlook succeeds.
+
+9. chaining command-line commands
+We are already familiar with the re-direct operator. This re-directs the output from the first command and saves it to the location in the second command.
+
+10. chaining command-line commands
+The PIPE operator uses the output of the first command as input to the second command. Here, csvcut filters the data and prints columns track-id and danceability, but notice that the output is not well formatted.
+
+11. chaining command-line commands
+By passing the output of csvcut as input to csvlook using the pipe operator, the results are printed much more neatly.
+
+12. Let's put everything together!
+We have learned a lot about data processing with various csvkit commands. Let's practice putting everything together!

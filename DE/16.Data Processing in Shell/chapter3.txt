@@ -1,0 +1,54 @@
+1. Pulling data from databases
+Welcome back! In this chapter, we will learn how the csvkit library brings SQL-like functionalities to the command line. First, let's see how we can pull data from databases using the command sql2csv.
+
+2. sql2csv: documentation
+sql2csv is a command in the csvkit library that allows us to access a variety of popular SQL databases and dialects, including Microsoft SQL Server, MySQL, Oracle, PostgreSQL, and Sqlite. The beauty of this is that sql2csv gives us access via the command line without having to go through database clients like PgAdmin or TablePlus. Like the name suggests, sql2csv executes SQL commands, pulls data from the database, and saves the results as a local CSV file. For full documentation, use sql2csv dash-h.
+
+3. sql2csv: querying against the database
+The syntax for sql2csv is fairly involved, so let's take this step by step. First, the entirety of the code block here is one command. Because the syntax is so long, for readability purposes, we need to break it into several lines by using the back-slash at the end of each line. The back-slash tells our terminal that this particular command hasn't finished yet and needs to continue on in the next line. While you might not need to do this if you are typing directly into the terminal, this is helpful to know if you are saving your commands in, say, a shell script. Each language has its own styling guide for how long a line of code can be. For shell scripts, the limit is 80 characters per line. sql2csv needs us to tell it how to connect to the database. This is done using the dash-dash-d-b option, followed by a string, in quotation marks, denoting the database connection and location. Because sql2csv is compatible with multiple types of SQL databases, the syntax also varies for each type. For example, for SQLite databases, the string starts with sqlite colon three forward slashes, followed by the database name, in this case Spotify-database, and then ends with dot-d-b, short for database. Had this been a Postgres or MySQL database, then the string would have started with postgres colon three forward slashes or mysql colon three forward-slashes, but there would be no need for the ending database extension.
+
+4. sql2csv: querying against the database
+The second part of this command is the dash-dash-query option. Here, we pass in the SQL query to be used to pull data from the tables stored in the database. Like with the previous argument, the SQL query is also a string so it also needs to be in quotation marks. For our sample syntax, the Spotify-database has a table called Spotify underscore popularity. To pull all the data from this table, we pass in the query quotation marks select star from Spotify underscore popularity end quotation marks. Two things worth noting. One, different databases have slightly different variations on SQL syntax. Always use the SQL syntax that is compatible with the database specified. Two, the query string always needs to be written in one single line, no matter how long or complex the query. Otherwise, it would lead to unexpected errors.
+
+5. sql2csv: querying against the database
+Lastly, if we do not re-direct the output of our SQL query, then sql2csv will simply print all the query results in the console log. The re-direct sign takes our query results and saves it to a new CSV file in our current directory. Here, we save the output to Spotify underscore popularity dot csv.
+
+6. Let's practice!
+That's a lot going on with just one sql2csv command! Let's put our new knowledge to practice!
+--------
+1. Manipulating data using SQL syntax
+You don't necessarily need to be a die-hard SQL fan to appreciate that sometimes data manipulation tasks are just easier with SQL. csvkit has a command csvsql that allows us to apply SQL-like syntax to local CSV files, without needing to set up a local database.
+
+2. csvsql: documentation
+csvsql is a command in the csvkit library that allows us to apply SQL-like statements to one or more locally saved CSV files. Under the hood, this works because csvsql creates an in-memory SQL database that temporarily hosts the entire CSV file you are processing. This means that, while convenient, this command is not suitable for large file processing or complex SQL querying. For full documentation, use csvsql dash-h.
+
+3. csvsql: applying SQL to a local CSV file
+Let's set up an example where we have a CSV file Spotify underscore music attributes dot csv in our current directory.
+
+4. csvsql: applying SQL to a local CSV file
+If we wish to print only the first row in this CSV, one of many ways we can do so is by applying SQL syntax to Spotify music attributes via the csvsql command. csvsql takes in the SQL query by first, using the dash-dash-query option, followed by the SQL query in quotation marks, as a string. The SQL query is written as though Spotify music attributes is a table that has been loaded into a database. Please note, that it is crucial to follow the SQL query with the exact location of the data file we are referencing, relative to the current file directory. Otherwise, csvsql will not know where to look for the data file. To put everything together, the code reads: csvsql dash dash query quotation marks select star from Spotify underscore music attributes limit 1 end quotation marks Spotify underscore music attributes dot csv. This prints the first row of the data stored in the Spotify music attributes CSV file.
+
+5. csvsql: applying SQL to a local CSV file
+If we want a prettier printout, we can always pipe the results of our csvsql query to csvlook by attaching pipe-csvlook at the end of our command. Now, it's much easier to see which data point belongs to which column!
+
+6. csvsql: applying SQL to a local CSV file
+Lastly, if we want to save the results to a new file, we can use the re-direct operator to save the output to one-song-file-dot-csv. When the command executes, there is nothing printed to console. For a sanity check, we use ls to confirm that the file is created correctly.
+
+7. csvsql: joining CSVs using SQL syntax
+csvsql can even be applied to more than 1 csv file at a time! As seen here, you can even join two CSV files file-a and file-b using SQL join syntax. A few key notes are that one, the SQL query, no matter how long or complex, must be written in one line with no line breaks. Sadly, because of limitations to our slide size, the rest of the query is abbreviated using dot-dot-dot. Secondly, any files that are mentioned in the query must be noted after the query ends, in the order of the file appearance in the SQL query. In this case, we referenced file-a first in our join then file-b, so the order is file underscore a dot csv space file underscore b dot csv
+---------
+
+1. Pushing data back to database
+We've used commands in csvkit to do a variety of tasks related to the database. We've pulled data. We've manipulated data. Now let's learn how to push data back to the database.
+
+2. csvsql: documentation
+Our friend csvsql makes a re-appearance here, since it pulls double duty for manipulating local CSV files with SQL statements as well as uploading and pushing CSV data back to the database. In our previous lesson, we focused on the dash-dash-query portion of csvsql. Here, we will focus on some more option arguments, dash-dash-insert, dash-dash-d-b, dash-dash-no-inference, and dash-dash-no-constraints.
+
+3. csvsql: pushing data back to database
+Here's a sample script that uses csvsql to upload a local CSV file Spotify underscore music attributes dot-csv to an existing SQLite database called Spotify-database. The syntax for this task starts with csvsql and the dash-dash-d-b flag followed by the full database name, to establish location of the database. Remember to pass this in as a string, inside quotation marks. Please note, a quick built-in line break is used here to keep our code clean and readable. It's worth noting that we used three forward slashes after naming the database type, which is normal. However, because this is a sqlite database, we need to end the database with the file extension dot-d-b.
+
+4. csvsql: pushing data back to database
+Still the same command, but now let's focus on the second option, dash-dash-insert. This is new to us and is very interesting because the insert option does many things all in one step. Traditionally, uploading a new file as a table in a database has multiple steps. Depending on your SQL client or user interface, you might need to create an empty table, specify the table schema, key the table and then write in the data row by row. Here, dash-dash-insert will take care of all of these steps by itself, by making its best-guess at what the schema of the table should be. Pretty neat, right? The insert option can only be used in conjunction with the db option, which should makes sense, because if we don't specify where the database is, we cannot insert data into the database.
+
+5. csvsql: pushing data back to database
+Lastly and unfortunately, csvsql is not always going to be 100% failsafe when it comes to schema inference. If you know that your data have a numbers column that should rather be treated as a text column instead, then you can preemptively account for this by using the dash-dash-no-inference option flag with csvsql. This way, csvsql will treat every column as text, whether it looks like numbers, dates, or string. Likewise, dash-dash no-constraints allows the table to be created without any character length limits, which is helpful for particularly large data tables and considerably speeds up the insertion process. It will allow you to create columns containing all null data, without throwing any errors.

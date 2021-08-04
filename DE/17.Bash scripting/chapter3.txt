@@ -1,0 +1,35 @@
+1. IF statements
+An important addition to controlling your Bash scripts is to conditionally execute code IF a condition is met. Let's learn how to do that now!
+
+2. A basic IF statement
+A basic IF statement has the following structure. You start by setting up the condition with the word 'if' followed by (in square brackets) the condition. Next is a semi-colon. Then, the word 'then'. You then add your code to execute if the condition is true. Optionally you can have an else component, which executes if the condition specified is not true. You finish with the word 'fi' which is IF backwards. Two useful tips for IF statements are as follows. You need spaces between elements inside your square brackets. And don't forget the semi-colon!
+
+3. IF statement and strings
+Let's look at a basic string comparison IF statement. This code sets a variable to be 'Queen'. It then checks if that string is equal to 'King'. If so, it should print out that the string is a King If not (using else) it will print out that the string is not a king. It correctly returns that the string is not equal to 'King'. You can also use an exclamation mark and an equals sign for 'not equal to'.
+
+4. Arithmetic IF statements (option 1)
+You can use the double parenthesis structure instead of square brackets for numerical comparisons using traditional mathematical comparison symbols. Here we set a variable to equal ten for testing purposes. Then check if it is more than 5 using double parenthesis and the traditional 'greater-than' symbol. The code correctly returns what we expect.
+
+5. Arithmetic IF statements (option 2)
+You can also use special flags for numerical comparisons using the square brackets. The flags e q and n e for 'equal to' or 'not equal to'. The flags l t and l e for 'less than' or 'less than or equal to'. Or the flags g t and g e for 'greater than' or 'greater than or equal to'.
+
+6. Arithmetic IF statement example
+We can re-create the previous double-parenthesis example using square brackets and flags. We again set a variable to equal 10 and then ask if it is 'greater than' 5 using the g t flag. The code returns the same as before.
+
+7. Other Bash conditional flags
+There are a variety of other file related flags that may be useful for conditional checking. A selection is noted here, such as whether the file exists and certain properties of the file. This is not an exhaustive list. Check out this link for more flags you can use.
+
+8. Using AND and OR in Bash
+You can also combine multiple conditions using AND notation as well as OR notation. AND notation is a double ampersand. OR notation is a double pipe.
+
+9. Multiple conditions
+To use multiple conditions, such as using an AND or an OR statement, you can either chain it and make multiple square-bracket conditions as follows. Here we test if the variable is both greater than 5 AND less than 11. Or you can put it all inside double square brackets. Both of these examples will produce the same result.
+
+10. IF and command-line programs
+You can also access and use command-line programs directly in the conditional. Let's see an example where we have a file called words dot text which has the string 'Hello World' inside. This is how we could construct a conditional using grep. The q flag is for 'quiet' so it doesn't return the matched lines like grep normally does. It just returns true if any lines match. As expected, the program returns the true code.
+
+11. IF with shell-within-a-shell
+You can also call a shell-within-a-shell, just like you did in previous lessons, but here as part of your conditional. We can rewrite the last example to demonstrate this. The result is the same.
+-------------
+
+--------------
