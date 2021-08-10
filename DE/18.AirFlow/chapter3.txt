@@ -1,0 +1,24 @@
+1. Airflow sensors
+Welcome back! Now that we've gotten some practice using operators and tasks within Airflow, let's look at a special kind of operator called a sensor.
+
+2. Sensors
+A sensor is a special kind of operator that waits for a certain condition to be true. Some examples of conditions include waiting for the creation of a file, uploading a database record, or a specific response from a web request. With sensors, you can define how often to check for the condition(s) to be true. Since sensors are a type of operator, they are assigned to tasks just like normal operators. This means you can apply the bitshift dependencies to them as well.
+
+3. Sensor details
+All sensors are derived from the airflow dot sensors dot base underscore sensor underscore operator class. There are some default arguments available to all sensors, including mode, poke_interval, and timeout. The mode tells the sensor how to check for the condition and has two options, poke or reschedule. The default is poke, and means to continue checking until complete without giving up a worker slot. Reschedule means to give up the worker slot and wait for another slot to become available. We'll discuss worker slots in the next lesson, but for now consider a worker slot to be the capability to run a task. The poke_interval is used in the poke mode, and tells Airflow how often to check for the condition. This is should be at least 1 minute to keep from overloading the Airflow scheduler. The timeout field is how long to wait (in seconds) before marking the sensor task as failed. To avoid issues, make sure your timeout is significantly shorter than your schedule interval. Note that as sensors are operators, they also include normal operator attributes such as task_id and dag.
+
+4. File sensor
+A useful sensor is the FileSensor, found in the airflow dot contrib dot sensors library. The FileSensor checks for the existence of a file at a certain location in the file system. It can also check for any files within a given directory. A quick example is importing the FileSensor object, then defining a task called file underscore sensor underscore task. We set the task_id and dag entries as usual. The filepath argument is set to salesdata.csv, looking for a file with this filename to exist before continuing. We set the poke_interval to 300 seconds, or to repeat the check every 5 minutes until true. Finally, we use the bitshift operators to define the sensor's dependencies within our DAG. In this case, we must run init_sales_cleanup, then wait for the file_sensor_task to finish, then we run generate_report.
+
+5. Other sensors
+There are many types of sensors available within Airflow. The ExternalTaskSensor waits for a task in a separate DAG to complete. This allows a loose connection to other workflow tasks without making any one workflow too complex. The HttpSensor will request a web URL and allow you define the content to check for. The SqlSensor runs a SQL query to check for content. Many other sensors are available in the airflow dot sensors and airflow dot contrib dot sensors libraries.
+
+6. Why sensors?
+You may be wondering when to use a sensor vs an operator. For the most part, you'll want to use a normal operator unless you have any of the following requirements: You're uncertain when a condition will be true. If you know something will complete that day but it might vary by an hour or so, you can use a sensor to check until it is. If you want to continue to check for a condition but not necessarily fail the entire DAG immediately. This provides some flexibility in defining your DAG. Finally, if you want to repeatedly run a check without adding cycles to your DAG, sensors are a good choice.
+-----
+
+
+----
+
+
+----

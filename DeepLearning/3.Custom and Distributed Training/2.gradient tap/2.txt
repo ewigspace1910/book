@@ -1,0 +1,67 @@
+Previously, you saw
+how GradientTape can be used to do a
+very simple training, providing the
+differentiation services that can implement
+a basic optimizer. This video, you'll go into a little more detail
+in how that works. Here's an approach of how we can implement a training step of a learning algorithm using
+Tensorflow's GradientTape API. To perform a training step, you need to complete
+two crucial stages of a learning algorithm inside the current context
+of a GradientTape. The first one involves invoking the forward pass of your model. In this example, you invoke
+the forward pass by calling model and storing the predictions in the variable called logits. In Machine Learning, logits
+refer to a vector of raw prediction values for each category and a
+multi-class classification. These logits are not yet
+scaled to add up to one, so the logits are normally
+fed into a softmax function, to turn them into probabilities
+for each category. Another thing that you
+have to calculate is the loss obtained at
+each forward pass. Here we can do this by calling a function called loss object, which takes in the true labels in the logits to calculate
+the loss value. The loss value allows
+you to update the model in order to reduce the
+model's prediction errors. You'll save the loss at this
+training step by appending the average loss to a
+list called loss history. You'll also need to
+compute the gradients with respect to the
+models variables. You'll do this by calling
+tape dot gradient, and first passing into loss, and then all of the models
+trainable variables. The results stored in
+the variable named grads contains the
+gradients of the loss with respect to each
+trainable variable. Finally, you'll apply
+these gradients on an optimizer by calling
+optimizer dot apply gradients. Eventually, you would
+end up executing this training step in a
+custom training loop. You'll see how to use custom training loops in a
+lot more detail next week. Now let's see how to
+use GradientTape to calculate the gradients
+of a simple equation. In this case, we're setting
+the loss equal to W times W, and you may recall from
+calculus that the derivative of W squared is two times W. So, the gradient of loss with
+respect to W is two times W. In the previous example, you had seen how a
+model's forward pass is computed with GradientTape, we will do the same here, but use our W squared
+equation instead. To start , we will have
+to record values of this operation executed
+inside the context, using Python's with as syntax and writing with TF dot
+GradientTape as a tape. We can then get
+Tensorflow's GradientTape contexts Manager to keep track of all operations executed inside the context onto a tape. The idea of a tape here, is that the gradients
+are remembered and stored while they're
+in the context, a little bit like
+music on a tape, and they're disposed off
+once the context is done. For this scenario, they don't really need to be stored per se, but in advanced scenarios, you might want to
+differentiate a differential, effectively stacking operations
+and keeping track of the previous values in that
+context may be necessary. With that in mind, the
+context-based objects using Python's with as syntax
+was chosen for this API. Next, similar to how you calculate derivative of
+functions in calculus, you can call tape dot
+gradients to compute the gradient of loss
+with respect to the input value W. We purposely chose a simple
+expression for the loss, so that we could calculate
+the gradient by hand and compare it with the gradient calculated by GradientTape. If the loss is W squared, then its gradient with
+respect to W is two times W. When we set W equal to one, then the gradient is two
+times one, which is two. Using GradientTape to
+do the same thing, defining W to be a
+tensor with the value one and calling tape dot gradient passing in the loss and W, we will get back a
+tensor containing two. When working with
+real loss functions, that can be more complicated, and you won't want to calculate
+the gradient by hand, so you can just use GradientTape
+to calculate it for you.

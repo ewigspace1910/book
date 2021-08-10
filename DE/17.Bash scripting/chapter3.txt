@@ -31,5 +31,58 @@ You can also access and use command-line programs directly in the conditional. L
 11. IF with shell-within-a-shell
 You can also call a shell-within-a-shell, just like you did in previous lessons, but here as part of your conditional. We can rewrite the last example to demonstrate this. The result is the same.
 -------------
+Got It!
+1. FOR loops & WHILE statements
+In this lesson, you will learn to loop in Bash scripts with FOR and WHILE. Let's get started!
 
+2. Basic FOR Loop structure
+You may be familiar with using FOR loops from either Python. Or R.
+
+3. FOR Loop in Bash
+A Bash FOR loop is similar, The syntax still begins with FOR something in something. However, there is 'do' before and 'done' after the iterated code. The output is the same as the R and Python examples.
+
+4. FOR loop number ranges
+In Bash, there is a neat shortcut to create a numeric range to iterate through. This is called a 'brace expansion' and uses curly brackets. Inside curly brackets put the starting number, two periods, the last number, two periods and the increment to increase by. The increment defaults to one if not specified. Let's create a brace expansion to start at one, finish at five and increase by two. The iterated code will just echo the looped variable. Indeed, the numbers one, three, and five are printed out.
+
+5. FOR loop three expression syntax
+For numerical loops, Bash also has something called 'three expression syntax'. This is similar to brace expansion, except with double parenthesis. The first is the start expression, where you assign the variable to increment. The second part is the terminating condition. That is, when you stop the looping. The last is the expression for how to change the created variable in the loop. Our example should assign X to the value of two, continue until X is no longer less than or equal to 4 and increment by two. The output is as expected; two and four.
+
+6. Glob expansions
+You can create iterables in-place using 'glob expansions' or pattern-matching expansions using the star symbol. This will look similar to pattern-matching in terminal. In this example, pretend there are two text documents in the books directory. In this FOR loop, we use glob expansion to automatically create an array to iterate over and print out the file name. Inside the code is just printing out each file in turn.
+
+7. Shell-within-a-shell revisited
+Do you remember our handy shell-within-a-shell technique? You can also use this to create iterables in-place to loop through. Assume we have the following folder structure with some text and CSV files.
+
+8. Shell-within-a-shell to FOR loop
+We could call a shell-within-a-shell and loop through the result. Here we use ls to list all the files and pipe to a grep pattern-match to only keep those with 'air' in their name (case insensitive). Inside the FOR loop we just print out each variable. As expected, we print only the files with 'air' in the filename.
+
+9. WHILE statement syntax
+WHILE loops are similar to FOR loops. However, instead of a defined set to loop over, a WHILE loop sets a condition to test each iteration. Iteration continues until this condition is no longer true. You start by using the word WHILE instead of FOR. Then wrap a condition to check at each iteration in square brackets. For numerical conditions, the same comparisons you learned from IF statements can be used. Multiple conditions can be used just the same as IF statements. Make sure you make a change inside that eventually triggers the stop condition else you may have an infinite loop!
+
+10. WHILE statement example
+Here is a simple WHILE loop example. The variable x is set to one to start. The condition in square brackets is to continue while x is less than or equal to three. At each iteration, the value of x is printed out. Then x is increased by one using the double parenthesis arithmetic method you previously learned about. As expected, the numbers one to three are printed out.
+
+11. Beware the infinite loop
+Beware infinite loops. Without increasing x at each iteration, the condition will never be broken (x will never reach three). In this example, we comment out the x increment. This will print out 1 forever!
+
+12. Let's practice!
+Let's practice creating FOR and WHILE loops in Bash.
 --------------
+1. CASE statements
+Let's learn about CASE statements and how they can help us with tricky IF statement scenarios.
+
+2. The need for CASE statements
+CASE statements help create clearer and more efficient code in cases of complex or multiple (perhaps nested) IF statements. Consider the following example of conditionals and actions for a data processing pipeline. If a file contains the word 'sydney' then move it into the 'sydney' directory. If it contains 'melbourne' or 'brisbane' then delete it. Or if it contains the word 'canberra' then change the filename to pre-pend the word IMPORTANT in front of the original filename.
+
+3. A complex IF statement
+You already know how to construct multiple IF statements like as follows. We assume you feed in the filename as the first ARGV argument. Then grep checks inside for the words noted previously. Doesn't this seem complex and repetitious?
+
+4. Build a CASE statement
+Let's break down the basic CASE statement structure format on the right. Start by identifying which variable or string to match against. This is done by stating case SOMETHING in. The SOMETHING can be a string or a variable. We'll call it STRINGVAR here for convenience. You could even call a shell-within-a-shell and match against the result of this! Then add as many patterns and commands as you like. The STRINGVAR will be checked against each PATTERN and if it matches then the associated code will be run. You can use regex here for the pattern matching if you like. Such as air-star for 'beginning with air'. Remember, each pattern and command need to be separated by a close-parenthesis. Also finish each pattern-command combination with double semi-colons.
+
+5. Build a CASE statement
+The last two parts of the CASE statement are as follows. The default match. It is common, though not required, to have a default condition by matching on just a star symbol. If all other pattern matching fails, the code for the default match will run. esac. Finally, finish with the word 'esac'. Which is CASE backwards!
+
+6. From IF to CASE
+Let's see the old IF statement previously created here. We can now turn it into a CASE statement using what we learned. We assume the first ARGV element is a filename which we concatenate into the variable to match against. Remember we said we could use a shell-within-a-shell right here? We can use stars on either side of the words as we are regex matching, so the text can have anything before or after our desired word. Notice also the use of OR in the second match for Melbourne OR Brisbane. Finally, we add a default condition printing out that it wasn't recognized.
+------------

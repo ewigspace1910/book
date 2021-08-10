@@ -1,0 +1,91 @@
+2. What is data engineering?
+Before getting into workflows and Airflow, let's discuss a bit about data engineering. While there are many specific definitions based on context, the general meaning behind data engineering is taking any action involving data and making it a reliable, repeatable, and maintainable process.
+
+3. What is a workflow?
+Before we can really discuss Airflow, we need to talk about workflows. A workflow is a set of steps to accomplish a given data engineering task. These can include any given task, such as downloading a file, copying data, filtering information, writing to a database, and so forth. A workflow is of varying levels of complexity. Some workflows may only have 2 or 3 steps, while others consist of hundreds of components. The complexity of a workflow is completely dependent on the needs of the user. We show an example of a possible workflow to the right. It's important to note that we're defining a workflow here in a general data engineering sense. This is an informal definition to introduce the concept. As you'll see later, workflow can have specific meaning within specific tools.
+
+4. What is Airflow?
+Airflow is a platform to program workflows (general), including the creation, scheduling, and monitoring of said workflows.
+
+5. Airflow continued...
+Airflow can use various tools and languages, but the actual workflow code is written with Python. Airflow implements workflows as DAGs, or Directed Acyclic Graphs. We'll discuss exactly what this means throughout this course, but for now think of it as a set of tasks and the dependencies between them. Airflow can be accessed and controlled via code, via the command-line, or via a built-in web interface. We'll look at all these options later on.
+
+1 https://airflow.apache.org/docs/stable/
+6. Other workflow tools
+Airflow is not the only tool available for running data engineering workflows. Some other options are Spotify's Luigi, Microsoft's SSIS, or even just Bash scripting. We'll use some Bash scripting within our Airflow usage, but otherwise we'll focus on Airflow.
+
+7. Quick introduction to DAGs
+A DAG stands for a Directed Acyclic Graph. In Airflow, this represents the set of tasks that make up your workflow. It consists of the tasks and the dependencies between tasks. DAGs are created with various details about the DAG, including the name, start date, owner, email alerting options, etc.
+
+8. DAG code example
+We will go into further detail in the next lesson but a very simple DAG is defined using the following code. A new DAG is created with the dag_id of etl_pipeline and a default_args dictionary containing a start_date for the DAG. Note that within any Python code, this is referred to via the variable identifier, etl_dag, but within the Airflow shell command, you must use the dag_id.
+
+9. Running a workflow in Airflow
+To get started, let's look at how to run a component of an Airflow workflow. These components are called tasks and simply represent a portion of the workflow. We'll go into further detail in later chapters. There are several ways to run a task, but one of the simplest is using the airflow run shell command. Airflow run takes three arguments, a dag_id, a task_id, and a start_date. All of these arguments have specific meaning and will make more sense later in the course. For our example, we'll use a dag_id of example-etl, a task named download-file, and a start date of 2020-01-10. This task would simply download a specific file, perhaps a daily update from a remote source. Our command as such is airflow run example-etl download-file 2020-01-10. This will then run the specified task within Airflow.
+----------------
+
+1. Airflow DAGs
+Welcome back! You've successfully interacted with some basic Airflow workflows via the command line. Let's now take a look at the primary building block of those workflows - the DAG.
+
+2. What is a DAG?
+Our first question is what is a DAG? Beyond any specific mathematical meaning, a DAG, or Directed Acyclic Graph, has the following attributes: It is Directed, meaning there is an inherent flow representing the dependencies or order between execution of components. These dependencies (even implicit ones) provide context to the tools on how to order the running of components. A DAG is also Acyclic - it does not loop or repeat. This does not imply that the entire DAG cannot be rerun, only that the individual components are executed once per run. In this case, a Graph represents the components and the relationships (or dependencies) between them. The term DAG is found often in data engineering, not just in Airflow but also Apache Spark, Luigi, and others.
+
+1 https://en.m.wikipedia.org/wiki/Directed_acyclic_graph
+3. DAG in Airflow
+As we're working with Airflow, let's look at its implementation of the DAG concept. Within Airflow, DAGs are written in Python, but can use components written in other languages or technologies. This means we'll define the DAG using Python, but we could include Bash scripts, other executables, Spark jobs, and so on. Airflow DAGs are made up of components to be executed, such as operators, sensors, etc. Airflow typically refers to these as tasks. We'll cover these in much greater depth later on, but for now think of a task as a thing within the workflow that needs to be done. Airflow DAGs contain dependencies that are defined, either explicitly or implicitly. These dependencies define the execution order so Airflow knows which components should be run at what point within the workflow. For example, you would likely want to copy a file to a server prior to trying to import it to a database.
+
+4. Define a DAG
+Let's look at defining a simple DAG within Airflow. When defining the DAG in Python, you must first import the DAG object from airflow dot models. Once imported, we create a default arguments dictionary consisting of attributes that will be applied to the components of our DAG. These attributes are optional, but provide a lot of power to define the runtime behavior of Airflow. Here we define the owner name as jdoe, an email address for any alerting, and specify the start date of the DAG. The start date represents the earliest datetime that a DAG could be run. Finally, we define our DAG object with the first argument using a name for the DAG, etl underscore workflow, and assign the default arguments dictionary to the default underscore args argument. There are many other optional configurations we will use later on. Note that the entire DAG is assigned to a variable called etl underscore dag. This will be used later when defining the components of the DAG, but the variable name etl underscore dag does not actually appear in the Airflow interfaces. Note, DAG is case sensitive in Python code.
+
+5. DAGs on the command line
+When working with DAGs (and Airflow in general), you'll often want to use the airflow command line tool. The airflow command line program contains many subcommands that handle various aspects of running Airflow. You've used a couple of these already in previous exercises. Use the airflow dash h command for help and descriptions of the subcommands. Many of these subcommands are related to DAGs. You can use the airflow list underscore dags option to see all recognized DAGs in an installation. When in doubt, try a few different commands to find the information you're looking for.
+
+6. Command line vs Python
+You may be wondering when to use the Airflow command line tool vs writing Python. In general, the airflow command line program is used to start Airflow processes (ie, webserver or scheduler), manually run DAGs or tasks, and review logging information. Python code itself is usually used in the creation and editing of a DAG, not to mention the actual data processing code itself.
+
+
+-----------------
+2. DAGs view
+The Airflow web UI is made up of several primary page groups useful in developing and administering workflows on the Airflow platform. Note that for this course, we'll only be focusing on a few pages but it's helpful to click around the various options and get familiar with what's available. The DAGs view of the Airflow UI is the page we'll spend most of our time.
+
+3. DAGs view DAGs
+It provides a quick status of the number of DAGs / workflows available.
+
+4. DAGs view schedule
+It shows us the schedule for the DAG (in date or cron format).
+
+5. DAGs view owner
+We can see the owner of the DAG.
+
+6. DAGs view recent tasks
+which of the most recent tasks have run,
+
+7. DAGs view last run
+when the last run started,
+
+8. DAGs view last three
+and the last three DAG runs.
+
+9. DAGs view links
+The links area on the right gives us quick access to many of the DAG specific views.
+
+10. DAGs view example_dag
+Don't worry about those for now - instead we'll click on the "example_dag" link which takes us to our DAG detail page.
+
+11. DAG detail view
+The DAG detail view gives us specific access to information about the DAG itself, including several views of information (Graph, Tree, and Code) illustrating the tasks and dependencies in the code. We also get access to the Task duration, task tries, timings, a Gantt chart view, and specific details about the DAG. We have the ability to trigger the DAG (to start), refresh our view, and delete the DAG if we desire. The detail view defaults to the Tree view, showing the specific named tasks, which operators are in use, and any dependencies between tasks. The circles in front of the words represent the state of the task / DAG. In the case of our specific DAG, we see that we have one task called generate_random_number.
+
+12. DAG graph view
+The DAG graph view arranges the tasks and dependencies in a chart format - this provides another view into the flow of the DAG. You can see the operators in use and the state of the tasks at any point in time. The tree and graph view provide different information depending on what you'd like to know. Try moving between them when examining a DAG to obtain further details. For this view we again see that we have a task called generate_random_number. We can also see that it is of the type BashOperator in the middle left of the image.
+
+13. DAG code view
+The DAG code view does exactly as it sounds - it provides a copy of the Python code that makes up the DAG. The code view provides easy access to exactly what defines the DAG without clicking in various portions of the UI. As you use Airflow, you'll determine which tools work best for you. It is worth noting that the code view is read-only. Any DAG code changes must be done via the actual DAG script. In this view, we can finally see the code making up the generate_random_number task and that it runs the bash command echo $RANDOM.
+
+14. Logs
+The Logs page, under the Browse menu option, provides troubleshooting and audit ability while using Airflow. This includes items such as starting the Airflow webserver, viewing the graph or tree nodes, creating users, starting DAGs, etc. When using Airflow, look at the logs often to become more familiar with the types of information included, and also what happens behind the scenes of an Airflow install. Note that you'll often refer to the Event type present on the Logs view when searching (such as graph, tree, cli scheduler).
+
+15. Web UI vs command line
+In most circumstances, you can choose between using the Airflow web UI or the command line tool based on your preference. The web UI is often easier to use overall. The command line tool may be simpler to access depending on settings (via SSH, etc.)
+
+
+
