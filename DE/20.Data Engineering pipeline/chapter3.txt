@@ -1,0 +1,94 @@
+1. On the importance of tests
+Ready for the next step in building pipelines? We already know how to ingest data and how to deal with big datasets. Now let’s make our code more robust and reusable.
+
+2. Software tends to change
+A software product, like a browser app, is rarely ever finished. It is natural for a product to change, because different or more functionality is requested. Also, problems get found and need to be resolved, like incorrect calculations or poor responsiveness. However, key aspects of a product also need to stay constant. Code that calculates people’s wages based on the hours they worked had better be constant and well tested. So how do you ensure core functionality remains stable in the light of changes?
+
+3. Rationale behind testing
+The answer is tests. Tests are written and executed to assert our expectations are matched. By committing tests to our code base, we have a written copy of our expectations as they were at some time in the past. So, having tests reduces the chances of introducing breaking changes. If you need to change a small function somewhere so that it returns a tuple, rather than a single object, how sure are you that that function wasn’t used elsewhere where it required the return value to be a single object? Without tests, you would not be informed until this function was called. This is costly. Automated tests help in preventing this. Tests are rarely exhaustive though. A function that tests whether a certain day is a holiday, would need to test every day of every year to be sure it works. You would need a lookup table of thousands of records. Clearly this is insane. Instead, we choose to test only a few samples. Therefore, tests don’t assert correctness in all cases. But they raise confidence that our expectations are met in a few cases and that already is a very good reason to have them. Another great argument for the need of tests is that they are the most up-to-date form of documentation. Oftentimes, people write documents describing the functionality of some piece of software manually. That’s fine, as long as the description remains high-level. Details about certain functions should be avoided, because they have a tendency to grow out of sync with what’s actually running. A well-written test can clarify what a piece of code does, even if it treats that piece as a black box. There are more reasons to test code, but these three reasons alone should provide sufficient incentive to have them.
+
+4. The test pyramid: where to invest your efforts
+Now, sometimes people avoid writing tests, because it takes time they believe is better spent on adding more features to software. While it is true that testing takes time, it is an investment that pays back as your project gets bigger, especially when tests aren’t duplicated at different places and test non-trivial parts. A useful concept to keep in mind when designing tests, is the test pyramid. It tells you where to invest your efforts. Testing pieces of code that do not rely on integration with external components are unit tests.
+
+5. The test pyramid: where to invest your efforts
+These can run fast and their development effort is cheap. An example of this is a data cleaning function that transforms all variations of yes and no strings to proper booleans. Because these tests run so fast, you should have many of them.
+
+6. The test pyramid: where to invest your efforts
+Interactions with file systems and databases are integration tests or service tests, as they integrate different services or components. They run more slowly and their setup also takes more effort. You can have less of them, because your unit tests should already cover some parts, like the conversion to booleans before inserting records into a database.
+
+7. The test pyramid: where to invest your efforts
+The same goes for end-to-end tests, which often mimic the experience a user would get when interacting through a user interface (UI). They’re even more costly, as they run slowly and are often difficult to write robustly, but are close to the end-user’s experience.
+--------
+1. Continuous testing
+Welcome back. Now that you’re able to refactor code and write unit tests, you still have to actually run those tests. In this lesson, we’ll see how that can be done.
+
+2. Running a test suite
+Many programming languages provide functionality to execute tests. In Python, there are several modules that do this. The best known ones are unittest, doctest, pytest and nose, of which only the first two are in the standard library. In all cases, these tools look for modules, classes and functions that are marked in a special way, for example by having the prefix “test”. They drill down to find code that can be executed and then execute it. Their core task is to assert something, for example that a computed value equals an expected value, or that an error was raised.
+
+3. Manually triggering tests
+The great feature about these frameworks is that they generate a report at the end of a run, summarizing which tests passed and which failed, often with some extra information to help debugging. If a command ran unsuccessfully, like in this example, the exit code will be non-zero. One small remark here: in the first lesson of this chapter we said that unit tests were supposed to run fast. Two seconds for a single test is a long time. Spark and other distributed computing frameworks add overhead in tests.
+
+4. Automating tests
+Automation is one of the prime objectives of a data engineer. Running unit tests manually is tedious and error-prone, as you might forget to run it after a series of changes to your code. If you’re working professionally with code, you’re using some sort of version control system, like git. In many version control systems you can configure certain scripts to be run when you change code. This is great, as it can give you rapid feedback on the changes you made. You would do well to explore the options provided by your version control system. The second line of defense is your project’s CI / CD pipeline. Let’s see what that is.
+
+5. CI/CD
+CI/CD stands for Continuous Integration and Continuous Delivery. The first term has come to represent the practice of integrating code changes as soon as possible with the code that runs in production, which is called the master branch. This should only be allowed if the changes didn’t break anything, which tests can detect to some degree. So Continuous Integration focuses a lot on running tests and having plenty of them. The second term means that all artifacts should always be in deployable state at any time without any problem. When you push your code as part of some version control system to some remote server, you can also trigger running unit tests and static code checks, like compliancy with PEP8, which is the Python style guide.
+
+6. Configuring a CI/CD tool
+CircleCI is a service that runs tests automatically for you. Like many of these tools, it’s looking for a specific file in your code repository. For CircleCI, it’s “config.yml” in the .circleci folder, which should be at the root of your code repository. The syntax is YAML, which is a superset of JSON, but has a different focus and adds many features. In the config file there’s a section called “jobs”. Each job has a name, like “test”. The job is a collection of steps that get executed in some environment, in this case a Docker image designed for a specific version of Python. The steps are executed in sequence and would typically be the steps that you would execute manually if you were given a new project. In this case, we instruct CircleCI to check out the code from the code repository, to install the modules we require, and to run the test suite with pytest. If your tests were successful, you could package the application and deploy it on a server or store it for later use.
+--------
+
+1. Modern day workflow management
+Congratulations, you made it to the last chapter. We’ve seen how we can ingest data into the data lake, how to clean that data and create some insights from it. Now let’s put it all together and see how these tasks get triggered.
+
+2. What is a workflow?
+A workflow is a sequence of tasks that are either scheduled to run or that could be triggered by the occurrence of an event. Workflows are typically used by data scientists and data engineers to orchestrate data processing pipelines.
+
+3. Scheduling with cron
+Oftentimes we have tasks that need to run on a schedule. Churn prediction algorithms might need to be run weekly for example. An often used software utility in such cases is “cron”. Cron reads configuration files, known as “crontab” files. In these files, you tabulate tasks that you want to run at a specific time. Here’s an example. This crontab record would execute the process “log_my_activity” at a specific time, which, read from left to right, would mean:
+
+4. Scheduling with cron
+every 15 minutes,
+
+5. Scheduling with cron
+between normal office hours,
+
+6. Scheduling with cron
+every day of the month,
+
+7. Scheduling with cron
+for every month,
+
+8. Scheduling with cron
+but only on Mondays, Tuesdays, Wednesdays and Fridays.
+
+9. Scheduling with cron
+The fields of this time notation are delimited by whitespace. You could also add comments, so this crontab record would do the same but is easier on the eyes:
+
+10. Scheduling with cron
+Cron is a very basic scheduler. It works very well, but isn’t the best tool for complex workflows that we want to monitor over time. Other tools have come to the scene, like Luigi, Azkaban and Airflow. We’ll be looking into Airflow.
+
+11. Apache Airflow fulfills modern engineering needs
+What we expect from modern workflow management tools is that they allow us to create and visualize complex workflows. Here’s how Airflow visualizes the workflow schematic we saw earlier.
+
+12. Apache Airflow fulfills modern engineering needs
+These tools should also allow us to monitor workflows. Airflow can show us when certain tasks failed or how long each task took and plot that in clear charts.
+
+13. Apache Airflow fulfills modern engineering needs
+Finally, horizontal scaling is important. As we get more tasks to execute, we want our tool to work with multiple machines, rather than increasing the performance of one single machine. Airflow fulfills all of these needs, which is why it is a good replacement for cron.
+
+14. The Directed Acyclic Graph (DAG)
+The central piece in an Airflow workflow is the DAG, which is an acronym for Directed Acyclic Graph. A graph is a collection of nodes that are connected by edges. The “directed” part in the acronym implies that there is a sense of direction between the nodes. The arrows on the edges indicate the direction. The “acyclic” part simply means that when you traverse the directed graph, there is no way for you to circle back to the same node.
+
+15. The Directed Acyclic Graph (DAG)
+In Airflow, the nodes are “operators”, each instance of which can be given a unique label, the task id. Operators do something, like run a Python script, or schedule tasks with a cloud provider. They’re triggered by a scheduler, but executed by an executor, which is typically a different process.
+
+16. The Directed Acyclic Graph in code
+In code, an Airflow DAG requires a “dag_id”. Some of the most common optional arguments are the “schedule_interval” where you can pass a cron schedule, and a date on which the DAG should start. Operators are assigned to this DAG later in the code.
+
+17. Classes of operators
+Tasks are essentially instances of operator classes. Airflow comes with many, but you can also define your own operators. They’re typically named after what they do: a “BashOperator” runs a bash command, a “PythonOperator” runs a Python script, and so on.
+
+18. Expressing dependencies between operators
+Dependencies between operators are coded with the “set_upstream()” and “set_downstream()” methods, like this: You could also define these same relationships using the bit shift operator, like so: These could even be chained, like this: A simple DAG description like this would result in a linear flow as shown in this image. Note that the arguments of the operators allow you to specify non-default conditions like “run if any of the tasks directly upstream fails”.
+--------

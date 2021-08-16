@@ -1,0 +1,39 @@
+1. Building a data pipeline with Airflow
+Now that you know about DAGs, and how to specify the dependencies between tasks in Airflow, let’s expand our knowledge with some common operators. This will allow us to chain our data pipelines together.
+
+2. Airflow’s BashOperator
+We use Airflow’s BashOperator to execute any bash command that we could also run in a bash shell. Both “spark-submit” and our Singer ingestion pipeline are commands we could trigger this way. One advantage of running these commands through Airflow is that the runs are logged, monitored and possibly retried. Any Airflow operator takes a “task_id”, which is a unique identifier that can be chosen by the user. A reference to the DAG object to which we assign this task is also common among all operators, because they inherit this from their ancestor, the BaseOperator class. Finally, in the “bash_command”, which is specific to the BashOperator, you specify the bash command to be executed as a string. You could also specify multiple of these or even a script file by name.
+
+3. Airflow’s PythonOperator
+Although many tasks could be done using the BashOperator, by passing it the appropriate bash command, like “python my_app.py”, it doesn’t serve all use cases. For example, if you don’t have the ability to modify a Python module, but it has a function you know you need, then the BashOperator won’t be of much use. In this case it is much more appropriate to use the “PythonOperator”. The PythonOperator’s “python_callable” argument accepts anything that can be “called”, like functions, but also classes. Pay special attention that you don’t actually call your callable here yet: you should pass a reference. The operator will then call it for you, when the task gets triggered. If this callable needs extra arguments, you can pass them with the optional keyword arguments “op_args” and “op_kwargs”.
+
+4. Running PySpark from Airflow
+In chapter 2, we created pipelines using PySpark. We would like to invoke those pipelines using Airflow. There are a few ways to do this. We could use the BashOperator to call “spark-submit”. Remember, we’d specify the command as a string. Here, we’ve split the arguments of the command using parentheses to improve readability. If you could successfully run the command from a bash shell on the Airflow server, this will work. A downside of this approach is that you must have the Spark binaries installed on the Airflow server. Another way to do it would be to delegate to a different server, using Airflow’s SSHOperator. This operator belongs to the contrib package, which contains all 3rd party contributed operators. Compared to the BashOperator, this operator shifts the responsibility of having the Spark binaries installed to a different machine. If you have remote access to a Spark-enabled cluster, this is a very clean way to go forward. Again, you’d add the command to run in the form of a string. Notice this operator’s “ssh_conn_id” argument. It refers to a connection that you can configure in the Airflow user interface, under the “Admin” menu’s “Connections”. These connections provide a convenient way to remove hardcoded and duplicated pieces of information that is related to connection details for other servers.
+
+5. Running PySpark from Airflow
+Another way to execute a Spark job, is to use the “SparkSubmitOperator”. This too belongs to the contributed operators. It is a wrapper over using “spark-submit” directly on the Airflow server, and thus does not differ much from the solution that uses the BashOperator, but it provides keyword arguments for spark-submit’s arguments, so that you don’t have to write out the entire command as a string. It also uses a connection, in the same way that the SSHOperator does. Again, this makes re-use among different tasks, in perhaps different DAGs easy, provided they all connect to the same Spark-enabled cluster.
+----
+
+1. Deploying Airflow
+Our DAGs are written, we know how Airflow schedules and executes our pipeline. But how do we deploy Airflow itself, test our DAGs and deploy them, following the principles of CI/CD as we saw in chapter 3? Let’s find out.
+
+2. Installing and configuring Airflow
+Even though the workflow is now fully described in Airflow DAGs, we haven’t made a server ready for running this. The easiest way to get started is to install it on a Linux image. We’ll assume we have a local server running Linux available to us. It’s not running anything else, and its Python environment is supposedly clean. In a shell, we declare some directory to be the home directory for Airflow. Next, we install Airflow using “pip install apache-airflow”. We then initialize the metadata database. On a clean installation like this one, this would create the AIRFLOW_HOME directory, and populate it with a subdirectory for all the log files, two configuration files and a SQLite database. In production, you’ll likely use more advanced databases like MySQL or Postgres, but for sanity checks you can go with the default SQLite. This works, provided you’ve also configured Airflow to use the “SequentialExecutor”. In the config file for unittests this is preset. In the other configuration file, which you’ll be using in production, you’ll find a similar setting, also under the “core” section, as shown here. Now, this is a bare-bones Airflow installation. In a production environment, your Airflow installation will look a bit more like this:
+
+3. Setting up for production
+We’ve added a few folders, in line with the default configuration file. In particular, the “dags” folder is where you place the DAGs that you’ve learned to write in the previous lessons. Also notice the “tests” folder. We’ll populate it with functionality that can be used in a CI/CD pipeline, just like we did with the data transformation pipelines of chapter 3. There are also folders for connections, plugins, connection pools, and variables, all of which make it easy to have the entire deployment of Airflow under version control.
+
+4. Example Airflow deployment test
+Even though the Airflow DAG files are technically configuration files for the workflows, they can still generate errors that are often only noticed using Airflow’s web interface. You could capture this earlier though, as part of testing stages of your CI/CD pipeline. For example, this could be a great test to add there. We first import and instantiate the DagBag, which is the collection of all DAGs found in a folder. Once instantiated, it holds a dictionary of error messages for DAGs that had issues, like Python syntax errors or the presence of cycles. If our testing framework would fail on this test, our CI/CD pipeline could prevent automatic deployment.
+
+5. Transferring DAGs and plugins
+Now how do you get your DAGs uploaded to the server? Well, it depends on your setup. If you keep all the DAGs in the repository that contains the basic installation layout,
+
+6. Transferring DAGs and plugins
+this can be done simply by cloning the repository on the Airflow server.
+
+7. Transferring DAGs and plugins
+Alternatively, if you keep a DAG file and any dependencies close to the processing code in another repository,
+
+8. Transferring DAGs and plugins
+you simply copy the DAG file over to the server with a tool like “rsync” for example. Or you make use of packaged DAGs, which are zipped archives that promote better isolation between projects. You’ll still need to copy over the zip file to the server though. You could also have the Airflow server regularly syncing the DAGs folder with a repository of DAGs, where everyone writes to. These are just a few approaches, there are many more. Use whatever floats your team’s boat.
