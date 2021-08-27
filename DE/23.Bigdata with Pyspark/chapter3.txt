@@ -1,0 +1,104 @@
+1. Introduction to PySpark DataFrames
+In the previous chapter, you looked at RDDs which is Spark’s core abstraction for working with data. In this chapter, we will explore PySpark SQL which is Spark's high level API for working with structured data.
+
+2. What are PySpark DataFrames?
+PySpark SQL is a Spark library for structured data. Unlike the PySpark RDD API, PySpark SQL provides more information about the structure of data and the computation being performed. PySpark SQL provides a programming abstraction called DataFrames. A DataFrame is an immutable distributed collection of data with named columns. It is similar to a table in SQL. DataFrames are designed to process a large collection of structured data such as relational database and semi-structured data such as JSON (JavaScript Object Notation). DataFrame API currently supports several languages such as Python, R, Scala, and Java. DataFrames allows PySpark to query data using SQL, for example (SELECT * from table) or using the expression method for example (df-dot-select).
+
+3. SparkSession - Entry point for DataFrame API
+Previously you have learned about SparkContext which is the main entry point for creating RDDs. Similarly, SparkSession provides a single point of entry to interact with underlying Spark functionality and allows programming Spark with DataFrame API. The SparkSession does for DataFrames what the SparkContext does for RDDs. A SparkSession can be used to create DataFrame, register DataFrame as tables, execute SQL over tables, cache tables etc., Similar to SparkContext, SparkSession is exposed to the PySpark shell as variable spark. DataFrames in
+
+4. Creating DataFrames in PySpark
+Pyspark can be created in two main ways. From an existing RDD using SparkSession's createDataFrame method and From different data sources such as CSV, JSON, TXT using SparkSession's read method. Before going into the details of creating DataFrames, let's understand what schema is. Schema is the structure of data in DataFrame and helps Spark to optimize queries on the data more efficiently. A schema provides informational detail such as the column name, the type of data in that column, and whether null or empty values are allowed in the column. To create a DataFrame
+
+5. Create a DataFrame from RDD
+from an RDD we will need to pass an RDD and a schema into SparkSession's createDataFrame method. 
+In this example, we will first create an RDD named iphones_RDD from a list of iphones using SparkContext's parallelize method. 
+Next, we will create a DataFrame using SparkSession's createDataFrame method using iphones_RDD and the list of column names such as Model, Year, Height, Width and Weight as schema. 
+The type of object created can be confirmed using type method, which shows that it is a PySpark DataFrame. 
+A thing to note here is when the schema is a list of column names, the type of each column will be inferred from data as shown above. 
+However when the schema is None, it will try to infer the schema from data. To create a
+
+6. Create a DataFrame from reading a CSV/JSON/TXT
+DataFrame from CSV/JSON/TXT files, we will make use of the SparkSession's spark-dot-read property. 
+Here is an example of creating df_csv DataFrame from people-dot-csv file using spark-dot-read-dot-csv method. 
+Similarly here is an example for creating df_json DataFrame from people-dot-json file using spark-dot-read-dot-json method. 
+Finally here is an example for creating df_txt DataFrame from people-dot-txt file using spark-dot-read-dot-txt method.
+Irrespective of the file type, this method requires the path to the file and two optional parameters. 
+The first optional parameter, header=True may be passed to make sure that the method treats the first row as column names. 
+The second optional parameter, inferSchema=True may be passed to instruct the DataFrame reader to infer the schema from the data and by doing so, i
+it will attempt to assign the right datatype to each column based on the content. 
+-----
+
+1. Interacting with PySpark DataFrames
+Just like RDDs, DataFrames also support both transformations and actions. In this video, you'll learn some DataFrame operations in PySpark.
+
+2. DataFrame operators in PySpark
+Similar to RDD operations, the DataFrame operations in PySpark can be divided into Transformations and Actions. PySpark DataFrame provides operations to filter, group, or compute aggregates, and can be used with PySpark SQL. Let's explore some of the most common DataFrame Transformations such as select, filter, groupby, orderby, dropDuplicates, withColumnRenamed and some common DataFrame Actions such as printSchema, show, count, columns and describe in this video.
+
+3. select() and show() operations
+Let's start with select and show operations. The select Transformation is used to extract one or more columns from a DataFrame. We need to pass the column name inside select operation. As an example, let’s select ‘Age’ columns from a test DataFrame. select is a Transformation and so it creates a new DataFrame and in order to print the rows from df_id_age DataFrame, we need to execute an Action. show is an Action that prints the first 20 rows by default. Let’s apply show(3) on df_id_age DataFrame and print the first 3 rows as shown in this example.
+
+4. filter() and show() operations
+Unlike select, the filter Transformation selects only rows that pass the condition specified. The parameter you pass is the column name and the value of what you want to filter that column on. For example, if we want to filter out the rows with 'Age' greater than 21, we pass the column expression (new_df-dot-Age) and the condition (greater than 21) as shown in here. We can use show(3) action to print out the first 3 rows from the new DataFrame.
+
+5. groupby() and count() operations
+The groupby Transformation groups the DataFrame using the specified columns, so we can run aggregation on them. To better understand, we will first group the 'Age' column and create another DataFrame. Then we will use count action that returns the total number of rows in the DataFrame and finally use show(3) operation to print the first 3 rows in the DataFrame. The result is a table that shows the first 3 Age groups and the corresponding number of members in each group.
+
+6. orderby() Transformations
+Orderby transformation returns a DataFrame sorted by the given columns. Let’s sort the test_df_age_group-dot-count that we obtained in the previous example based on ‘Age’ column and print out the first 3 rows of the DataFrame using show(3) action. As you can see the age groups have been sorted in ascending order now.
+
+7. dropDuplicates()
+The dropDuplicates transformation returns a new DataFrame with duplicate rows removed. Here is an example, where dropDuplicates transformation is used to remove duplicate rows in 'User_ID' 'Age' and 'Gender' columns and finally creating a new DataFrame. You can execute count action on this new DataFrame to print the number of non-duplicate rows.
+
+8. withColumnRenamed Transformations
+The withColumnRenamed transformation returns a new DataFrame by renaming an existing column. It takes two arguments: the names of the old and new columns. In this example, we rename the column name "Gender" to "Sex" and create a test_df_sex. We can use show(3) Action to print out the first 3 rows from the new DataFrame.
+
+9. printSchema()
+To check the types of columns in the DataFrame, we can use the printSchema action. Here is an example of printSchema action on test_df DataFrame that we used previously. printSchema prints out the schema in the tree format as shown here and helps to spot the issues with the schema of the data. As an example product_ID is shown as string even though it is supposed to be an integer.
+
+10. columns actions
+The columns operation returns the names of all the columns in the DataFrame as an array of string. Let’s print the column names in the test_df DataFrame. In this example, the test_df DataFrame has three columns 'User_ID', 'Gender' and 'Age'.
+
+11. describe() actions
+describe operation is used to calculate the summary statistics of the numerical columns in the DataFrame. If we don’t specify the name of columns it will calculate summary statistics for all numerical columns present in the DataFrame as shown in this example.
+
+12. Let's practice
+Now that you are familiar with DataFrame operations, let's practice using some these operations on a real world data.
+----
+1. Interacting with DataFrames using PySpark SQL
+Previously, you have seen how to interact with PySparkSQL using DataFrame API. In this video, you'll learn how to interact with PySparkSQL using SQL query.
+
+2. DataFrame API vs SQL queries
+In addition to DataFrame API, PySpark SQL allows you to manipulate DataFrames with SQL queries. What you can do using DataFrames API, can be done using SQL queries and vice versa. So what are the differences between DataFrames API and SQL queries? The DataFrames API provides a programmatic interface – basically a domain-specific language (DSL) for interacting with data. DataFrame queries are much easier to construct programmatically. Plain SQL queries can be significantly more concise and easier to understand. They are also portable and can be used without any modifications with every supported language. Many of the DataFrame operations that you have seen in the previous chapter, can be done using SQL queries.
+
+3. Executing SQL Queries
+The SparkSession provides a method called sql which can be used to execute a SQL query. The sql method takes a SQL statement as an argument and returns a DataFrame representing the result of the given query. Unfortunately, SQL queries cannot be run directly against a DataFrame. To issue SQL queries against an existing DataFrame we can leverage the createOrReplaceTempView function to build a temporary table as shown in this example. After creating the temporary table, we can simply use the sql method, which allows us to write SQL code to manipulate data within a DataFrame. In this example, we simply extract two columns field1 and field2 from the table using SELECT. Since the result is a DataFrame, you can run DataFrame actions such as collect, first, show etc. An example of collect action is shown here. In the previous
+
+4. SQL query to extract data
+lesson, you have seen how to use select operation to subset the data from a DataFrame. Here is an example of how you can do the same with a SQL query. In this example, we will first construct the query for selecting the Product_ID column form the temporary table. Next we will pass the query to the SparkSession's sql method to create a new DataFrame. Because the result of SQL query returns a DataFrame, all the usual DataFrame operations are available. Here we can use show(5) action to print the first 5 rows of the DataFrame. The SQL queries are
+
+5. Summarizing and grouping data using SQL queries
+not limited to extracting data as seen in the previous slide. We can also create SQL queries to run aggregations. In this example, we first construct a query for selecting 'Age' and 'Purchase' columns, then aggregate the total of all the purchases, the maximum per Age group. We can then provide the query to the SparkSession's sql method and use show(5) action to print out the first 5 rows as seen in here. In addition to extracting and summarizing the data,
+
+6. Filtering columns using SQL queries
+Spark SQL queries can also be constructed for filtering the rows from a DataFrame. Suppose you want to filter out the rows of Age, Purchase and Gender columns where the Gender is Female and purchase is greater than 20000, you can construct a query as shown in this example. You can confirm whether or not query worked by providing the query to the SparkSession's sql method and using show(5) action to print out the first 5 rows as shown in this example. Let's practice some SQL
+-------------
+
+Got It!
+1. Data Visualization in PySpark using DataFrames
+Visualization is an essential part of data analysis. In this video, we will explore some visualization methods that can help us make sense of our data in PySpark DataFrames.
+
+2. What is Data visualization?
+Data visualization is the way of representing your data in form of graphs or charts. It is considered a crucial component of Exploratory Data Analysis (EDA). Several open source tools exist to aid visualization in Python such as matplotlib, Seaborn, Bokeh etc. However, none of these visualization tools can be used directly with PySpark's DataFrames. Currently, there are three different methods available to create charts using PySpark DataFrames - pyspark_dist_explore library, toPandas method, and HandySpark toPandas. Let's understand each of these methods with examples.
+
+3. Data Visualization using Pyspark_dist_explore
+Pyspark_dist_explore is a plotting library to get quick insights on data in PySpark DataFrames. There are 3 functions available in Pyspark_dist_explore to create matplotlib graphs while minimizing the amount of computation needed - hist, distplot and pandas_histogram. Here is an example of creating a histogram using the Pyspark_dist_explore package on the test_df data. First, the CSV file is loaded into Spark DataFrame using the SparkSession's read-dot-csv method. Then we select the age column from the test_df DataFrame using the select operation. Finally we use the hist function of the Pyspark_dist_explore package to plot a histogram of 'Age' in the test_df_age dataset. The second method
+
+4. Using Pandas for plotting DataFrames
+of creating charts is by using toPandas on PySpark DataFrames which converts the PySpark DataFrame into a Pandas DataFrame. After conversion, it's easy to create charts from pandas DataFrames using matplotlib or seaborn plotting tools. In this example, first, the CSV is loaded in Spark DataFrame using read-dot-csv method. Next, using toPandas method, we will convert the Spark DataFrame into Pandas DataFrame. Finally, we will create a histogram of the "Age" column using matplotlib's hist method. Before we look at the third method, let's take a look at the differences between Pandas
+
+5. Pandas DataFrame vs PySpark DataFrame
+vs Spark DataFrames. But, Pandas won’t work in every case. It is a single machine tool and constrained by single machine limits. So their size is limited by your server memory, and you will process them with the power of a single server. In contrast, operations on Pyspark DataFrames run parallel on different nodes in the cluster. In pandas DataFrames, we get the result as soon as we apply any operation Whereas operations in PySpark DataFrames are lazy in nature. You can change a Pandas DataFrame using methods. We can’t change a PySpark DataFrame due to its immutable property. Finally, the Pandas API supports more operations than PySpark DataFrames. The final method of
+
+6. HandySpark method of visualization
+creating charts is using HandySpark libary, which is a relatively a new package. HandySpark is designed to improve PySpark user experience, especially when it comes to exploratory data analysis, including visualization capabilities. It makes fetching data or computing statistics for columns really easy, returning pandas objects straight away. It brings the long-missing capability of plotting data while retaining the advantage of performing the distributed computation. Here is an example of the HandySpark method for creating a histogram. Just like before, we load the CSV into a PySpark DataFrame using SparkSession's read-dot-csv method. After creating the DataFrame, we convert the DataFrame to a HandySpark DataFrame using the toHandy method. Finally, we create a histogram of the Age column using the hist function of HandySpark library. We have learned three exciting

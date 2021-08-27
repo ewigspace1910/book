@@ -1,0 +1,66 @@
+1. Introduction to PySpark RDD
+In the first chapter, you have learned about different components of Spark namely, Spark Core, Spark SQL, and Spark MLlib.
+In this chapter, we will start with RDDs which are Spark’s core abstraction for working with data.
+
+2. What is RDD?
+Let's get started. RDD stands for Resilient Distributed Datasets. 
+It is simply a collection of data distributed across the cluster. 
+RDD is the fundamental and backbone data type in PySpark. 
+When Spark starts processing data, it divides the data into partitions and distributes the data across cluster nodes, with each node containing a slice of data. 
+
+3. Decomposing RDDs
+look at the different features of RDD. The name RDD captures 3 important properties.
+ Resilient, which means the ability to withstand failures and recompute missing or damaged partitions.
+ Distributed, which means spanning the jobs across multiple nodes in the cluster for efficient computation. 
+Datasets, which is a collection of partitioned data e.g. 
+Arrays, Tables, Tuples or other objects. 
+There are three different
+
+4. Creating RDDs. How to do it?
+methods for creating RDDs. 
+You have already seen two methods in the previous chapter even though you are not aware that you are creating RDDs. 
+The simplest method to create RDDs is to take an existing collection of objects (eg. a list, an array or a set) and pass it to SparkContext’s parallelize method. 
+A more common way to create RDDs is to load data from external datasets such as files stored in HDFS or objects in Amazon S3 buckets or from lines in a text file stored locally and pass it to SparkContext's textFile method. 
+Finally, RDDs can also be created from existing RDDs which we will see in the next video. In the first method,
+
+5. Parallelized collection (parallelizing)
+RDDs are created from a list or a set using the SparkContext’s parallelize method.
+Let's try and understand how RDDs are created using this method with a couple of examples. 
+In the first example, an RDD named numRDD is created from a Python list containing numbers 1, 2, 3, and 4. 
+In the second example, an RDD named helloRDD is created from the 'hello world' string. 
+You can confirm the object created is RDD using Python's type method. Creating
+
+6. From external datasets
+RDDs from external datasets is by far the most common method in PySpark. 
+In this method, RDDs are created using SparkContext’s textFile method. 
+In this simple example, an RDD named fileRDD is created from the lines of a README-dot-md file stored locally on your computer. 
+Similar to previous method, you can confirm the RDD using the type method. 
+Data
+
+7. Understanding Partitioning in PySpark
+partitioning is an important concept in Spark and understanding how Spark deals with partitions allow one to control parallelism. 
+A partition in Spark is the division of the large dataset with each part being stored in multiple locations across the cluster. 
+By default Spark partitions the data at the time of creating RDD based on several factors such as available resources, external datasets etc, however, this behavior can be controlled by passing a second argument called minPartitions which defines the minimum number of partitions to be created for an RDD. 
+In the first example, we create an RDD named numRDD from the list of 10 integers using SparkContext's parallelize method with 6 partitions. 
+In the second example, we create another RDD named fileRDD using SparkContext's textFile method with 6 partitions. 
+The number of partitions in an RDD can always be found by using the getNumPartitions method. In the next
+--------
+
+--------
+1. More actions
+Previously you learned about advanced RDD Transformations for key/value datasets. Similar to advanced RDD Transformations there are advanced RDD Actions which you'll see in this video.
+
+2. reduce() action
+Reduce action takes in a function which operates on two elements of the same type of RDD and returns a new element of the same type. The function should be commutative and associative so that it can be computed correctly in parallel. A simple example of such a function is +, which we can use to sum our RDD. Here is an example of reduce action that calculates the sum of all the elements in an RDD. In this example, input RDD is first created using SparkContext's parallelize method on a list consisting of numbers 1,3,4,6. Eexcuting reduce action results in 14 which is the sum of 1,3,4,6.
+
+3. saveAsTextFile() action
+In many cases, it is not advisable to run collect action on RDDs because of the huge size of the data. In these cases, it’s common to write data out to a distributed storage systems such as HDFS or Amazon S3. saveAsTextFile action can be used to save RDD as a text file inside a particular directory. By default, saveAsTextFile saves RDD with each partition as a separate file inside a directory. Here is an example of saveAsTextFile that saves an RDD with each partition as a separate file inside a directory. However, you can change it to return a new RDD that is reduced into a single partition using the coalesce method. Here is an example of saveAsTextFile that saves RDD as a single file inside a directory. Similar to
+
+4. Action Operations on pair RDDs
+pair RDD Transformations, there are also RDD Actions available for pair RDDs. However, pair RDDs also attain some additional actions of PySpark especially those that leverage the advantage of data which is of key-value nature. Let’s take a look at two pair RDD actions - countByKey and collectAsMap in this video.
+
+5. countByKey() action
+countByKey is only available on RDDs of type (Key, Value). With the countByKey operation, we can count the number of elements for each key. Here is an example of counting the number of values for each key in the dataset. In this example, we first create a pair RDD named rdd using SparkContext's parallelize method. Since countByKey generates a dictionary, next we iterate over the dictionary to print the each unique and number of values associated with each key as shown here. One thing to note is that countByKey should only be used on a dataset whose size is small enough to fit in memory. collectAsMap
+
+6. collectAsMap() action
+returns the key-value pairs in the RDD to the as a dictionary. Here is an example of collectAsMap on a pair RDD. As before we create a pair RDD using SparkContext's parallelize method and next use collectAsMap action. collectAsMap produces the key-value pairs in the RDD as a dictionary which can be used for downstream analysis. Similar to countByKey, this action should only be used if the resulting data is expected to be small, as all the data is loaded into the memory. Let's practice

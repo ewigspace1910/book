@@ -1,0 +1,29 @@
+Welcome
+Welcome to my intro to MongoDB with Python. MongoDB is a tool that helps you explore data without requiring it to have a strict, known structure. Because of this, you can handle diverse data together and unify analytics. You can also keep improving and fix issues as your requirements evolve. Most application programming interfaces - or APIs - on the web today expose a certain data format. If you can express your data in this format, then you can get started with MongoDB. Here's what I mean:
+
+2. JavaScript Object Notation (JSON)
+Javascript is the language of web browsers. JavaScript Object Notation, or JSON, is a common way that web services and client code pass data. JSON is also the basis of MongoDB's data format. So, what is JSON? JSON has two collection structures. Objects map string keys to values, and arrays order values. Values, in turn, are one of a few things.
+
+3. JavaScript Object Notation (JSON)
+Values, in turn, are one of a few things. Values are strings, numbers, the value "true", the value "false", the value "null", or another object or array. That's it.
+
+4. JSON <> Python
+These JSON data types have equivalents in Python. JSON objects are like Python dictionaries with string-type keys. Arrays are like Python lists. And the values I mentioned also map to Python. For example, null in JSON maps to None in Python.
+
+5. JSON <> Python <> MongoDB
+Now, how are these JSON/Python types expressed in MongoDB? A database maps names to collections. You can access collections by name the same way you would access values in a Python dictionary. A collection, in turn, is like a list of dictionaries, called "documents" by MongoDB. When a dictionary is a value within a document, that's a subdocument. Values in a document can be any of the types I mentioned. MongoDB also supports some types native to Python but not to JSON. Two examples are dates and regular expressions.
+
+6. The Nobel Prize API data(base)
+Let's make concrete how JSON maps to Python and in turn to MongoDB. Here is how I accessed the Nobel Prize API and collected its data into a Mongo database for you. First, I import the requests library, which will get the data from the API. I also import the MongoClient class from pymongo. Pymongo is the official Python driver for MongoDB. Then, I connect to my local database server. I say that I want a database with the name "nobel", and MongoDB creates it. Finally, I gather JSON responses for the "prize" and "laureate" endpoints. I insert them into the "prizes" and "laureates" collections, which Mongo also creates for me.
+
+7. Accessing databases and collections
+Now, let's go over how to count documents in a collection, and how to find one to inspect. First, a note on accessing databases and collections from a client object. One way is square bracket notation, as if a client is a dictionary of databases, with database names as keys. A database in turn is like a dictionary of collections, with collection names as keys. Another way to access things is dot notation. Databases are attributes of a client, and collections are attributes of a database.
+
+8. Count documents in a collection
+To count documents, use the "count_documents " collection method. Pass a filter document to limit what you count. In this case, I want an unfiltered total count, so I pass an empty document as the filter. Finally, you can fetch a document and infer the schema of the raw JSON data given by the Nobel Prize API. Use the find_one method, again with no filter, to grab a document from the collection.
+-----
+
+----
+
+
+----

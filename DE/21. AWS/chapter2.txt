@@ -1,0 +1,198 @@
+1. Keeping objects secure
+In the previous chapter, we learned how to create and delete buckets and upload objects inside of them. Often we work with private data or data we want only certain users to see. This is where AWS permission system comes in.
+
+2. Why care about permissions?
+AWS defaults to denying permission. That means if we upload a file, by default only our key and secret have access to it. This behavior may sound annoying, but it's much more secure to opt-in to allowing public access to our data than to have it be public by default. If we or our colleague tries to download a file with pandas, S3 won't let them. Even if it's in the same script that uploaded it!
+
+3. Why care about permissions?
+But if we initialize the s3 client with our credentials, it will work! Let's learn how to protect (and expose) our buckets and objects.
+
+4. AWS Permissions Systems
+There are 4 ways we can control permissions in S3. We can use IAM to control users' access to AWS services, buckets, and objects. We used it in lesson 1 to give permissions by attaching IAM policies to a user. IAM applies across all AWS services. Bucket policies give us control on the bucket and the objects within it. ACLs or access control lists let us set permissions on specific objects within a bucket. Lastly, presigned URLs let us provide temporary access to an object.
+
+5. AWS Permissions Systems
+IAM and Bucket Policies are great in multi-user environments. But since Sam isn't managing one, we will focus on ACLs and presigned URLs.
+
+6. ACLs
+ACLs are entities attached to objects in S3. We will focus on 2 types of ACL: private and public-read.
+
+7. ACLs
+Say we upload a file. By default, its ACL is 'private'. Let's set the ACL to 'public-read' using s3_put_object_acl method. Now anyone in the world can download this file.
+
+8. Setting ACLs on upload
+We can also set the ACL as 'public-read' on upload. We pass a dictionary with key ACL and value 'public-read' to the ExtraArgs parameter.
+
+9. Accessing public objects
+Once we have a public object, anyone in the world can access it at the URL with the format of bucket.s3.amazonaws.com/objectKey. A URL for an object with the key 2019/potholes.csv and bucket gid-requests will look like this.
+
+10. Generating public object URL
+We can use Python's nifty string format method to generate a public URL for an object in S3. This is different than a pre-signed URL which we will cover in the next lesson. We create a string where the bucket name and the object key are empty brackets. We call the format method, passing positional arguments of bucket - gid-requests, and key - 2019/potholes.csv. We can now pass this URL to something like Pandas with no problems.
+
+11. How access is decided
+So how does this work together? When a request comes in if it's a presigned URL, it will allow the download.
+
+12. How access is decided
+If it's not pre-signed, it will check the policies to make sure they allow the download. AWS's default behavior is to deny access.
+
+13. Review
+In this lesson, we learned about AWS permissions systems. IAM answers "What can this user do in AWS?" Bucket Policies answer "Who can access this S3 bucket?" ACLs answer "Who can access this object"? And presigned URLs let us grant temporary access to objects.
+
+14. Review
+We can set ACLs to public-read or private on existing objects.
+
+15. Review
+Or we can upload with a specified ACL using ExtraArgs
+
+16. Review
+Lastly, we can generate public URLs for objects with a public-read ACL.
+--------
+. Accessing private objects in S3
+In the last lesson, we learned how to set permissions on objects in buckets, making them private and public. We also learned how to access public files. But what happens when we want to share private data? Data engineers are always balancing security, sharing, and access. Let's dig in!
+
+2. Downloading a private file
+If we did not explicitly set a public-read ACL for a file, AWS defaults to private. If we try to read it with pandas read_csv through a Public Object URL, we will get a 403 error - which means we are forbidden. If we don't make it public to the world, what do we do?
+
+3. Downloading private files
+We can use the boto3's download_file method to download the file and have pandas read the CSV from disk. This is a great option if we expect this file not to change much.
+
+4. Accessing private files
+Yet, there's a much simpler way by using boto3's get_object method to access the file's contents from S3. We call the get_object method with the bucket name and object key as parameters.
+
+5. Accessing private files
+In response, we receive very similar information we get from the head_object method in Chapter 1 - metadata about the file. We also get a Body key, with a "StreamingBody" object as the value. A StreamingBody is a special type of response that doesn't download the whole object immediately.
+
+6. Accessing private Files
+Pandas knows how to handle this type of response. We pass the contents of this key to pandas, and it will read it like a CSV file.
+
+7. Pre-signed URLs
+We can also grant access to S3 private objects temporarily by using presigned_urls. These are special URLs that expire within a given time period. In this lesson, we will use it for accessing private files. However, we can use this mechanism to give access to a myriad of S3 operations.
+
+8. Pre-signed URLs
+Let's upload a file. By default it's private.
+
+9. Pre-signed URLs
+We generate a pre-signed URL that grants access to the file for 1 hour or 3600 seconds. This way, our colleague can open it in pandas or a browser. After 1 hour passes, the access expires.
+
+10. Load multiple files into one DataFrame
+Often, data engineers have to parse multiple files on S3 that follow a pattern, load them into one DataFrame then do something with it. This is quite simple to do with the tools we already learned! First, let's create a list to hold the DataFrames of every file we will read from S3. Then, let's get the list of CSVs from S3 that start with 2019/. Let's assign the contents of the Contents key from the response dictionary to request_files variable.
+
+11. Load multiple files into one DataFrame
+We iterate over the request_files, loading each object. We read object body into a DataFrame. Then, we append the DataFrame to the list of DataFrames we are collecting.
+
+12. Load multiple files into one DataFrame
+After the loop, we use pandas concat method to combine all the DataFrames in the list. We can now see our combined DataFrame with the head method!
+
+13. Review Accessing private objects in S3
+In this lesson, we discussed how to open and share private files in S3. We can simply download the file and read the local file into pandas. We can use get_object and read the response's 'Body' key into pandas. Lastly, we can generate a short-lived pre-signed URL, and pass it to pandas.
+
+14. Review - Sharing URLs
+We now also have two ways to share a file. Public files are shared through the Public URL, that's generated using the string's format method. We can also share private files temporarily using presigned_urls. We get these from running boto3's get_presigned_url method.
+--------
+
+1. Sharing files through a website
+In the last lessons, we learned how to access public and private files in S3 for use in our own scripts and for sharing with others. In this lesson, we will cover how to share files through a website.
+
+2. Serving HTML Pages
+S3 is able to serve HTML pages. This becomes useful when we want to share results of an analysis with management, and update the results via a pipeline. But Wait! Don't run away. This is not going to turn into a web dev bootcamp. Many python data science tools have the ability to generate simple HTML from data. The goal is not to have us making beautiful websites, but to share our analyses with the world.
+
+3. HTML table in Pandas
+You are familiar with the pandas to_csv method. Pandas has another method - to_html. We can use it to write a pandas DataFrame to an HTML file.
+
+4. HTML Table in Pandas with links
+The optional render_links argument converts any URLs to be clickable.
+
+5. Certain columns to HTML
+We can use the columns parameter to pass a list of only columns we want rendered. In this example, we are only showing service_name and info_link columns.
+
+6. Borders
+We also have some basic border controls via the border argument. 0 value will remove the border, while a value of 1 will show it. There are a few more configuration arguments, but you can look through them on the documentation for pandas.to_html
+
+7. Uploading an HTML file to S3
+Uploading an html file is like uploading any other file, but we need to set the ContentType so that the browser knows to treat it as HTML. We use the upload_file method to upload it to S3. We specify the local filename and bucket. We will upload this file with the key "table.html". In the ExtraArgs dictionary, we specify the ContentType as 'text/html'. Finally, we set the ACL to public-read.
+
+8. Accessing HTML file
+We can use the same pattern we learned in lesson 1 for accessing public files to access table.html.
+
+9. HTML Page
+Because we set the content type as text/html, the browser knows to show it as HTML. And here's our table! HTML files are treated just like regular files. We can also make this page private and provide a pre-signed URL for temporary access!
+
+10. Uploading other types of content
+Uploading images - such as the ones generated from Python's charting libraries - is very similar to uploading HTML files, but if we want the browser to render them, we need to set the proper contentType during upload. In the case of a PNG, we use image/png as the contentType.
+
+11. IANA Media Types
+IANA has a list of all file types based on their file extension. Some common ones are JSON, PNG, PDF, and CSV. You can find more on IANA's website below.
+
+1 http://www.iana.org/assignments/media
+2 types/media
+3 types.xhtml
+12. Generating an index page
+So what if we have multiple HTML and image files that we want to share, and we want to generate a listing for them? Well - we can do that with the tools we already learned. We list the objects in the bucket using client_list_objects. We convert the response contents into a DataFrame.
+
+13. Generating an index page
+We create a column "Link" where we create the URL for every key in the object. Then, we write the DataFrame to HTML!
+
+14. Uploading index page
+We upload the index page we generated like we would any other HTML file! It's now available at the Public URL
+
+15. Review
+We learned how to generate an HTML table in pandas. How to upload the HTML file to S3 We learned how to upload an image file to S3 We learned how to share the URL for our HTML page
+-----
+
+1. Case Study: Generating a Report Repository
+In this chapter, we've learned about the ways S3 can host and share files publicly and privately. In this lesson, we will walk through everything we learned to see how it fits together.
+
+2. Final product
+Every month, Sam is asked to compile a report on the number of requests received on get it done per case type. When Council asks, she emails them the report. They want to see how many requests came in, which types of request they were, and how many of each type there were total. The council members should be able to access a page, see the listing of all available and generated charts, click on one, and see it.
+
+3. The steps
+In order to accomplish this, we will: Download files for the month from the raw data bucket Concatenate them into one CSV Create an aggregated DataFrame
+
+4. The steps
+Write the DataFrame to CSV and HTML Generate a Bokeh plot, save as HTML
+
+5. The steps
+Create `gid-reports` bucket, configure for website Upload all the three files for the month to S3 Generate an index.html file that lists all the files Get the website URL!
+
+6. Raw data bucket
+We will be picking up raw data from the gid-requests bucket. This bucket contains daily CSVs. Every CSV has rows for every request that was made in the GetItDone app that day.
+
+7. Read raw data files
+First, let's create a list to hold our DataFrames. Then, let's get the listing of all files in S3 that start with 2019_jan. We can use the prefix argument of the list_objects method to filter. Don't forget, that our actual dictionary of objects is in response contents.
+
+8. Read raw data files
+Next, we will iterate over each object, and load its StreamingBody using get_object. We can't use the Object URL because it's private. We will then pass that body to pandas read_csv, creating a DataFrame. We append that DataFrame to a list. So we will have a list of 31 DataFrames, one for each day in the df_list variable.
+
+9. Read raw data files
+We concatenate all the DataFrames in the list into one, using pd.concat;
+
+10. Create aggregated reports
+Then, we will do a basic aggregation. We will write the resulting DataFrame to a CSV, and an HTML file. We will also make a Bokeh plot and write it to HTML.
+
+11. Report bucket
+We will place aggregated reports in the gid-reports bucket.
+
+12. Upload Aggregated CSV
+We upload the aggregated CSV to S3 With the key 2019/jan/final_report.csv. We also set the public-read ACL.
+
+13. Upload HTML Table
+We upload the table HTML next. We use ContentType text/html to tell S3 that this is an HTML file.
+
+14. Upload HTML Chart
+Finally, we upload the chart.html as well.
+
+15. Uploaded reports
+This is now what we have in our S3 console for January. Next, we want to generate an index.html file that lets Sam's bosses browse the website and click on what she wants to see.
+
+16. Create index.html
+We list the gid-report bucket for objects starting with 2019/ Then, we convert the response contents into a DataFrame, since it's a dictionary. Finally, we add a column "Link" that combines key with the base S3 website URL.
+
+17. Create index.html
+Then, we write our DataFrame to HTML using pandas, selecting only Link, LastModified and Size columns. Note that we used the argument render_links=True so that our links are clickable in HTML.
+
+18. Upload index.html
+We upload the index.html file to the root of the gid-reports bucket.
+
+19. Get the URL of the index!
+Finally - let's get the website URL, containing bucket name, and share it with the council!
+
+-----

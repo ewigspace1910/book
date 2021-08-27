@@ -1,0 +1,156 @@
+1. Scala's static type system
+Welcome back! Scala being statically typed is a key feature of the language so let's dive deeper. This lesson will be conceptually-focused.
+
+2. More answers to "Why use Scala?"
+Most of this quote from the first video of the course should make sense now. Take a moment to be grateful for how far you've come!
+
+3. More answers to "Why use Scala?"
+Let's deconstruct this bolded line. Scala's static types help avoid bugs in complex applications.
+
+4. Some definitions
+First, some definitions. Pause the video and read this definition of a type.
+
+5. Scala value types have equivalent Java types
+You learned that Scala value types have equivalent Java primitive types and that Scala code is first compiled to Java bytecodes THEN run on a Java virtual machine.
+
+6. Some definitions
+Compile time is when Scala code is compiled to Java bytecode. Run time is when that resulting executable code runs on a Java virtual machine. Take a second to pause and absorb if you need to.
+
+7. Type systems
+A LANGUAGE is statically typed if the type of a variable is known at compile time. Some examples of languages with static type systems are C/C++, Fortran, Java, and Scala. A language is dynamically typed if types are checked on the fly, after compile time, if compiled. JavaScript, Python, Ruby, and R are examples. We will flesh out type systems and Scala's type system in particular in more advanced courses. For now, you need to know
+
+8. Pros and cons of static type systems
+the pros and cons of static typing. First, since statically typed languages don't HAVE to check types when someone hits "run program", they execute a little faster. Second, verifiable properties of your program. For our program that plays Twenty-One, we add integers together to get a hand's point value. Static type systems can prove the absence of certain run-time errors, like Booleans not being added to those integers (which is possible!) for example. The properties of our program are verified. Trivial bugs are caught early. Third, a static type system lets you make changes to a codebase with a high degree of confidence. When you recompile your system after a refactor, Scala will alert you of the lines you tweaked that caused a type error, then you fix them. Engineers working in big codebases LOVE this safety net. Finally, documentation. Type annotations tell us what we expect a variable, collection, function to do. Unlike a comment, a type annotation is never out of date since the compiler checks it for correctness. The main cons of static type systems are the time it takes to check types, code becomes more verbose and more annoying to write, and the language is inflexible, preventing coders from expressing themselves as they wish. Fortunately, Scala has an ADVANCED static type system that addresses the verbosity and inflexibility cons.
+
+9. Reducing verbosity (with variables)
+Verboseness through type inference, which you've seen in action with variables, with colon Int removed here.
+
+10. Reducing verbosity (with collections)
+You've also seen type inference with collections, here with Array String omitted. If you're ever thinking, "Writing this type is annoying. It's obviously this type!" you can probably skip it because Scala will infer it for you. Voilà! Less verbose code. Here, we shaved off 13 characters, which is a BIG deal when multiplied over thousands of lines of code. That said, there are times when type inference can't and shouldn't be used, though that's a topic for another course.
+
+11. Promoting flexibility
+The "language not flexible" con is addressed through pattern matching and various new ways of writing and composing types. Again, advanced topics to learn later.
+
+12. Compiled, statically-typed languages
+One final note: Scala being both compiled AND statically-typed doubles down on the "increased performance" benefit. Because the compiler knows the exact data types that are used, it can allocate memory accordingly to make the code faster and memory efficient.
+--------------
+1. while and the imperative style
+Let's continue our program. In this lesson, we'll automate the repetition of gameplay code with while loops.
+
+2. Control structures
+While loops are another control structure, like if/else.
+
+3. Hip hip hooray
+First, a minimal example. Say we want to congratulate the winner of a hand of Twenty-One with the classic cheer, "Hip hip hooray!" printed to output.
+
+1 https://en.wikipedia.org/wiki/Hip_hip_hooray
+4. Loop with while
+Let's open a Scala script. The first step is defining a counter variable. Often, we name it i and set it equal to zero. You could initialize to 1, or even 1000, but zero is a common convention. Zero keeps the mental math simple and makes your code more concise when accessing elements of Scala collections like Arrays or Lists, which are zero-indexed. Next, we'll define a val to represent the number of times we want to repeat our code. Per tradition, hip hip hooray repeats three times. Next is the while loop itself, which has two parts. The body: a block of code between curly braces, and the control statement: a boolean expression, must be in parentheses. The body of the loop is executed repeatedly until the boolean expression is false. Style guide note: always put a space between the keyword while and the parentheses, and always wrap the body of a while loop in curly braces.
+
+5. Loop with while
+This body contains two statements, each indented two spaces as per the Scala style guide. The first statement prints "Hip hip hooray!" to output. The second statement increments i by one, which could be rewritten
+
+6. Loop with while
+like this, like in C and Python.
+
+7. Loop with while
+++i and i++ DON'T work like they do in Java.
+
+8. i = 0
+For the first iteration of the loop, i is 0, and the cheer is printed.
+
+9. i = 1
+Second iteration, i is 1, cheer printed.
+
+10. i = 2
+Third iteration, i is 2, cheer printed.
+
+11. i = 3
+The body doesn't execute a fourth time because i is 3 and the boolean expression i less than numRepetitions is no longer true.
+
+12. Loop with while over a collection
+Looping over collections is common. Say we want to loop over several hands in a round of Twenty-One to see which hands bust. To begin, we still need that counter variable. Next, we define an array to iterate over: hands is created with hand values of 17, 24, and 21. With collections, the control statement is a little different. Here we loop while i is less than hands dot length, where hands dot length is the number of elements in the hands array.
+
+13. Scala is object-oriented
+hands dot length is a feature of Scala being an object-oriented language. Remember our rule of thumb: almost everything is an object in Scala. We won't dive much further into object-oriented programming in this course. All you need to know now is that objects can do useful things with dot something, like get the number of elements in hands with hands dot length, which is 3.
+
+14. Loop with while over a collection
+In the body, the first statement, print line bust hands i, prints true or false, depending on whether or not the ith hand is a bust. The second statement increments the counter variable.
+
+15. Loop with while over a collection
+Running this code produces false (17 is NOT greater than 21), true (24 IS greater than 21), and false (21 is NOT greater than 21).
+
+16. Like if, parentheses required for while
+In Scala, parentheses MUST surround the boolean expression for while, just like for if.
+
+17. Like if, parentheses required for while
+That means you can't do this, which is allowed in Python for example.
+
+18. The imperative style
+Writing while loops is a feature of a style of programming called the imperative style, which actually isn't the Scala PREFERRED style. Keep this in mind for next lesson.
+
+--------------
+
+2. Scala is functional
+Previously, you saw this slide.
+
+3. Scala is a imperative/functional hybrid
+Scala is ACTUALLY a hybrid imperative/functional language, where the functional style is preferred.
+
+4. Scala nudges us towards the functional style
+Scala doesn't FORCE us to be functional, but it does nudge us.
+
+5. "imperative" according to Oxford Dictionary
+The dictionary definition of imperative is "of the nature of or expressing a command."
+
+1 https://www.thefreedictionary.com/imperative
+6. The imperative style
+Imperative PROGRAMMING means one command at a time, iterating with loops, mutating shared state. You can program imperatively in Scala if you want to.
+
+7. The imperative style
+Here's the while loop from a previous lesson. Feature 1 of imperative programming: one command at a time. Look inside the while loop. One command: print if a hand busts. Another command: increment the counter variable. Feature 2: iterate with loops. The while loop.
+
+8. The imperative style
+Feature 3: mutating shared state. var i can be changed within the loop (which is one scope) or outside the loop (another scope). It is mutated in the loop in this example.
+
+1 http://bit.ly/state_wikipedia
+9. The functional style
+Since Scala was designed functional-first, the functional style is favored because it comes with the biggest benefits in Scala, which you'll learn about next lesson. One aspect of functions being first-class values is that functions can be passed as arguments to functions. Leveraging this, we convert the while loop
+
+10. The functional style
+from this
+
+11. The functional style
+to this using the foreach method. foreach is not a built-in control structure; it is a method that takes a function as an argument, which is a demonstration of Scala the functional language.
+
+12. Scala fuses OOP and FP -> Scala is scalable
+Side note: that the hands array is an object and has a method called foreach demonstrates Scala the object-oriented language. Both keys to scalability from the first chapter are in this code.
+
+13. Modify the bust function
+Let's modify the bust function for now so its function body performs the printing of whether or not a hand busts.
+
+14. The functional style
+We insert the new bust
+
+15. The functional style
+function and get the same output as the while loop: false, true, false. Cleaner, more concise code -- five lines vs. eleven.
+
+16. What is a side effect?
+The second part of Scala being functional means side effects should be avoided, where a side effect means code modifying some variable outside of its local scope.
+
+1 http://bit.ly/side_effect_wikipedia
+17. What is a side effect?
+Though it sounds a little weird, printing to the standard output stream is a side effect. When we provide 22 as an input to bust then assign the result to a val named myHand in the interpreter, we see two lines of output: true, which is printed by the print line call, and the output from declaring the val myHand, which has type Unit. The input value (hand) no longer maps to a true output value with the print statement present. More on Unit soon.
+
+18. What is a side effect?
+Mutating a variable outside of its scope is also a side effect. Since i was declared OUTSIDE of the while loop, which is one scope, incrementing i in the loop (another scope) is a side effect.
+
+19. The spectrum of functional style
+That said, there is a spectrum for functional-style code. When we added println to the bust function, our code became less functional in style. When we converted while to foreach, our code became MORE functional. As a whole, I'd argue that our code become MORE functional, but not purely functional. That's because foreach is designed for side effects, which you can see in the documentation.
+
+1 http://bit.ly/array_foreach_documentation
+20. Signs of style
+vars, side effects, and Unit are telltale signs of imperative-style code. If you notice vals, no side effects, and non-Unit value types like Int, Boolean, Double, you're probably looking at functional-style code. More on this in more advanced courses.
+
+1 http://bit.ly/scala_unit_documentation
+--------------

@@ -1,0 +1,61 @@
+Got It!
+1. DataFrame column operations
+Welcome back! In the first chapter, we've spent some time discussing the basics of Spark data and file handling. Let's now take a look at how to use Spark column operations to clean data.
+
+2. DataFrame refresher
+Before we discuss manipulating DataFrames in depth, let's talk about some of their features. DataFrames are made up of rows & columns and are generally analogous to a database table. DataFrames are immutable: any change to the structure or content of the data creates a new DataFrame. DataFrames are modified through the use of transformations. An example is The .filter() command to only return rows where the name starts with the letter 'M'. Another operation is .select(), in this case returning only the name and position fields.
+
+3. Common DataFrame transformations
+There are many different transformations for use on a DataFrame. They vary depending on what you'd like to do. Some common transformations include: The .filter() clause, which includes only rows that satisfy the requirements defined in the argument. This is analogous to the WHERE clause in SQL. Spark includes a .where() alias which you can use in place of .filter() if desired. This call returns only rows where the vote occurred after 1/1/2019. Another common option is the .select() method which returns the columns requested from the DataFrame. The .withColumn() method creates a new column in the DataFrame. The first argument is the name of the column, and the second is the command(s) to create it. In this case, we create a column called 'year' with just the year information. We also can use the .drop() method to remove a column from a DataFrame.
+
+4. Filtering data
+Among the most common operations used when cleaning a DataFrame, filtering lets us use only the data matching our desired result. We can use .filter() for many tasks, such as: Removing null values. Removing odd entries, anything that doesn't fit our desired format. We can also split a DataFrame containing combined data (such as a syslog file). As mentioned previously, use the .filter() method to return only rows that meet the specified criteria. The .contains() function takes a string argument that the column must have to return true. You can negate these results using the tile (~) character.
+
+5. Column string transformations
+Some of the most common operations used in data cleaning are modifying and converting strings. You will typically apply these to each column as a transformation. Many of these functions are in the pyspark.sql.functions library. For brevity, we'll import it as the alias 'F'. We use the .withColumn() function to create a new column called "upper" using pyspark.sql.functions.upper() on the name column. The "upper" column will contain uppercase versions of all names. We can create intermediary columns that are only for processing. This is useful to clarify complex transformations requiring multiple steps. In this instance, we call the .split() function with the name of the column and the space character to split on. This returns a list of words in a column called splits. A very common operation is converting string data to a different type, such as converting a string column to an integer. We use the .cast() function to perform the conversion to an IntegerType().
+
+6. ArrayType() column functions
+While performing data cleaning with Spark, you may need to interact with ArrayType() columns. These are analogous to lists in normal python environments. One function we will use is .size(), which returns the number of items present in the specified ArrayType() argument. Another commonly used function for ArrayTypes is .getItem(). It takes an index argument and returns the item present at that index in the list column. Spark has many more transformations and utility functions available. When using Spark in production, make sure to reference the documentation for available options.
+
+-----------
+1. Conditional DataFrame column operations
+We've looked at some of the power available when using Spark's functions to filter and modify our Data Frames. Let's spend some time with some more advanced options.
+
+2. Conditional clauses
+The DataFrame transformations we've covered thus far are blanket transformations, meaning they're applied regardless of the data. Often you'll want to conditionally change some aspect of the contents. Spark provides some built in conditional clauses which act similar to an if / then / else statement in a traditional programming environment. While it is possible to perform a traditional if / then / else style statement in Spark, it can lead to serious performance degradation as each row of a DataFrame would be evaluated independently. Using the optimized, built-in conditionals alleviates this. There are two components to the conditional clauses: .when(), and the optional .otherwise(). Let's look at them in more depth.
+
+3. Conditional example
+The .when() clause is a method available from the pyspark.sql.functions library that is looking for two components: the if condition, and what to do if it evaluates to true. This is best seen from an example. Consider a DataFrame with the Name and Age columns. We can actually add an extra argument to our .select() method using the .when() clause. We select df.Name and df.Age as usual. For the third argument, we'll define a when conditional. If the Age column is 18 or up, we'll add the string "Adult". If the clause doesn't match, nothing is returned. Note that our returned DataFrame contains an unnamed column we didn't define using .withColumn(). The .select() function can create columns dynamically based on the arguments provided. Let's look at some more examples.
+
+4. Another example
+You can chain multiple when statements together, similar to an if / else if structure. In this case, we define two .when() clauses and return Adult or Minor based on the Age column. You can chain as many when clauses together as required.
+
+5. Otherwise
+In addition to .when() is the otherwise() clause. .otherwise() is analogous to the else statement. It takes a single argument, which is what to return, in case the when clause or clauses do not evaluate as True. In this example, we return "Adult" when the Age column is 18 or higher. Otherwise, we return "Minor". The resulting DataFrame is the same, but the method is different. While you can have multiple .when() statements chained together, you can only have a single .otherwise() per .when() chain.
+----------
+1. User defined functions
+We've looked at the built-in functions in Spark and have had great results using these. But let's consider what you would do if you needed to apply some custom logic to your data cleaning processes.
+
+2. Defined...
+A user defined function, or UDF, is a Python method that the user writes to perform a specific bit of logic. Once written, the method is called via the pyspark.sql.functions.udf() method. The result is stored as a variable and can be called as a normal Spark function. Let's look at a couple examples.
+
+3. Reverse string UDF
+Here is a fairly trivial example to illustrate how a UDF is defined. First, we define a python function. We'll call our function, reverseString(), with an argument called mystr. We'll use some python shorthand to reverse the string and return it. Don't worry about understanding how the return statement works, only that it will reverse the lettering of whatever is fed into it (ie, "help" becomes "pleh"). The next step is to wrap the function and store it in a variable for later use. We'll use the pyspark.sql.functions.udf() method. It takes two arguments - the name of the method you just defined, and the Spark data type it will return. This can be any of the options in pyspark.sql.types, and can even be a more complex type, including a fully defined schema object. Most often, you'll return either a simple object type, or perhaps an ArrayType. We'll call udf with our new method name, and use the StringType(), then store this as udfReverseString(). Finally, we use our new UDF to add a column to the user_df DataFrame within the .withColumn() method. Note that we pass the column we're interested in as the argument to udfReverseString(). The udf function is called for each row of the Data Frame. Under the hood, the udf function takes the value stored for the specified column (per row) and passes it to the python method. The result is fed back to the resulting DataFrame.
+
+4. Argument-less example
+Another quick example is using a function that does not require an argument. We're defining our sortingCap() function to return one of the letters 'G', 'H', 'R', or 'S' at random. We still create our udf wrapped function, and define the return type as StringType(). The primary difference is calling the function, this time without passing in an argument as it is not required.
+------
+2. Partitioning
+Spark breaks DataFrames into partitions, or chunks of data. These partitions can be automatically defined, enlarged, shrunk, and can differ greatly based on the type of Spark cluster being used. The size of the partition does vary, but generally try to keep your partition sizes equal. We'll discuss more about optimizing partitioning and cluster details later on. For now, let's assume that each partition is handled independently. This is part of what provides the performance levels and horizontal scaling ability in Spark. If a Spark node doesn't need to compete for resources, nor consult with other Spark nodes for answers, it can reliably schedule the processing for the best performance.
+
+3. Lazy processing
+In Spark, any transformation operation is lazy; it's more like a recipe than a command. It defines what should be done to a DataFrame rather than actually doing it. Most operations in Spark are actually transformations, including .withColumn(), .select(), .filter(), and so forth. The set of transformations you define are only executed when you run a Spark action. This includes .count(), .write(), etc - anything that requires the transformations to be run to properly obtain an answer. Spark can reorder transformations for the best performance. Usually this isn't noticeable, but can occasionally cause unexpected behavior, such as IDs not being added until after other transformations have completed. This doesn't actually cause a problem but the data can look unusual if you don't know what to expect.
+
+4. Adding IDs
+Relational databases tend to have a field used to identify the row, whether it is for an actual relationship reference, or just for data identification. These IDs are typically an integer that increases in value, is sequential, and most importantly unique. The problem with these IDs is they're not very parallel in nature. Given that the values are given out sequentially, if there are multiple workers, they must all refer to a common source for the next entry. This is OK in a single server environment, but in a distributed platform such as Spark, it creates some undue bottlenecks. Let's take a look at how to generate ID's in Spark.
+
+5. Monotonically increasing IDs
+Spark has a built-in function called monotonically_increasing_id(), designed to provide an integer ID that increases in value and is unique. These IDs are not necessarily sequential - there can be gaps, often quite large, between values. Unlike a normal relational ID, Spark's is completely parallel - each partition is allocated up to 8 billion IDs that can be assigned. Notice that the ID fields in the sample table are integers, increasing in value, but are not sequential. It's a little out scope, but the IDs are a 64-bit number effectively split into groups based on the Spark partition. Each group contains 8.4 billion IDs, and there are 2.1 billion possible groups, none of which overlap.
+
+6. Notes
+There's a lot of nuance to how partitions and the monotonically increasing ID's work. Remembering that Spark is lazy: it often helps in troubleshooting what can happen. Operations are often out of order - especially if joins are involved. It's best to test your transformations.
