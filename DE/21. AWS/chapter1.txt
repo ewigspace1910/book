@@ -1,0 +1,164 @@
+1. Intro to AWS and Boto3
+Welcome to Introduction to AWS and Boto in Python! Amazon Web Services is the backbone of the internet. Boto3 lets us harness the power of AWS to use as an extension of our laptops. We can build automated reports, perform sentiment analysis, send alerts and more. Let's get started!
+
+2. What is Amazon Web Services?
+Our house needs water, electricity, trash service, and cable TV. Our project needs storage, compute resources, and alerts to be successful. We buy utilities for the home. We buy AWS services for our project. AWS services are granular, so they work together or on their own.
+
+3. What is Boto3?
+To interact with AWS in Python, we use the Boto3 library. Let's look at an example. We import boto3. We initialize the client with an AWS service name, region, key and secret. The service name can be any of the 100+ available AWS services. The region is the geo region where our resources are located. Key and secret are like a username and password to an AWS account. We'll make our own next.
+
+4. AWS console
+Creating an account at aws.amazon.com gives us access to the AWS Console. Anything we do here to manage our web services, we can do in Boto3 in Python.
+
+5. Creating keys with IAM.
+To log into the console, we use the username/password we signed up with. This is the root user.
+
+6. Creating keys with IAM
+To create the key/secret for Boto3, we are going to use IAM or Identity Access Management Service. We create IAM sub-users to control access to AWS resources in our account. Credentials - or the key / secret combo are what authenticate IAM users.
+
+7. Find IAM
+In the console, type IAM in the Find Services Section.
+
+8. Click users
+At the IAM Screen, click "Users"
+
+9. Add user
+Click "Add User"
+
+10. Enter username
+Enter a username and select "programmatic access".
+
+11. Give permissions
+Select "Attach Existing Policies Directly" to add pre-made permission sets to our new user. Give the user the AmazonS3FullAccess policy, AmazonSNSFullAccess, AmazonRekognitionFullAccess, TranslateFullAccess, and ComprehendFullAccess. We can skip the tags screen.
+
+12. Review
+Make sure we set everything correctly and create the user!
+
+13. Get our keys
+Grab our key and secret and store them somewhere safe. We created a user that has full permissions to the services we will use in this course.
+
+14. AWS services
+What are these services? I already mentioned IAM. S3 or Simple Storage Service lets us store files in the cloud.
+
+15. AWS services
+SNS or Simple Notification Service lets us send emails and texts to alert subscribers based on events and conditions in our data pipelines.
+
+16. AWS services
+Comprehend performs sentiment analysis on blocks of text.
+
+17. AWS services
+And Rekognition to extracts text from images and look for cats in a picture!
+
+18. AWS services
+RDS, EC2, and Lambda are other common services, but we won't cover them in this class.
+
+19. Sam
+Lastly, let's meet Sam. She is an analyst at the City of San Diego. She analyzes data and builds dashboards to improve city operations.
+
+20. GetItDone
+Sam works with a variety of datasets. But much of her work is centered around GetItDone. The City of San Diego launched Get It Done to allow residents to report problems like potholes and broken sidewalks. We will be helping Sam harness the cloud to improve the lives of San Diego residents using GetItDone and other datasets.
+
+1 https://data.sandiego.gov/datasets/get
+2 it
+3 done
+4 311/
+21. Summary
+In this lesson, we learned that Amazon Web Services are like home utilities. Decoupled and granular, they work well together or on their own. We learned about the key services we will be using in this class. We learned how to create an IAM user and get a key / secret combination. Lastly, we learned to initialize an S3 client and list buckets using our AWS Key and Secret.
+---------------
+
+1. Diving into buckets
+In the last lesson, we learned about different AWS services and how to create our first Boto3 client. Now, let's dive into cloud storage with AWS S3. S3 lets us put any file in the cloud and make it accessible anywhere in the world through a URL. Managing cloud storage is a key component of data pipelines. Many services we will learn will depend on an object being uploaded to S3.
+
+2. S3 Components - Buckets
+The main components of S3 are Buckets and Objects. Buckets are like folders on our desktop. Objects are like files within those folders. But there's a lot of power hidden underneath. Buckets have their own permissions policies. They can be configured to act as folders for a static website They can generate logs about their own activity and write them to a different bucket.
+
+3. S3 Components - Objects
+The most important thing that buckets do - they contain objects. An object can be anything - an image, a video file, CSV or a log file. There are plenty of operations we can do with objects, but for now, let's focus on what we can do with buckets.
+
+4. What can we do with buckets?
+What can we do with buckets using boto3? We can create a bucket. List buckets that we have in our account. And we can delete a bucket We can only store objects in buckets, so knowing how to work with buckets is a crucial component of S3 knowledge. Let's dive into some buckets!
+
+5. Creating a Bucket
+Let's start off by making a new bucket called gid-requests. We create a boto3 client that lets us interact with AWS S3. Then, we call the client's create_bucket method, passing the bucket name as the argument.
+
+6. Bang!
+Tada! We have a shiny new bucket.
+
+7. Our bucket in the console
+We can see it in the console as well. Keep in mind that bucket names have to be unique across all of S3, otherwise we will get an error when trying to create one.
+
+8. Listing buckets
+Now, that we can create a bucket, let's get a list of all the buckets we have in S3. Once again, we create a boto3 s3 client. Then we call the list_buckets method on the client.
+
+9. Listing Buckets
+When S3 responds, it will give us some additional response metadata. But it will include a dictionary under the Buckets key. Let's get that dictionary, and print it out.
+
+10. Listing Buckets
+We can see our new bucket name and the time that it was created. Now that we have this dictionary, we can run it through a for loop and perform an operation on multiple buckets.
+
+11. Deleting buckets
+Let's say we don't need the gid-requests bucket anymore. Let's delete it. Once again, we create the boto3 s3 client. Then we call the delete_bucket method.
+
+12. Bye Bye Bucket
+Alas, our bucket is gone. If we tried to delete it, and it didn't exist, we would've gotten an error.
+
+13. Bye Bye Bucket
+It's nowhere to be found in the console either.
+
+14. Other operations
+We will learn more operations on buckets as we get further in the course, but we won't learn them all. Get in the habit of reading boto3 documentation for all the methods we can do on an Amazon Web Service.
+
+15. Summary
+In this lesson we learned about how to work with a key components of S3 - Buckets. We learned that buckets contain objects. How to create buckets. How to list buckets. And how to delete buckets. We also learned that there are more operations that we can read about in the boto3 docs.
+
+16. Let's practice!
+Now we're ready to dive into buckets. Let's help Sam make some!
+-----------
+Got It!
+1. Uploading and retrieving files
+In the last lesson, we learned how to list, create and delete buckets. Now, it's time to put stuff in them. Let's take a look at how objects work.
+
+2. Buckets and objects
+The files in S3 buckets are called objects. An object can be anything - an image, a video file, CSV or a log file. Managing objects is a key component of many data pipelines.
+
+3. Buckets and objects
+Objects and buckets in S3 work somewhat like files and folders on our desktop. Each bucket has a name. Objects' names are called keys. A bucket name is just a name. An object's key is the full path of the object from the bucket's root. A bucket's name is unique in all of S3. An object's key is unique in the bucket. A bucket contains many objects. But an object can only belong to one bucket.
+
+4. Creating the client
+First, we create the client and assign it to the s3 variable. Now we can perform operations on our objects and buckets.
+
+5. Uploading files
+Let's upload an object into a Bucket. We upload the file using the client's upload_file method. The Filename is the local file path. Bucket parameter takes the name of the bucket we are uploading to. Key is what we want to name the object in S3. We are not capturing the return from this method in a variable. The method doesn't return anything. If there is an error, it will throw an exception.
+
+6. Uploading files
+Whoo! Our file is now on S3!
+
+7. Uploading more objects
+I've uploaded a few more objects for us to play with. Let's list them with boto3.
+
+8. Listing objects in a bucket
+Call the client's list_objects method, passing `gid-requests` for Bucket Name. Optionally, we can limit the response to two objects with the MaxKeys argument. If we omit it, S3 will return up to 1000 objects in our bucket if they exist. Another way to limit the response is to use the optional Prefix argument. Passing it will limit the response to objects that start with the string we provide.
+
+9. Listing objects in a bucket
+The response dictionary contains the 'Contents' key. This key contains a list of objects and their info. Each object dictionary is returned with a key.
+
+10. Listing objects in a bucket
+A modified date
+
+11. Listing objects in a bucket
+And the object size in bytes.
+
+12. Getting object metadata
+If we want to know these things about a single object, we can use the client's head_object method, passing the bucket name and object key.
+
+13. Getting object metadata
+Notice that because we are only working with one object, there is no Contents dictionary. The metadata is directly in the response dictionary.
+
+14. Downloading files
+To download a file, we use the client's download_file method. We pass the Filename, or the local path we want the file to download to. Then we specify the bucket and key of the object we want to download!
+
+15. Deleting objects
+Sometimes, an object has outlived its usefulness and needs to be deleted. Use the client's delete_object method, passing the Bucket name and object key to delete the object.
+
+16. Summary
+In this lesson, we learned that buckets are like folders, and objects are like files within them. We learned to create the client before we can do anything else. We learned how to upload files to a bucket How to list objects in a bucket How to head object - or get object metadata How to download a file from a bucket And finally, how to delete an object

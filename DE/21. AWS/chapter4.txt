@@ -1,0 +1,165 @@
+Got It!
+1. Rekognizing patterns
+As we jump into the last chapter of the course, I want to emphasize we did not only learn S3, SNS, and Boto3 in the past chapters. We learned a pattern that we can apply to AWS services I didn't teach and services that don't exist yet.
+
+2. Rekognition
+Boto3 follows the same pattern for all AWS services. As new services come online, we will be able to interact with them using familiar patterns. We will be using Boto3 documentation and the AWS interface to explore a new service called Rekognition. Get the super witty Rekognizing patterns title? Let's get started.
+
+3. So what is Rekognition anyway?
+Rekognition is computer vision API by AWS. We will focus on 2 features: Detecting objects in an image and Extracting text from images. These are common tasks extremely useful in day to day operations. But if we dig around in the docs, Rekognition does a few other things.
+
+4. Why not build our own?
+You may wonder why we should use Rekognition instead of building our own model. If we were building our own, we would train it for one specific task - like recognizing bicycles. We have to have training data, deploy the model and maintain it. But, a good data engineer is a lazy data engineer. Rekognition is a great general-purpose model, and we should stick with it if we want simplicity. We can always go custom if we need more customization.
+
+5. I am not a computer vision expert
+I should also note - I'm not a computer vision expert. But to use Rekognition and boto, I don't have to be.
+
+6. Learning a new AWS service
+When I learned how to use Rekognition, I clicked around on the AWS interface.
+
+7. Learning a new AWS service
+Then I looked up Rekognition in Available Services in Boto Docs.
+
+8. Learning a new AWS service
+I found the parameter to pass to create the client.
+
+9. Learning a new AWS service
+Then I was able to see the available operations. Let's explore them!
+
+10. Upload an image to S3
+Let's see how we can use rekognition for object detection. The City wants to count bicycles as they pass by a camera. Before we do anything, we must upload an image to S3. As a reminder, we initialize the S3 client, then call the upload_file method.
+
+11. Object detection
+Then, construct the boto3 rekognition client.
+
+12. Object detection
+Call detect_labels, specifying Bucket and Image to get the response from Rekognition. Optionally, we can specify the maximum amount of labels to return and the minimum confidence in the match that we are willing to accept.
+
+13. Detect labels response
+The response will come back as a list of labels. This label Name is Bicycle.
+
+14. Detect labels response
+We are 99% Confident that there is a Bicycle in this image.
+
+15. Detect labels response
+The list of label instances contains information about all the instances of the Bicycle label in the image.
+
+16. Detect labels response
+There is a list item for every label.
+
+17. Detect labels response
+In this image, Rekognition sees 1 bicycle and many cars.
+
+18. Text detection
+Text detection works in a similar way. We instantiate the client, then call detect_text, passing an image bucket and key.
+
+19. Text detection response
+We receive a response containing text detections as a list of dictionaries. Detections can be of 2 types: Line or Word. A line detection treats the text in the adjacent signs as one line. One of the detections was "STREET PROHIBITED", a combination of one line across 2 signs.
+
+20. Text detection response
+But word detections simply separate by word.
+
+21. What Rekognition sees
+The response contains ALL line and word detections.
+
+22. Summary
+In this lesson, we learned how to detect objects in an image and count instances of them. We talked about how to approach learning a new AWS service with Boto. We looked at how to recognize text in an image and tell the difference between word and line detection. We also explored when to build our own or use a service like Rekognition.
+--------------------
+1. Comprehending text
+In the last lesson, we used the boto3 documentation and the AWS console to explore a new service, Rekognition. Often times, data engineering requires working with unstructured text data - customer comments, other fields, tweets or posts. A huge component of data engineering is enriching data with values that will be needed for analysis downstream. In this lesson, we will look at two services that let us work with free-text data without being Natural Language Processing experts: AWS Translate and AWS Comprehend. Let's dig in!
+
+2. AWS Translate console
+Because we now know the basics of working with AWS, learning additional services is pretty straightforward. We start with finding the AWS Translate service in the console and playing with it.
+
+3. Translating text
+Next, we look up the boto3 documentation. We see that there is one main method that will do this work for us - translate_text. First, let's initialize the boto3 client for AWS Translate. No surprises here, just a regular client initialization with the service name of translate as an argument. Then, we call the translate_text method. We pass the text we want to translate in the text argument. We let Amazon detect the source language on its own by passing 'auto' for SourceLanguageCode. For our TargetLanguageCode, we pass Spanish or es. We got this language code from the boto3 documentation.
+
+4. Translating text
+In response, we get a pretty familiar looking AWS response. The translated text is in the TranslatedText key. AWS also sends back the language it detected for the source language, and the target language we specified.
+
+5. Translating text
+This structure lets us create a simple one-liner, to get the translated text directly from the response.
+
+6. Detecting language
+The way that AWS Translate knows which language is being used when we pick SourceLanguageCode auto is by using another service AWS Comprehend. We start by initializing the boto3 comprehend client. Then, we call the client's detect_dominant_language method, passing our string through the Text argument.
+
+7. Detecting language
+In the response, AWS returns a list of languages this text likely is. If it has low confidence, it might return two or more languages with confidence scores for each one.
+
+8. Understanding sentiment
+Translating is nice, but what if we wanted to detect the sentiment of a set of text? This could be useful for processing tweets and customer comments. In the console, we can see that sentiment can be Neutral, Positive, Negative or mixed.
+
+9. Understanding sentiment
+We have already initialized the boto3 comprehend client. From the documentation, we know that we can use the client's detect_sentiment method to analyze the text. We call the method, storing the API response in the response variable.
+
+10. Understanding sentiment
+The response will contain a sentiment key and a dictionary with the sentiment scoring.
+
+11. Understanding sentiment
+Which means, again, our one-liner could access the Sentiment key directly from the response.
+
+12. Review
+In this lesson, we went on a tour of natural language processing in AWS. AWS Translate and Comprehend make it really easy and smooth to perform basic NLP on free text, allowing data engineers to enrich their data with sentiment and language information. To perform a translation, we initialize the boto3 translate client and call translate_text. If we don't know the source language, that's ok - AWS will figure that out for us if we pass auto for SourceLanguageCode.
+
+13. Review
+AWS figures out the source language by using AWS comprehend in the background. We can do that too by initializing the AWS Comprehend boto3 client. Then, we call the detect_dominant_language method to figure out what language a chunk of text is.
+
+14. Review
+We can also use AWS to detect sentiment using comprehend's detect_sentiment method.
+
+--------------------
+
+1. Case Study: Scooting Around!
+We are here - the last lesson of the last chapter. In the past 4 chapters we learned how to use cloud storage with S3, notifications with SNS, image recognition with rekognition, text translation with Translate and NLP with Comprehend. Let's put these skills together to a real-world use case!
+
+2. The Quandary
+In the past year, the City has seen an onslaught of scooters on its streets. While many residents enjoy having this fun mode of transportation, the City council is getting pressure from elderly and disabled residents to regulate them better. People often leave them on the streets, blocking the sidewalk.
+
+3. The Quandary
+The City Council is debating on whether to pass a policy where the city picks up the scooter blocking the sidewalk. However, since the people that show up to council don't tend to represent the city demographics, the City council asked Sam to look at the GetItDone requests to estimate the volume of scooters the city would have to pick up.
+
+4. The Data
+Sam has narrowed the GetItDone dataset to include the images on S3 bucket, a description field, and a case latitude / longitude. As we can see, some of the descriptions are not complaints, but compliments.
+
+5. Final Product
+Sam knows that GetItDone does not always receive requests in English. San Diego is a diverse city. So her first task is to translate all the public descriptions to English.
+
+6. Final Product
+She knows not every scooter request will actually include the word scooter, so she will use the images from GetItDone to detect a scooter in the image.
+
+7. Final Product
+Her hunch is that when a scooter is blocking the sidewalk, the description sentiment will be negative. She will analyze the description for the sentiment.
+
+8. Final Product
+But there are definitely happy posts about scooters too.
+
+9. Final Product
+If she can filter the cases down to those that involve the scooter blocking the sidewalk, she can count them and provide Council with a rough idea of how many scooters the City would have to pick up. She knows that the best way to do this would be to train a model with multiple marked up descriptions, but since she doesn't have that yet, this will work for a prototype. Let's get Sam on her way!
+
+10. Initialize boto3 service clients.
+First Sam needs to initialize all the boto3 service clients. We start with the rekognition client and comprehend client.
+
+11. Initialize boto3 service clients
+Followed by the Translate client.
+
+12. Translate all descriptions to English
+Next, we translate all the public descriptions to English, to make sure we're working in one language across the board.
+
+13. Translate all descriptions to English
+We overwrite the public_description field with the new translation.
+
+14. Detect text sentiment
+Next, we iterate over every row of the DataFrame to detect the sentiment of the text in the descriptions.
+
+15. Detect text sentiment
+We grab the Sentiment key from the response and store it in the sentiment column.
+
+16. Detect scooter in image
+Finally, we run Rekognition label detection against every image that we stored from GetItDone. This will let us see which images contain a scooter.
+
+17. Detect scooter in image
+We store that value in the img_scooter column as a 1 if the scooter is detected in the image, and a 0 if not.
+
+18. Final count!
+Then, we select all rows where the scooter was detected in the image and the sentiment was negative, storing them in a pickups DataFrame. The number of rows in the DataFrame is how many scooters the City will expect to pick up!
+--------------------

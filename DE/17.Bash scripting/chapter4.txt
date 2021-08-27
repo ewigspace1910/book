@@ -1,0 +1,74 @@
+1. Basic functions in Bash
+Let's now learn how to build basic functions in Bash scripts.
+
+2. Why functions?
+Functions are a core part of most programming languages. If you have used them in R or Python you will know some of these advantages. Firstly, functions allow a reusable section of code that reduces repetition. Therefore you can make neat, compartmentalized code. That is, the code is modular so you can work on, add or subtract different sections as needed. Finally, functions allow for easy sharing of code. If you know what the function's purpose, the inputs and outputs are then you can use it.
+
+3. Bash function anatomy
+A Bash function has the following syntax. Let's break down the code you see now. You start by writing a name for your function. Make sure it is a sensible name that makes sense. This enhances code readability. Add open and closed parenthesis after the function name. Then add curly brackets (or braces). Inside here place the code to run when the function is called. You can use anything you learned so far such as loops, IF statements, calling shell-within-a-shell constructs and more. You can optionally return something. Beware this is not similar to return values in other languages. We will cover this in the next lesson.
+
+4. Alternate Bash function structure
+There is an alternate way you can write functions in Bash, like so. It is very similar. Can you see the main differences? Firstly you use the word 'function' before the function name to denote starting a function construction. Secondly, you don't need parenthesis on the first line. Though you can keep them if you like!
+
+5. Calling a Bash function
+To call the function, simply write the name you set when building it. Here is a simple function to print some text. We then call it by using the same name. As expected, it prints out the words.
+
+6. Fahrenheit to Celsius Bash function
+Let's practice by writing a function to convert Fahrenheit to Celsius, just like you did in a previous lesson. We have a static variable 'temp_f' which is the temperature we want to convert and will be used inside the function. We will use the 'function-word' method to create the function and call it 'convert_temp'. Inside we create a variable, 'temp_c' by calling a shell-within-a-shell to implement the arithmetic to convert the temperature. Take a second to dissect this if you like - it should be familiar from previous lessons, just compressed a bit. Then we simply print it out the converted temperature and close the function. Below, we call the function. As expected, 30 in Fahrenheit is -1.11 in Celsius.
+
+-------------------------
+1. Arguments, return values, and scope
+Let's learn how to get data into and out of our functions and how scope affects this process.
+
+2. Passing arguments into Bash functions
+Passing arguments into functions is just like using ARGV into your Bash script. The dollar-sign notation. So, you have access to the special ARGV properties which were: Using dollar-one, dollar-two etc. for specific ARGV elements, dollar-at for all elements and dollar-pound for the number of elements.
+
+3. Passing arguments example
+In this example, we will pass in some file names, loop through and print them out. Inside our function code, we firstly echo the first ARGV element using dollar-one notation. Then we use a FOR loop over all the elements using dollar-at. The last line calls this function with some file names. See how the output is the first file name and then each file name (including the first) in turn.
+
+4. Scope in programming
+Scope is an important programming concept. It refers to how accessible a variable is within the program. Global scope is where a variable is accessible anywhere including inside sections such as FOR loops, IF statements, and functions. Local scope is a variable only accessible in a certain part of the program. Why is this important? Because if you try and access a variable outside where it has local scope - your program may fail with an error!
+
+5. Scope in Bash functions
+Bash makes it easy as all variables are global by default. In this example function, we create a variable from the first argument inside. After calling the function, we echo the variable created inside. It works! Beware. Many languages limit global scope by default as this carries risks you may accidentally do something unintended.
+
+6. Restricting scope in Bash functions
+To restrict a variable's scope, use the 'local' command. Here we repeat the same function but restrict the variable 'first_filename' to be local inside the function. We again call the function and try to print the variable created inside. A blank line is printed. But why a blank line and and not an error? The answer is that 'first_filename' was assigned to the global first ARGV element (dollar-one). The script was run with no arguments, just 'bash script.sh' so the first ARGV was blank. Hence, be careful considering scope!
+
+7. Return values
+Knowing how to get arguments in functions, how do we get data out? 'return' in Bash is not for data. It contains a value based on whether the function was successful (0) or not (other values 1-255). This value is in the global variable dollar-question-mark. Therefore, we could: Assign what we want to a global variable and access anywhere outside. As we just did in this video. Or, we can echo what we want returned as the last line in the function and capture using shell-within-a-shell.
+
+8. A return error
+This is an example of return being used with an error. We create a function that has an error inside. We call the function then print out the return value using dollar-question-mark This is the output. So what happened? As expected, trying to call a non-existent program 'echlo' did not work and there was an error. The return value 127 means the script tried to find a program that doesn't exist.
+
+9. Returning correctly
+Let's return what we want using the second method. 'echo' and shell-within-a-shell. Using the temperature conversion function from before, we echo back the calculation result inside the function. Below, we assign the variable 'converted' to what is returned from the function when using the argument '30'. Then echo using that variable. We get the correct return value. Notice how we didn't use an intermediary variable this time?
+-------------------------
+1. Scheduling your scripts with Cron
+Now you have mastered creating Bash scripts, let's learn how to program them to run on a schedule. You'll never need to lift a finger to execute code again!
+
+2. Why schedule scripts?
+There are many situations where being able to schedule scripts is helpful. Firstly, you may have regular tasks to be done. Such as daily, weekly or multiple times per day. You could try to remind yourself - but what if you forget or are away? Secondly, you can better use resources. Such as running scripts early in the morning when server usage is low. Learning to schedule with cron is an essential skill in modern data infrastructures.
+
+3. What is cron?
+The program 'cron' has been part of unix-like systems for a long time. Since the 70's in fact. We humans have been lazy for that long! The name comes from the Greek word for time, chronos. This program is driven by something called a 'crontab'. This file contains cron jobs which tells crontab what code to run and when.
+
+4. Crontab - the driver of cronjobs
+You can see what schedules, called 'cronjobs' you have currently programmed by running the following in the terminal. We see that this user has no cronjobs. We better make a schedule then!
+
+5. Crontab and cronjob structure
+This image from wikipedia demonstrates how to construct a cronjob. You can have as many cronjobs as you like, one per line in the crontab file. There are 5 stars, one for each time unit. There are minutes, hours, days of the month, months of the year and days of the week. The default (just a star) means to run at every interval.
+
+6. Cronjob example
+Let's walk through some example cronjobs. In this first example. The minutes star is 5 (meaning 5 minutes past the hour). Which hour? Well, the hours star is 1 (meaning after 1am). The last three are all stars, meaning 'every'. So overall, we run myscript.sh every day at 1:05am. In this second example. The minutes star is 15 (meaning 15 minutes past the hour), the hours star is 14 (meaning after 2pm). The stars for day-of-month and month-of-year are 'every'. The last star is day 7 (on Sundays). So overall we run myscript.sh at 2:15pm every Sunday.
+
+7. Advanced cronjob structure
+You can also run programs multiple times per day (or other time units) or even every X time increments. For specific intervals, you can use a comma. For example, this cronjob would run at 15, 30 and 45 minutes past the hour. For every hour specified in the next star. Here it is every hour, every day etc. You can use a slash for every X increment. In another example, this cronjob runs every 15 minutes. Again, for every hour, every day etc.
+
+8. Your first cronjob
+Let's schedule a script called extract_data to run every morning at 1.30am. The steps are as follows. Firstly type crontab with an 'e' flag to edit your list of cronjobs. If this is the first time, it may ask which editor you want to use. Nano is an easy option and has a less-steep learning curve than vi (or vim). Create the cronjob on a blank line. We want it to run at 30 minutes past the first hour, every day, week, month etc. So we put 30 as the first star, 1 as the second star and leave the rest as 'every'.
+
+9. Your first cron job
+Finally you need to exit the editor, saving the crontab. If you were using nano on a mac, this is how you exit and save. You may need to google the commands for your system and editor. You will see a note in the terminal that a crontab has been installed. Let's check that the cronjob was correctly programmed by running 'crontab' with the l flag. The crontab was returned - great stuff!
+
+10. Let's practice!

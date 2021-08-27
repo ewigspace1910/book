@@ -1,0 +1,127 @@
+Got It!
+1. Basic introduction to PySpark
+Congratulations on completing the previous chapter! Now that you know how to ingest data, you will learn how to clean and transform data using PySpark.
+
+2. What is Spark?
+First, what is Spark? Spark is an analytics engine for processing large quantities of data. The Spark core powers four libraries that serve different but related purposes: there’s Spark SQL for manipulating mostly tabular data, Spark Streaming for manipulating streaming data, MLlib for machine learning and GraphX for graph analysis. These libraries can be combined seamlessly in the same application. Spark runs everywhere, including standalone on your laptop and in the cloud. It also exists in several programming languages, like Python, where we often refer to it as “PySpark”.
+
+3. When to use Spark
+Spark is a useful framework when you want to process data at scale. It scales incredibly well to dataset sizes of billions of records by parallelizing its execution over multiple machines. Spark can also be used in interactive analytics, such as notebooks in which data scientists explore data interactively, validate hypotheses about the data quickly and drill deeper into the results. It also offers a suite of machine learning algorithms and functions that allow you to build features, train models and score existing models on new data. You shouldn’t be using Spark when you have only little data. Spark adds overhead, which makes it inefficient and slow for small quantities of data. Additionally, Spark offers rich libraries for querying, machine learning and graph analytics. If all you need to do, is to apply a simple filter, then the richness of Spark is probably overkill.
+
+4. Business case: finding the perfect diaper
+Let’s get started with Spark by working on a hypothetical scenario where we want to find the best diaper based on qualitative aspects such as comfort and quantitative attributes such as price. Our marketing department has already placed the following raw data sources in the data lake: the prices dataset, which contains pricing details on different diaper models in different stores across countries, and user ratings per diaper model. These spreadsheets will serve as input for our data pipeline.
+
+5. Starting the Spark analytics engine
+To load a dataset with PySpark, we must first create a SparkSession, at least in Spark version 2.x. Upon creation, the execution environment gets configured.
+
+6. Reading a CSV file
+Spark offers a very convenient way to read all kinds of files, including CSVs. To read a file that is on a local filesystem, we pass the path to that file as the first argument to “spark.read.csv()”, which returns a DataFrame. This doesn’t immediately trigger the reading of the full file though, just some metadata and a few bytes, so this operation is quite fast. The actual execution is postponed until we perform an action on this DataFrame. “show” is such an action. It will display maximum 20 rows of data in a tabular format. We can see the columns of the pricing dataset, but the headers are stored as part of the data. Let’s fix that.
+
+7. Reading a CSV file with headers
+There. By passing the “header="true"” argument to the reader options, the result looks much better, at least on the surface.
+
+8. Automatically inferred data types
+When we inspect the data types of this DataFrame, we notice that these are all strings! We can let Spark infer the schema for us, but keep in mind that in production you wouldn’t rely on incorrectly inferred data types, so you typically define the schema yourself.
+
+9. Enforcing a schema
+We can manually specify a schema by using the reader’s “schema” method and passing it a “StructType”, encapsulating a list of “StructFields”. Each “StructField” describes one column in the CSV file: its name, type and whether it can be NULL or not. NULL is used to indicate missing or non-specified data. We can now see that the data types are no longer all strings, which makes later transformations easier.
+----------------
+1. Cleaning data
+In the previous lesson you learned how to import data correctly. However, data usually doesn’t come “clean” so in this lesson we’ll see how to clean data.
+
+2. Reasons to clean data
+Data scientists spend a lot of their time cleaning data, because most data sources you work with are not ready for analytics. Here are some common reasons: Incorrect data types. When you read from CSV, everything is a string. We have to make the effort to turn the fields back into integers, floats, or datetimes. Invalid rows. Especially when parsing manually entered data, from sources such as Microsoft Excel, some rows simply contain bogus information. These rows need to be removed. Rows are incomplete. Sometimes almost all fields in a row are valid, except one or two. What do you do in this case? Sometimes, these fields are not critical and can be left empty, sometimes they can be given a default value. Badly chosen placeholders. It happens that you encounter strings such as “N/A” or “Unknown”. In these cases, very often, replacing the values by NULL is the appropriate thing to do.
+
+3. Can we automate data cleaning?
+If data scientists spend so much of their time cleaning data, why can’t you automate that? Well, there is definitely tooling that can help you with that. For example, you can ask Spark to infer the data types for you. And most of the times, that is good enough. But so far, automating all data cleaning tasks remains a challenge, because data cleaning often depends on the context. Ask yourself these questions: Are you in a regulated or strict reporting environment where every row of data counts? Or can your downstream systems cope with data that is 95% clean and 95% complete? What are the implicit standards in your company? If you are based in Western Europe for example, all datetimes can perhaps implicitly be set to Central European Time. What are the low-level details of the systems you read data from? For example, a machine can log “UNKNOWN” or “NA” when a sensor reading fails.
+
+4. Selecting data types
+You’ve already seen how we can correct data types in the previous lesson. In Spark, this table summarizes frequently used data types. Pause the video to familiarize yourself with the data types available to you.
+
+5. Badly formatted source data
+Let’s see what happens if you have an invalid row. The invalid row is the one that has only dashes.
+
+6. Spark’s default handling of bad source data
+You see that Spark makes an effort to incorporate the invalid row. That’s not what we want.
+
+7. Handle invalid rows
+Spark provides the option to drop malformed rows. To do so, we pass “DROPMALFORMED” to the “mode” keyword of the options method. Malformed rows are then removed automatically.
+
+8. The significance of null
+Sometimes data isn’t malformed, but simply incomplete. In this example, the 2nd row is missing a country code and a quantity. Removing the row entirely is not ideal, as it still contains useful information. As you can see, Spark’s default way of handling this is to fill the blanks with “null”, which is a well-established way to express missing or unknown values.
+
+9. Supplying default values for missing data
+You could instruct Spark to fill the missing data with specific values. For that, we use the “fillna” method, which optionally accepts a list of column names as input. Only those columns will be affected, as you can see.
+
+10. Badly chosen placeholders
+People often put placeholders for fields they don’t know the value of. In this example, someone gave an unrealistic date for the end of Alice’s employment contract. Such placeholders are bad for analytics purposes. In most cases, it’s better to have unknown data simply represented by the “null” value. Many libraries have built-in functionality to deal with this appropriately.
+
+11. Conditionally replace values
+Here, we replace the values that are illogical by using a condition in the “when()” function. When the condition is met, we replace the values with Python’s “None”, which in Spark gets translated to “null”. Otherwise, we leave the column unaltered.
+----------------
+Got It!
+1. Transforming data with Spark
+Congratulations on completing those exercises on cleaning. Now let’s look at some functions that help generate insights.
+
+2. Why do we need to transform data?
+Insights are typically derived after data has been massaged somewhat. Cleaning helps with that. An example of an insight is knowing the top 10 best rated hotels in your neighborhood, which could require some normalization process, some location filtering and some merging of data. Applying trained machine learning models is also transforming data, but that is out of scope for this course.
+
+3. Common data transformations
+Five very common data transformations involved in applying business logic you will encounter are: Filtering data. It allows us to focus only on the data that are useful for a particular analysis.
+
+4. Common data transformations
+Selecting and renaming columns allows us to focus only on fields of interest and possibly renaming them to make their meaning more clear.
+
+5. Common data transformations
+Grouping rows by a particular field and then aggregating some metrics, like the mean price and the number of samples. If you have sales data, for example, you can group it by country, and calculate the total revenue per country.
+
+6. Common data transformations
+Joining DataFrames by linking them through certain fields allows you to add more attributes to records in your data.
+
+7. Common data transformations
+Finally, ordering data allows us to prioritize.
+
+8. Recall the prices dataset
+We’ll learn how to apply these transformations, using the example pricing dataset from the previous lesson.
+
+9. Filtering and ordering rows
+Data can be filtered by passing a Column holding boolean values to the “filter” method. In the example, only the rows where the countrycode equals the string “BE” are retained. A “Column” object can be created by using the “col” function. It can be compared to string literals, like “BE”, and will produce a boolean Column. The results can be sorted chronologically by calling “orderBy” on the DataFrame and specifying the columns by which you want to sort.
+
+10. Selecting and renaming columns
+Let’s pretend we’d like to know all the brands that were sold in the stores that we have data on. We can use the “select” method
+
+11. Selecting and renaming columns
+to select only the columns we care about.
+
+12. Selecting and renaming columns
+And if we want to rename a column, we simply call the “alias” method on that column. Notice however that now there are duplicate rows.
+
+13. Reducing duplicate values
+Typically you want to reduce these duplicates. In Spark, we can call the “distinct” function on a DataFrame to return only distinct rows.
+
+14. Grouping and aggregating with mean()
+Now, imagine that we have sales data from diapers in several stores. Let’s say we want to know the average price of diapers per brand. It’s as simple as grouping the data by the brand column and calling the average of the price within each group. Note that the new column gets an autogenerated name.
+
+15. Grouping and aggregating with agg()
+Now let’s make it a little bit more exciting. What if we want both the average and the count? Then we can use the “agg” method in PySpark, which takes any number of columns. “avg” and “count” are two aggregation functions that produce these columns. Remember the alias function? We’ve used it here to rename the produced columns.
+
+16. Joining related data
+Integrating different data sources typically happens through joins. Elaborating on all the ins and outs of join behavior would need its own course. Let’s cover the basics here. Imagine we want to join the prices table with the ratings table. Let’s print the two tables again for reference. We can see both tables can be linked by brand and model. This means that two rows can be joined together if both their brand and their model are the same. How would you tell Spark to do this?
+
+17. Executing a join with 2 foreign keys
+As expected, Spark has built-in functionality specifically for this. We can simply call the “join” method on the ratings and pass it the prices and the columns on which to join, in that order. As you can see, all rows are now augmented with additional information from the table of prices.
+--------
+1. Packaging your application
+Now that you have created an entire Spark transformation pipeline in Python, you want to deploy it into production. Let’s see how this is done.
+
+2. Running your pipeline locally
+You could run a PySpark data pipeline locally, like you would run any Python application—that is, by invoking the Python interpreter and passing it the path to the main application. And this will work, provided you have locally installed Spark, access to any resources your pipeline requires, and a properly configured classpath. The classpath serves a similar role as the PYTHONPATH, in that it tells the Java Virtual Machine, which is what Spark runs on, where to look for classes that are imported.
+
+3. Using the “spark-submit” helper program
+In daily operations, you will be using the “spark-submit” script though. This script helps setting up the launch environment in a manner appropriate for the cluster manager and the selected deploy mode. Cluster managers are programs that make cluster resources, like the RAM and CPUs of different nodes, available to other programs. There exist a few—YARN is a popular one—and each has different options, which is why “spark-submit” tries to unify the calling parameters somewhat. The deploy mode tells Spark where to run the driver of the Spark application: either on a dedicated master node, or on one of the cluster worker nodes. This would get deeply technical fast, as each mode has pros and cons. For the purposes of this course, it’s also not important, as we simply set out to understand the basics of the “spark-submit” program. After the setup of the launch environment, “spark-submit” also invokes the main class or main method.
+
+4. Basic arguments of “spark-submit”
+For many PySpark applications, the following template will suffice to launch a job: We invoke “spark-submit”, and pass it the optional master argument, which is either a URL specific to the cluster manager or a string like “local[*]”. This tells Spark where it can get resources from, which is either a real cluster or simply your local machine. The latter is often good enough for tests. If our PySpark data pipeline relies on more than just one Python module, we will need to copy these modules to all nodes, so that each Python interpreter on the cluster workers knows where to find the details of the functions they must execute. We typically provide the modules that aren’t already installed on the worker nodes through zip files, and that is what the “--py-files” argument does for us: it copies these dependencies over to the workers. Finally, we tell Spark which file is the main file, the entrypoint to our application. It is the file that contains code to trigger the creation of the SparkSession. If that file, that Python module actually, parses command line arguments, through the “argparse” module for example, then we may supply these extra arguments at the end of the “spark-submit” command.
+
+5. Collecting all dependencies in one archive
+The “--py-files” option can take a comma separated list of files that will be added on each worker’s PYTHONPATH, which lists the places where the Python interpreter will look for modules. Zip files are a common way to package and distribute your code. To create a proper zip-file, ready to be used with PySpark, navigate in the shell to the directory that contains the root folder of your module. In the example shown, that would be the folder containing the “pydiaper” folder. Once there, invoke the “zip” utility, enabling it to recursively add all files in all subfolders, by passing the “--recurse-paths” flag. Provide a name for the resulting compressed archive and finally provide the name of the folder you want to compress. The resulting zip file can be passed as is to “spark-submit”’s “--py-files” argument. Both “clean_prices.py” and “clean_ratings.py” are Spark jobs, as they start a SparkSession. So either one could be given as the main Python file.

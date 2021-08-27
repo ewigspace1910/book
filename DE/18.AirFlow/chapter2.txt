@@ -1,0 +1,92 @@
+2. Operators
+Airflow operators represent a single task in a workflow. This can be any type of task from running a command, sending an email, running a Python script, and so on. Typically Airflow operators run independently - meaning that all resources needed to complete the task are contained within the operator. Generally, Airflow operators do not share information between each other. This is to simplify workflows and allow Airflow to run the tasks in the most efficient manner. It is possible to share information between operators, but the details of how are beyond this course. Airflow contains many various operators to perform different tasks. For example, the DummyOperator can be used to represent a task for troubleshooting or a task that has not yet been implemented. We are focusing on the BashOperator for this lesson but will look at the PythonOperator and several others later on.
+
+3. BashOperator
+The BashOperator executes a given Bash command or script. This command can be pretty much anything Bash is capable of that would make sense in a given workflow. The BashOperator requires three arguments: the task id which is the name that shows up in the UI, the bash command (the raw command or script), and the dag it belongs to. The BashOperator runs the command in a temporary directory that gets automatically cleaned up afterwards. It is possible to specify environment variables for the bash command to try to replicate running the task as you would on a local system. If you're unfamiliar with environment variables, these are run-time settings interpreted by the shell. It provides flexibility while running scripts in a generalized way. The first example runs a bash command to echo Example exclamation mark to standard out. The second example uses a predefined bash script for its command, runcleanup.sh.
+
+4. BashOperator examples
+Before using the BashOperator, it must be imported from airflow dot operators dot bash_operator. The first example creates a BashOperator that takes a task_id, runs the bash command "echo 1", and assigns the operator to the dag. Note that we've previously defined the dag in an earlier exercise. The second example is a BashOperator to run a quick data cleaning operation using cat and awk. Don't worry if you don't understand exactly what this is doing. This is a common scenario when running workflows - you may not know exactly what a command does, but you can still run it in a reliable way.
+
+5. Operator gotchas
+There are some general gotchas when using Operators. The biggest is that individual operators are not guaranteed to run in the same location or environment. This means that just because one operator ran in a given directory with a certain setup, it does not necessarily mean that the next operator will have access to that same information. If this is required, you must explicitly set it up. You may need to set up environment variables, especially for the BashOperator. For example, it's common in bash to use the tilde character to represent a home directory. This is not defined by default in Airflow. Another example of an environment variable could be AWS credentials, database connectivity details, or other information specific to running a script. Finally, it can also be tricky to run tasks with any form of elevated privilege. This means that any access to resources must be setup for the specific user running the tasks. If you're uncertain what elevated privileges are, think of running a command as root or the administrator on a system.
+-------------
+2. Tasks
+Within Airflow, tasks are instantiated operators. It basically is a shortcut to refer to a given operator within a workflow. Tasks are usually assigned to a variable within Python code. Using a previous example, we assign the BashOperator to the variable example underscore task. Note that within the Airflow tools, this task is referred by its task id, not the variable name.
+
+3. Task dependencies
+Task dependencies in Airflow define an order of task completion. While not required, task dependencies are usually present. If task dependencies are not defined, task execution is handled by Airflow itself with no guarantees of order. Task dependencies are referred to as upstream or downstream tasks. An upstream task means that it must complete prior to any downstream tasks. Since Airflow 1.8, task dependencies are defined using the bitshift operators. The upstream operator is two greater-than symbols. The downstream operator is two less-than symbols.
+
+4. Upstream vs Downstream
+It's easy to get confused on when to use an upstream or downstream operator. The simplest analogy is that upstream means before and downstream means after. This means that any upstream tasks would need to complete prior to any downstream ones.
+
+5. Simple task dependency
+Let's look at a simple example involving two bash operators. We define our first task, and assign it to the variable task1. We then create our second task and assign it to the variable task2. Once each operator is defined and assigned to a variable, we can define the task order using the bitshift operators. In this case, we want to run task1 before task2. The most readable method for this is using the upstream operator, two greater-than symbols, as task1 upstream operator task2. Note that you could also define this in reverse using the downstream operator to accomplish the same thing. In this case, it'd be task2 two less-than symbols task1.
+
+6. Task dependencies in the Airflow UI
+Let's take a look at what the Airflow UI shows for tasks and their dependencies. In this case, we're looking at the graph view within the Airflow web interface.
+
+7. Task dependencies in the Airflow UI
+Note that in the task area, our two tasks, first_task and second_task, are both present, but there is no order to the task execution. This is the DAG prior to setting the task dependency using the bitshift operator.
+
+8. Task dependencies in the Airflow UI
+Now let's look again at the view with a defined order via the bitshift operators. The view is similar but we can see the order of tasks indicated by the directed arrow between first underscore task and second underscore task.
+
+9. Multiple dependencies
+Dependencies can be as complex as required to define the workflow to your needs. We can chain a dependency, in this case setting task1 upstream of task2 upstream of task3 upstream of task4. The Airflow graph view shows a dependency view indicating this order. You can also mix upstream and downstream bitshift operators in the same workflow. If we define task1 upstream of task2 then downstream of task3, we get a configuration different than what we might expect. This creates a DAG where first underscore task and third underscore task must finish prior to second underscore task. This means we could define the same dependency graph on two lines, in a possibly clearer form. task1 upstream of task2. task3 upstream of task2. Note that because we don't require it, either task1 or task3 could run first depending on Airflow's scheduling.
+
+-------------
+
+Got It!
+1. Additional operators
+Welcome back! Now that we've used the BashOperator and worked with tasks, let's take a look at some more common operators available within Airflow.
+
+2. PythonOperator
+The PythonOperator is similar to the BashOperator, except that it runs a Python function or callable method. Much like the BashOperator, it requires a taskid, a dag entry, and most importantly a python underscore callable argument set to the name of the function in question. You can also pass arguments or keyword style arguments into the Python callable as needed. Our first example shows a simple printme function that writes a message to the task logs. We must first import the PythonOperator from the airflow dot operators dot python underscore operator library. Afterwards, we create our function printme, which will write a quick log message when run. Once defined, we create the PythonOperator instance called python underscore task and add the necessary arguments.
+
+3. Arguments
+The PythonOperator supports adding arguments to a given task. This allows you to pass arguments that can then be passed to the Python function assigned to python callable. The PythonOperator supports both positional and keyword style arguments as options to the task. For this course, we'll focus on using keyword arguments only for the sake of clarity. To implement keyword arguments with the PythonOperator, we define an argument on the task called op underscore kwargs. This is a dictionary consisting of the named arguments for the intended Python function.
+
+4. op_kwargs example
+Let's create a new function called sleep, which takes a length of time argument. It uses this argument to call the time dot sleep method. Once defined, we create a new task called sleep underscore task, with the taskid, dag, and python callable arguments added as before. This time we'll add our op underscore kwargs dictionary with the length of time variable and the value of 5. Note that the dictionary key must match the name of the function argument. If the dictionary contains an unexpected key, it will be passed to the Python function and typically cause an unexpected keyword argument error.
+
+5. EmailOperator
+There are many other operators available within the Airflow ecosystem. The primary operators are in the airflow dot operators or airflow dot contrib dot operators libraries. Another useful operator is the EmailOperator, which as expected sends an email from within an Airflow task. It can contain the typical components of an email, including HTML content and attachments. Note that the Airflow system must be configured with the email server details to successfully send a message.
+
+6. EmailOperator example
+A quick example for sending an email would be sending a generated sales report upon completion of a workflow. We first must import the EmailOperator object from airflow dot operators dot email underscore operator. We can then create our EmailOperator instance with the task id, the to, subject, and content fields and a list of any files to attach. Note that in this case we assume the file latest underscore sales dot xlsx was previously generated - later in the course we'll see how to verify that first. Finally we add it to our dag as usual.
+--------
+Got It!
+1. Airflow scheduling
+Welcome back! We've spent most of this chapter implementing Airflow tasks within our workflows. Now let's take a look at what's required to schedule those workflows and have them run automatically.
+
+2. DAG Runs
+When referring to scheduling in Airflow, we must first discuss a DAG run. This is an instance of a workflow at a given point in time. For example, it could be the currently running instance, or it could be one run last Tuesday at 3pm. A DAG can be run manually, or via the schedule interval parameter passed when the DAG is defined. Each DAG run maintains a state for itself and the tasks within. The DAGs can have a running, failed, or success state. The individual tasks can have these states or others as well (ie, queued, skipped).
+
+1 https://airflow.apache.org/docs/stable/scheduler.html
+3. DAG Runs view
+Within the Airflow UI, you can view all DAG runs under the Browse: DAG Runs menu option. This provides the assorted details about any DAGs that have run within the current Airflow instance.
+
+4. DAG Runs state
+As mentioned, you can view the state of a DAG run within this page, illustrating whether the DAG run was successful or not.
+
+5. Schedule details
+When scheduling a DAG, there are many attributes to consider depending on your scheduling needs. The start date value specifies the first time the DAG could be scheduled. This is typically defined with a Python datetime object. The end date represents the last possible time to schedule the DAG. Max tries represents how many times to retry before fully failing the DAG run. The schedule interval represents how often to schedule the DAG for execution. There are many nuances to this which we'll cover in a moment.
+
+6. Schedule interval
+The schedule interval represents how often to schedule the DAG runs. The scheduling occurs between the start date and the potential end date. Note that this is not when the DAGs will absolutely run, but rather a minimum and maximum value of when they could be scheduled. The schedule interval can be defined by a couple methods - with a cron style syntax or via built-in presets.
+
+7. cron syntax
+The cron syntax is the same as the format for scheduling jobs using the Unix cron tool. It consists of five fields separated by a space, starting with the minute value (0 through 59), the hour (0 through 23), the day of the month (1 through 31), the month (1 through 12), and the day of week (0 through 6). An asterisk in any of the fields represents running for every interval (for example, an asterisk in the minute field means run every minute) A list of values can be given on a field via comma separated values.
+
+8. cron examples
+The cron entry 0 12 asterisk asterisk asterisk means run daily at Noon (12:00) asterisk asterisk 25 2 asterisk represents running once per minute, but only on February 25th. 0 comma 15 comma 30 comma 45 asterisk asterisk asterisk asterisk means to run every 15 minutes.
+
+9. Airflow scheduler presets
+Airflow has several presets, or shortcut syntax options representing often used time intervals. The @hourly preset means run once an hour at the beginning of the hour. It's equivalent to 0 asterisk asterisk asterisk asterisk in cron. The @daily, @weekly, @monthly, and @yearly presets behave similarly.
+
+1 https://airflow.apache.org/docs/stable/scheduler.html
+10. Special presets
+Airflow also has two special presets for schedule intervals. None means don't ever schedule the DAG and is used for manually triggered workflows. @once means to only schedule a DAG once.
+
+11. schedule_interval issues
+Scheduling DAGs has an important nuance to consider. When scheduling DAG runs, Airflow will use the start date as the earliest possible value, but not actually schedule anything until at least one schedule interval has passed beyond the start date. Given a start_date of February 25, 2020 and a @daily schedule interval, Airflow would then use the date of February 26, 2020 for the first run of the DAG. This can be tricky to consider when adding new DAG schedules, especially if they have longer schedule intervals.

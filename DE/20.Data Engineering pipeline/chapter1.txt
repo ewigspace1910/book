@@ -1,0 +1,69 @@
+1. Components of a data platform
+Hi! I’m Oliver Willekens, a data engineer and instructor in this field at Data Minded. In companies today, people are trying to extract value from the tons of data they’re gathering. They’re doing this in an environment called “the data platform”, which is the start of our journey to create robust data pipelines.
+
+2. Course contents
+While working through this course, you will learn - how to ingest data into the data platform using the very modular Singer specification, - the common data cleaning operations, - simple transformations using PySpark, - how and why to test your code, - and how to get your Spark code automatically deployed on a cluster. These are the skills you will be able to apply in a wide variety of situations. And because of that, it’s important that you standardize the approach. You’ll see how we do this. Note that there is a lot to be said about each of these topics, too much to fit into one DataCamp course. This course is only an introduction to data engineering pipelines.
+
+3. Data is valuable
+Many modern organizations are becoming aware of just how valuable the data that they collected is. Internally, the data is becoming more and more “democratized”:
+
+4. Democratizing data increases insights
+it is being made accessible to almost anyone within the company, so that new insights can be generated. Also on the public-facing side, companies are making more and more data available to people, in the form of e.g. public APIs.
+
+5. Genesis of the data
+The genesis of the data is with the operational systems, such as streaming data collected from various Internet of Things devices or websession data from Google Analytics or some sales platform. This data has to be stored somewhere, so that it can be processed at later times. Nowadays, the scale of the data and velocity at which it flows has lead to the rise of what we call “the data lake”.
+
+6. Operational data is stored in the landing zone
+The data lake comprises several systems, and is typically organized in several zones. The data that comes from the operational systems for example, ends up in what we call the “landing zone”. This zone forms the basis of truth, it is always there and is the unaltered version of the data as it was received. The process of getting data into the data lake is called “ingestion”.
+
+7. Cleaned data prevents rework
+People build various kinds of services on top of this data lake, like predictive algorithms, and dashboards for A/B tests of marketing teams. Many of these services apply similar transformations to the data. To prevent duplication of common transformations, data from the landing zone gets “cleaned” and stored in the clean zone. We’ll see in the next chapter what is typically meant by clean data.
+
+8. The business layer provides most insights
+Finally, per use case some special transformations are applied to this clean data. For example, predicting which customers are likely to churn is a common business use case. You would apply a machine learning algorithm to a dataset composed of several cleaned datasets. This domain specific data is stored in the business layer.
+
+9. Pipelines move data from one zone to another
+To move data from one zone to another, and transform it along the way, people build data pipelines. The word comes from the similarity of how liquids and gases flow through pipelines, in this case it’s just data that flows. The pipelines can be triggered by external events, like files being stored in a certain location, on a time schedule or even manually. Usually, the pipelines that handle data in large batches, are triggered on a schedule, like overnight. We call these pipelines Extract, Transform and Load pipelines, or ETL pipelines in short. There are typically many pipelines existing. To keep a good oversight, these are triggered by tools that provide many benefits to the operators. We’ll be inspecting one such tool, the popular Apache Airflow, in the last chapter.
+----------
+
+Got It!
+1. Introduction to data ingestion with Singer
+Hey, welcome back! Now that we know a bit about major concepts in a data platform, we should learn about getting data into its data lake! We’ll be exploring Singer, an open source library that can connect with many data sources.
+
+2. Singer’s core concepts
+We spoke of data pipelines in the previous lesson. They bring data from one place to another, like water and gas pipes. To get data into your data lake, at some moment you need to ingest it. There are several ways to do so, but it is convenient if within an organizational unit, the process is standardized. That is the aim of Singer as well: to be the “open-source standard for writing scripts that move data”. At its core, Singer is a specification that describes how data extraction scripts and data loading scripts should communicate using a standard JSON-based data format over stdout. JSON is similar to Python dictionaries. And stdout is a standardized “location” to which programs write their output. Because Singer is a specification, these extraction scripts, which are called “taps”, and the loading scripts, which are called “targets”, can be written in any programming language. And they can easily be mixed and matched to create small data pipelines that move data from one place to another.
+
+3. Singer’s core concepts
+Taps and targets communicate using 3 kinds of messages, SCHEMA, STATE and RECORD, which are sent to and read from specific streams.
+
+4. Singer’s core concepts
+A stream is a *named* virtual location to which you send messages, that can be picked up at a downstream location. We can use different streams to partition data based on the topic for example: error messages would go to an error stream and data from different database tables could go to different streams as well.
+
+5. Describing the data through its schema
+Imagine you would need to pass this set of data to a process. With the Singer spec, you would first describe the data, by specifying its schema. The schema should be given as a valid “JSON schema”, which is another specification that allows you to annotate and even validate structured data. You specify the data type of each property or field. You could also impose constraints like stating that the age should be an integer value between 1 and 130, as we’ve done here, or that a phone-number should be in a certain format. The last two keys in this JSON object are the “$id” and “$schema”. They allow you to uniquely specify this schema within your organization and tells others which version of JSON schema is being used. They’re optional, but highly recommended in production grade code.
+
+6. Describing the data through its schema
+You can tell the Singer library to make a SCHEMA message out of this JSON schema. You would call Singer’s “write_schema” function, passing it the “json_schema” we defined earlier. With “stream_name” you specify the name of the stream this message belongs to. This can be anything you want. Data that belongs together, should be sent to the same stream. The “key_properties” attribute should equal a list of strings that make up the primary key for records from this stream. If you’re processing data from motorized vehicles on a parking lot for example, this could be the license plate or a surrogate key. If there is no primary key, then specify an empty list. As you can see, the “write_schema” call simply wraps the actual JSON schema into a new JSON message and adds a few attributes. The message would be printed on a single line, but we’ve added line breaks here to fit the screen.
+
+7. Serializing JSON
+JSON is a common format, not just in Singer, but in many other places. Python provides the json module to work with JSON. To get objects in your code serialized as JSON, you would call either “json.dumps()” or “json.dump()”. The former simply transforms the object to a string, whereas the latter writes that same string to a file.
+----------
+
+. Running an ingestion pipeline with Singer
+Cool! Now that you know how to create schema messages with Singer, let us continue with the record and state messages, so that we can create a full ingestion pipeline with the Singer library.
+
+2. Streaming record messages
+Here are the user records we saw earlier. To convert one such user into a Singer RECORD message, we’d call the “write_record” function, like this: The “stream_name” would need to match the stream you specified earlier in a schema message. Otherwise, these records are ignored. This would be almost equivalent to nesting the actual record dictionary in another dictionary that has two more keys, being the “type” and the “stream”. That can be done elegantly with the unpacking operator, which are these 2 asterisks here preceding the “fixed_dict”. That unpacks a dictionary in another one, and can be used in function calls as well. Really useful. Now, I did say “almost equivalent”. The truth is that Singer does a few more transformations to make better JSON, but the details are not that important. Simply use the functionality that is offered to you to benefit most.
+
+3. Chaining taps and targets
+When you would combine the “write_schema” and “write_record” functions, you would have a Python module that prints JSON objects to stdout. If you also have a Singer target that can parse these messages, then you have a full ingestion pipeline. In this example, we used “write_records” instead of “write_record”. It can simply deal with many records compared to the single one of “write_record”. We’re introducing the “target-csv” module, which is available on the Python Package Index. Its goal is to create CSV files from the JSON lines. The CSV file will be made in the same directory where you run this command, unless you configure it otherwise by providing a configuration file. By the way, nothing prevents you from running a tap by parsing the code with the Python interpreter like this, but you’ll typically find taps and targets properly packaged, so you could call them directly, like this.
+
+4. Modular ingestion pipelines
+You might wonder why we’d go through all this trouble just to produce a CSV file from a few simple records. After all, Python’s csv module provides this functionality out of the box. The answer is modularity. Each tap or target is designed to do one thing very well. They are easily configured through config files. By working with a standardized intermediate format, you could easily swap out the “target-csv” for “target-google-sheets” or “target-postgresql” for example, which write their output to whole different systems. This means you don’t need to write a lot of code, just pick the taps and targets that match with your intended source and destination and voilà, you’re ready.
+
+5. Keeping track with state messages
+We haven’t discussed Singer’s STATE messages yet. They are typically used to keep track of state, which is the way something is at some moment in time. That something is typically some form of memory of the process.
+
+6. Keeping track with state messages
+Imagine for example that you must extract only new records from this database daily at noon, local time. The easiest way to do so, is to keep track of the highest encountered “last_updated_on” value and emit that as a state message at the end of a successful run of your tap. Then, you can reuse the same message at a later time to extract only those records that were updated after this old state. You emit these state messages using the “write_state” function. The only required attribute is the value, which can be any JSON serializable object. The value field is free form and only for use by the same tap
+----------

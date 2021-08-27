@@ -1,0 +1,162 @@
+1. SNS Topics
+In the last two chapters, we learned about cloud storage with S3 and how to share (and not share) files with the world. But what if we send a text with a link to the latest report? Or send an email if certain criteria are met in the data. Alerting humans and machines to take action is a key component in data engineering.
+
+2. SNS
+That's where Amazon SNS comes in! Amazon SNS stands for simple notification service. With it, we can send emails, text messages and push notifications. Publishers post messages to topics and subscribers receive them.
+
+3. Understanding SNS
+To fully understand SNS, let's talk about... the Superbowl.
+
+4. Understanding SNS
+I know, sports aren't my thing either. Just bear with me for the analogy.
+
+5. Understanding SNS
+Say, the Superbowl is happening right now, and CBS is broadcasting. That makes CBS a publisher.
+
+6. Understanding SNS
+CBS is publishing channel 2, and others can subscribe to it by selecting that channel. Channel 2 is like an SNS topic.
+
+7. Understanding SNS
+The channel can have phones, TVs, tablets and other devices watching. They all get the same Superbowl. In SNS, these are subscribers.
+
+8. Understanding SNS
+In SNS, we publish messages to an SNS topic, and subscribers receive those messages via email or text.
+
+9. Accessing SNS
+To access SNS, we open the AWS Services tab, type in "SNS", and click on the "Simple Notification Service" option that pops up.
+
+10. SNS Dashboard
+Once we get to the dashboard, we can see Topics and Subscriptions on the left.
+
+11. SNS Topics
+Every topic has an ARN or an Amazon resource name. This is a unique id for this topic.
+
+12. SNS Topics
+On the bottom, we can see Subscriptions. Each one of those has a unique ID as well. We'll explore those in the next lesson.
+
+13. Creating an SNS Topic
+To create an SNS topic, we initialize the SNS client. This is the first time we are using a boto3 client for something other than S3. We do this by passing SNS instead of S3 as the first argument.
+
+14. Creating an SNS Topic
+Now that we have a client, we can create a topic by calling the create_topic method.
+
+15. Creating an SNS Topic
+In return, we get an API response from AWS.
+
+16. Creating an SNS Topic
+We grab the TopicArn key from the response to store in a variable. Or we can do the whole thing with a shortcut - calling create_topic and grabbing TopicARN at the same time.
+
+17. Creating an SNS Topic
+We can see our new topic and its ARN on the dashboard. Creating topics is idempotent - if we create a topic with the same name, it will return the ARN of the topic that already exists, not an error.
+
+18. Permissions
+In the first lesson, we used IAM to configure our AWS Access Key and ID to have full access to SNS. This will allow us to create topics, make subscriptions, and publish messages.
+
+19. Listing topics
+We can list topics by calling the list_topics method.
+
+20. Listing topics
+We get a response that contains a topic's key with a list of topics our user has access to. We can do this to perform an operation like delete on multiple topics.
+
+21. Deleting topics
+Sometimes, we need to delete a topic that's outlived its usefulness. To delete a topic, pass its TopicArn to the delete_topic method. The topic is gone.
+
+22. Review
+Phew! This has been a full lesson. First, we learned how SNS works. We publish messages to an SNS topic. Subscribers to this topic will receive that message via email or text.
+
+23. Review
+To work with SNS, we have to create an SNS client. And now we can create a shiny new topic.
+
+24. Review
+To see all the created topics, we can use list_topics(). And to delete a topic, we use delete_topic.
+
+25. Let's practice!
+Now that we have the power of topics, let's practice!
+-------------------
+
+1. SNS Subscriptions
+In the last lesson, we explored how to create, list and delete SNS topics. Now, let's explore how to manage subscriptions to those topics. This is how we choose who gets the notifications and how they get them. Let's dive in.
+
+2. Subscription Listing
+In the last lesson, we looked at the Topic page and the subscription listing below. Every subscription has a unique ID, a protocol and a status.
+
+3. Subscription Listing
+There are several protocols in SNS, but we will only work with Email and SMS - or text messages.
+
+4. Subscription Listing
+The endpoint is the specific phone number or email address where the message should be sent.
+
+5. Subscription Listing
+Lastly, the status can either be confirmed or pending confirmation. Phone numbers are automatically confirmed, but for email, the user has to click a unique link to authorize the subscription.
+
+6. Creating an SMS subscription.
+To create an SMS subscription, we initialize the boto3 SNS client. Then, we call SNS subscribe passing the TopicArn of the city_alerts topic we created in the last lesson. The protocol is SMS and the endpoint is a phone number.
+
+7. Create an SMS subscription.
+In our response, we get a dictionary that contains a 'SubscriptionArn' key. If we want this ARN for later use, we can grab it from the dictionary using that key.
+
+8. Creating an email subscription
+Creating an email subscription is very similar. We call SNS subscribe passing email as the protocol and an email address as an endpoint.
+
+9. Creating an email subscription
+This time, however, we see "pending confirmation" instead of a subscription ARN.
+
+10. Creating an email subscription
+Meanwhile, the user has received an email with a link to click. Once the subscriber confirms, he will be able to receive emails and the address will show up as confirmed in the subscription list.
+
+11. Listing subscriptions by Topic
+Let's list of the subscriptions we made for city_alerts topic. Listing is essential for bulk operations like un-subscribing users. To list the subscriptions for a TopicARN, we call the SNS client's list_subscriptions_by_topic method, and we pass in the TopicARN.
+
+12. Listing subscriptions
+Our response will contain a "Subscriptions" key, with a list of subscription dictionaries. These will include the ARN of the subscription - or "pending confirmation" if the subscription has not been confirmed. It will also include the protocol - email or SMS, and the endpoint.
+
+13. Listing subscriptions
+We can also list all subscriptions. This will give us back the same response, but for all topics, instead of just one that we specify.
+
+14. Deleting subscriptions
+Lastly, to delete a subscription, we simply call the SNS unsubscribe method.
+
+15. Deleting multiple subscriptions
+What if we choose to stop sending notifications via SMS? We delete all subscriptions that use the SMS protocol. We list all subscriptions and grab the Subscriptions key from the response. For every subscription, if SMS, we call the unsubscribe method, passing it the subscription ARN.
+
+16. Review
+In this lesson, we learned about SNS subscriptions. A subscription is when someone listens for messages on a topic. During the request to create a subscription, the protocol can be SMS or email. The endpoint is the phone number or email address. Once the subscription is created, it's automatically confirmed for SMS. For e-mails, it's "pending confirmation" until the receiver verifies it.
+
+17. Review
+We learned to create a subscription with the subscribe method. We learned how to list subscriptions by topic with the list_subscriptions_by_topic method
+
+18. Review
+We have learned how to list all subscriptions unfiltered by topic. Lastly, we learned how to unsubscribe a user.
+
+19. Let's practice!
+SNS subscriptions and topics are a powerful way to manage who gets what notifications when. In the next lesson, we'll get to the really cool stuff - sending messages to the people that need to receive them! Let's practice!
+-------------------
+Got It!
+1. Sending messages
+OK! In the last two lessons, we learned about creating topics and subscriptions. Now it's time to actually start publishing. In other words, let's send some texts and emails. Ready? Game on!
+
+2. Publishing to a Topic
+By publishing a message to a topic, all of our subscribers will receive it. To publish to a topic, call the publish method with TopicArn, message, and subject as arguments. This will broadcast the message to every subscriber of the topic. The e-mail subscribers will receive this message in their inbox. The SMS subscribers will receive it on their phone.
+
+3. Publishing to a Topic
+The message argument contains the body of the message - this goes into the e-mail body and the SMS message.
+
+4. Publishing to a Topic
+The subject argument gets shown in the subject line of the e-mail and is not visible for those receiving text messages.
+
+5. Sending custom messages
+We obviously want to send custom messages. In order to do this, we can use Python's nifty string format method to replace text with a variable from our data. This lets us generate custom messages as part of our code.
+
+6. Sending a single SMS
+Alternatively, we can send a single SMS message. If we use this method, we don't have to worry about having a topic or subscribers to it. We simply send a text message to a phone number. To send a single SMS, we also use the boto3 SNS client's publish method. Since SMS messages don't have subjects, we pass a phone number and the message body. We don't pass a TopicARN because we have no topic to publish to. The person on the other end of the line will get an SMS on her phone.
+
+7. Not a good long term practice
+This can be good for one-off text messages, but quickly gets very unwieldy for data pipelines. One of the tasks of a data engineer is to balance getting stuff done with being able to maintain it. Sending one-off texts lives in the realm of getting stuff done. Setting up topics and publishing to them lives in the realm of being able to maintain it.
+
+8. Publish to Topic vs Single SMS
+There are two ways to send a message. We could publish a message to a topic. This assumes we have created a topic and have subscriptions that are listening to it. This is better when there are multiple subscribers, and we need to manage a list of them. Alternatively, we could send a one-off SMS. It's great if we just need to send one message to a phone number - keeping it simple. This is great if we don't have to manage a list, don't need to send via e-mail, and don't want to have a topic or subscriptions.
+
+9. Review
+In this lesson, we learned how to actually publish our message! We learned the difference between publishing to a topic so that all of our subscribers get it, as opposed to sending single SMS messages. And we learned how to make custom messages!
+--------
+

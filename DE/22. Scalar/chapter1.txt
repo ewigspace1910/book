@@ -1,0 +1,177 @@
+1. A scalable language
+Welcome to Introduction to Scala. Scala is a programming language that is sophisticated AND concise. It powers some of the world's largest websites, applications, and data engineering infrastructures. Historically, Scala was hard to learn. Not anymore.
+
+2. Learn by doing
+In this course, you'll master the basics of Scala by writing code for a real Scala program that plays Twenty-One, one of the most popular card games in the world. You'll answer the questions "What is Scala?" and the related "Why use Scala?" You'll answer "Who uses Scala?" by listing common applications of Scala in industry and academia. Starting from this course and proceeding to more advanced ones, you'll step-by-step ascend the stairway to Scala mastery in the world of data.
+
+1 http://bit.ly/twenty_one_wikipedia
+3. Staircase to mastery
+Fun fact: "Scala" means "staircase" in Italian and the logo was inspired by a spiral staircase in the building where the language was born!
+
+1 https://www.flickr.com/photos/montpelier/3957416434/
+4. What is Scala?
+Scala is a general-purpose programming language. Pause the video and read Wikipedia's answer to "What is Scala?" Some of that may not make sense, so let's go with an even shorter version for now: Scala is like a newer, improved Java. For context, Java was released in 1996, Scala in 2004.
+
+1 http://bit.ly/scala_wikipedia
+5. What is Scala?
+The next sentence might not make much sense right now either, but it's important. In bold, Scala source code runs on a Java virtual machine. This means Scala runs wherever Java code runs and that means on a LOT of existing infrastructure since Java is so popular.
+
+1 http://bit.ly/jvm_wikipedia
+6. Why use Scala?
+The first answer to "Why use Scala?" is in its name: Scala stands for scalable language. It is designed to grow with the demands of its users, from writing small scripts (which you'll do in this course) to building massive systems for data processing, distributed computing, and more (just like the engineers at these companies do).
+
+7. The cathedral vs. the bazaar
+An analogy borrowed from Eric Raymond's The Cathedral and the Bazaar book is apt. A cathedral is a building with rigid perfection. It takes a long time to build and rarely changes after being built. A bazaar, on the other hand, is flexible. It is adapted and extended often by the people working in it. Scala is like a bazaar as it is designed to be adapted and extended by the people programming in it. It's not a perfectly complete language. Instead, everything is customizable to your program's requirements, whether a small script or a massive system, which often need different programming constructs.
+
+1 Canterbury Cathedral by WyrdLight.com
+8. Flexible and convenient
+Yes, Scala the bazaar is flexible. In more advanced courses, you'll experience growing customized types, collections, and control structures that still feel native to the language. So yes, Scala's flexible, but it's also convenient. In this course, you'll use what's predefined in the Scala standard library, which cover the most popular use cases and are the foundations of the customized constructs you'll see later. Bottom line for now: your program won't outgrow Scala.
+
+9. Who uses Scala?
+If you search "Scala" on job boards, the most common job titles you'll see are variants of software engineer, including software developer, backend engineer, and others, and then data engineer. You'll also see data scientist and machine learning engineer more frequently as companies in all industries realize the challenges of analyzing big data. These companies are adopting Scala alongside data processing tools like Apache Spark, which is written in Scala!
+
+10. Who uses Scala?
+On DataCamp, we're focusing on the latter three roles in ALL industries.
+
+11. Who uses Scala?
+These high-paying roles combined with exploding demand and a relative scarcity of talent means those who use Scala get paid. Well.
+
+1 https://insights.stackoverflow.com/survey/2019
+
+--------------------
+3. What is Scala?
+Here's the first thing on Scala's official website. Pause the video and read through it. If that made your brain hurt, don't worry. Let's break it down.
+
+4. Scala fuses OOP and FP
+Scala fuses object-oriented and functional programming concepts more than any other language in the world. This fusion is what contributes the most to
+
+5. Scala fuses OOP and FP -> Scala is scalable
+the scalability of the language according Martin Odersky, creator of Scala.
+
+6. Scala fuses OOP and FP -> Scala is scalable
+Scala is object-oriented because every value is an object and every operation is a method call. You can write 2 plus 4 like this to get 6. Behind the scenes,
+
+7. Scala fuses OOP and FP -> Scala is scalable
+Scala rewrites it, with the method plus being called on the object 2. Rule of thumb to remember: pretty much everything is an object in Scala. This feature impacts scalability profoundly.
+
+8. Scala fuses OOP and FP -> Scala is scalable
+Scala is also a functional programming language, which is impossible to fully describe in one slide. For now, remember two things. First, in Scala, functions are first-class values, just like integers or strings. You can pass them as arguments to other functions, return them from functions, store them in variables, and more. This is not the case in all languages.
+
+9. Scala fuses OOP and FP -> Scala is scalable
+Second, operations of a program should map input values to output values rather than change data in place. Another way of saying this is functions should not have side effects. This may be a little confusing now and that's okay.
+
+10. More answers to "Why use Scala?"
+Beyond scalability, there are more answers to "Why use Scala?" Here's the shortlist. Don't worry if some of the next few concepts don't make full sense to you yet.
+
+11. More answers to "Why use Scala?"
+Scala is concise. Scala programs tend to be short, often down to one tenth of the number of lines compared to Java programs.
+
+12. More answers to "Why use Scala?"
+Scala is high-level, which means you won't deal with the details of the computer in your Scala code. In turn, your code becomes shorter and easier to understand. You have fewer opportunities to make mistakes.
+
+13. More answers to "Why use Scala?"
+Scala has an ADVANCED static type system that reduces verbosity in your code and adds language flexibility. These are two common criticisms of static typing.
+
+14. More answers to "Why use Scala?"
+Scala is compatible, which means you can build on previously existing Java code. That's huge. Scala runs primarily on the Java Virtual Machine. It heavily reuses Java types. Plus more.
+
+15. The Scala interpreter
+Now, let's write some Scala code! The Scala interpreter is a perfect place to start. First you need a working Scala installation, which is a step taken care of for you on DataCamp. You start the Scala interpreter by typing scala at a command prompt. Scala then prompts YOU to write Scala code, signified by the word scala followed by the greater than symbol.
+
+1 http://bit.ly/scala_repl
+16. The Scala interpreter
+2 plus 3. The interpreter then reads the code you wrote, wraps it in an executable template, and then compiles and executes the result for you. The interpreter prints res0 colon Int equals five. res0 is short for result zero, an autogenerated name that refers to the result. Colon Int is called a type annotation where Int means integer type. More on types shortly. Finally, there is equals sign and the value of the expression (five). res0 can be reused. Multiplying it by two, the interpreter prints res1, an Int, equal to ten.
+
+1 http://bit.ly/scala_repl
+17. The Scala interpreter
+The print line function with a string of characters in quotes prints to standard output. Playing Twenty-One sounds fun!
+
+1 http://bit.ly/scala_repl
+
+
+---------------
+2. The game of Twenty-One
+First, we need more details on the game of Twenty-One for our program. The rules you need to know: there is a deck of cards. Each card has a point value. 2s are worth 2, 3s 3, etc. through 10. Face cards are worth 10. Aces are worth 1 or 11, player's choice. Each player is dealt two cards to start, with the option to "hit" for another card or to "stay" otherwise. The aim and name of the game: get 21 points or as close to it as possible. If you exceed 21, you "bust" and can't win.
+
+1 http://bit.ly/twenty_one_wikipedia
+3. Scala has two kinds of variables
+Scala has two kinds of variables: vals and vars. vals are immutable, which means once initialized, vals can't be reassigned. In Twenty-One, a val is like any non-ace card. The value of the 4 of hearts will always be 4 points. One way to define the val fourHearts is by typing val fourHearts colon Int, then equals 4. If you're familiar with Java, a val is kind of like a final variable.
+
+4. Reassigning a val produces an error
+Since fourHearts is a val, the Scala interpreter yells at us when we try to reassign it. Error: reassignment to val.
+
+5. Scala value types
+These are all nine of Scala's value types. You saw fourHearts was an Int.
+
+6. Scala value types
+All variables have types. For data-related tasks, the four most common types are Double, Int, Boolean, and String.
+
+7. Double
+Double is the default floating point value type that Scala offers. Ignore these technical definitions if they don't mean anything to you now. We won't need Double for our program,
+
+8. Double
+so here's an example using pi. 3.14 is a Double.
+
+9. Double
+Scala nudges us to use Double, and throws a type mismatch error if we give type Float to the value 3.14. One reason for the nudge:
+
+10. Double is more precise than Float
+Double is more precise than Float. Double stores pi to 15 points beyond the decimal. Float, specified by adding an f at the end, stores pi to 7 points.
+
+11. Int
+Int is an integer. These range from negative 2 billion and change to positive two billion and change.
+
+12. Int
+Again, the integer 4 (for the point value of the four of hearts) is an Int.
+
+13. Boolean
+Boolean is true or false. In Twenty-One, a Boolean can represent whether or not a player's hand busts.
+
+14. Char and String
+It is rare that you define a Char, but you'll define a String often, which is a sequence of Chars in Scala. The letter A followed by the Unicode character for spades in quotes is an example of a String.
+
+15. Scala value types
+Let's focus on Int to understand how types are structured in the Scala standard library.
+
+16. Scala value types
+The type Int names the class Int in the package scala. The full name of Int is scala dot Int, but you can use the simple name Int since the package scala is automatically imported into every Scala source file.
+
+17. Scala value types
+Previously, you learned that every value in Scala is an object. Here, fourHearts is an object. That is, an instance of class Int. So is fiveHearts.
+
+18. Scala value types have equivalent Java types
+All of these Scala types (except Unit, which you'll learn about later) have equivalent Java primitive types that live in the package java dot lang. When you compile Scala code to Java bytecode, the Scala compiler will use these Java types where possible which is HUGE for code performance.
+
+19. Choosing the right type
+In later courses, you'll experience how choosing the right type makes programs smaller and faster.
+----------
+Got It!
+1. Mutable variables (var) and type inference
+So, that was immutable variables, or vals. Now, let's do their mutable counterpart: vars.
+
+2. Scala has two kinds of variables
+vars are mutable, which means they CAN be reassigned. In Twenty-One, an ace is like a var, as it can be worth 1 or 11 points depending on the player's choice. We write var, the variable name (aceSpades), the type (Int), then equals 1. vars are similar to non-final variables in Java if you're familiar.
+
+3. Reassigning a val produces an error
+You saw that since fourHearts is a val, the Scala interpreter yelled at us when we tried to reassign it.
+
+4. Reassigning a var works
+Since aceSpades is a var, reassigning it the point value of 11 works just fine.
+
+5. Pros and cons of immutability
+At first think, it seems like having a variable that you CAN'T change is a terrible idea and that we should always use vars over vals. But, in Scala, we actually prefer immutable variables (vals, that is) where possible. Here's a few reasons why. First, your data won't be changed accidentally, by an error in your program's logic for example. Preferring immutability is a form of defensive coding. Second, your code is easier to reason about since you don't have to mentally juggle all of the places where your data can change. Third, immutability means you'll have to write fewer unit tests to make sure your program works as expected. The main drawback of immutability is the extra memory generated by copying objects. Since vals can't be reassigned, to change them you'll need to create a new object. Your programs will be a little larger. Fortunately, unless you are working with massive data structures and copying them thousands of times a second, the pros often outweigh the cons.
+
+6. Scala nudges us towards immutability
+As you'll experience throughout your Scala journey on DataCamp, Scala nudges use towards immutability. BECAUSE we are forced to copy our objects each time we want to make a change, we become much more conscious of HOW and WHEN we change our program's state. With this philosophy, we receive fewer possible states within our programs, fewer defects, and codebases that are easier to maintain.
+
+7. Type inference is powerful
+We've defined vals, like fourHearts, and vars, like aceSpades. Using a powerful feature of Scala called type inference, we can make this code even more concise. All we need to do is drop the colon then the type (Int, in this case). Scala can infer that fourHearts is an Int because it knows whole numbers like 4 are typically meant to be integers. Type inference not only applies to variables, but also collections, functions, and more, with the rule of thumb being programmers can omit almost all type information that's considered annoying. Type inference saves keystrokes and characters, which is a big deal in massive codebases. You'll experience type inference more in this course later.
+
+8. Semicolons
+There is something else that contributes to Scala's conciseness. You may have noticed there are no semicolons at the end of these statements.
+
+9. Semicolons
+There could be, but Scala tries very hard to let us skip semicolons wherever possible. And
+
+10. Semicolons
+most Scala programmers do, so we'll do that too.

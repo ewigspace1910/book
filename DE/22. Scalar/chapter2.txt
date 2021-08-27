@@ -1,0 +1,156 @@
+2. The Scala interpreter
+you saw the Scala interpreter. In the previous exercises, you actually experienced another way of running Scala code:
+
+3. Scala scripts
+scripts. A script is a sequence of instructions in a file that are executed sequentially. Scripts are great for smaller tasks that can fit into a single file, like sending a templated email from the command line, for example. When you clicked "Run Code" and "Submit Answer", you actually ran a Scala script! Here's how scripts work. At a command prompt, the scala command (which is the same program as the interpreter, hence the same name) executes a script by wrapping it in a template, then compiling and executing the resulting program.
+
+4. Scala scripts
+If we write this in a file named game dot scala then go to a command prompt and type scala game dot scala, "Let's play Twenty-One!" is printed to output. The double forward slash is a comment -- any characters between that and the next end of line are ignored.
+
+5. Interpreted language vs. compiled language
+Before we get into Scala applications, let's discuss Scala as a compiled language. Here are the definitions of an interpreter and a compiler. Pause the video and take a second to read them. The Scala interpreter "hides" the compilation step from you, the programmer, and it appears that the code is run immediately. Same thing for scripts.
+
+6. Scala applications
+Scala APPLICATIONS, on the other hand, must be compiled explicitly then run explicitly by you. So two steps. Applications consist of many source files, compiled individually. They're great for more complex projects. A key benefit over scripts is that there is no lag time since applications can be precompiled, whereas scripts are compiled and executed every time.
+
+7. Scala applications
+The equivalent code as our script example looks like this: ignore the object Game extends App part for now. Step 1: compile. The Scala compiler, which is named scalac, translates the code you wrote to Java bytecode. Step 2: run. That's when that compiled code is executed on a Java virtual machine.
+
+8. Scala applications
+Same printed output.
+
+9. Pros and cons of compiled languages
+The main benefit of compiled languages is execution speed since code doesn't need to be interpreted on the fly. The drawback: it takes time to compile code, sometimes minutes for large Scala programs. This trade-off is usually worth it, which is why companies are switching to Scala since milliseconds of load times can mean millions in added revenue.
+
+10. Scala workflows
+Thus far, you've seen Scala in the command line. The second main way people work in Scala is using an IDE, an integrated development environment.
+
+11. IDE
+IDEs shine when programmers need to build or work within large-scale systems. IntelliJ IDEA with the Scala plugin is the most common setup for Scala professionals.
+
+12. IntelliJ IDEA
+Here's IntelliJ IDEA. Top left quadrant: file explorer. Top right quadrant: source files, like scripts, something called a worksheet, and build files (more on build files shortly). Then the bottom part has has windows for inspecting the execution of your program. In Scala courses on DataCamp, a similar IDE experience is recreated.
+
+13. sbt
+Now, build files. The most popular tool for building Scala apps is called sbt, "simple build tool". sbt lets you compile, run, and test your Scala applications. There's a dot sbt file in this image. Though you won't use sbt in this course, being aware will help frame your learning in real-world workflows and set you up for future success.
+
+14. Scala kernel for Jupyter
+Scala also works in Jupyter Notebooks with a Scala kernel called Almond. With this setup, the data scientist can create plots to visualize their data, do big data analysis using Apache Spark, and more. Take a peek at the animated visualizations and analyses on the Almond website linked on this slide. They're cool.
+
+1 https://almond.sh/
+----------------------
+1. Functions
+Scala being a functional programming language is one of its core differentiating traits. Let's get familiar with functions before learning about the functional STYLE later.
+
+2. Twenty-One
+We'll continue writing useful code for our Twenty-One program.
+
+1 http://bit.ly/twenty_one_wikipedia
+3. Functions
+In our experience teaching at DataCamp, we've learned that most learners require a good amount of practice to get proficient at defining functions. For this reason, we dedicate a whole course to this topic. In this INTRO course, you'll understand what functions are and use that understanding to call an already defined function. In more advanced courses, you'll understand the full anatomy of a function (like parameters and type annotations), define your own functions, and more.
+
+4. What is a function?
+So, what do functions do? Functions are invoked or "called" with a list of arguments, to produce a result. The parts of a function are the parameter list, the body, and the result type. All I want you to focus on in this course
+
+5. What is a function?
+is the body.
+
+6. A specific question
+Let's start with a question. Imagine we are playing Twenty-One, and we have two cards: a king and a ten. Does this hand bust? In the form of an expression, we write: 20 greater than 21, which is a Boolean expression whose result is false, since 20 is NOT greater than 21.
+
+7. Generalizing that question
+Now, for our Twenty-One program, our general "player" won't have a king and a ten every time. They will have two random cards
+
+8. Generalizing that question
+sometimes three or more if they choose to hit, to get closer to 21.
+
+9. Generalizing that question
+Instead of writing 20 greater than 21, we write
+
+10. Generalizing that question
+hand greater than 21, where hand represents that general hand's point value. hand greater than 21 is the body
+
+11. The bust function
+of a function called bust, which we'll use in our program. Here the function is defined in a script. See hand greater than 21?! That's the function body. It follows the equals sign in a code block, where a code block is code surrounded by curly braces. Ignore the rest of the function for now. The colon Boolean part is optional in Scala,
+
+12. The bust function
+so I'm going to remove it to minimize distraction.
+
+13. What do functions do again?
+Reminder: functions are invoked, or called, to produce a result. As mentioned previously, one of the defining features of Scala being functional is that functions are first-class VALUES. The equals sign that precedes the code block is a tell: all functions produce RESULTS, and all results have VALUES, and all values have VALUE TYPES. In this case, the result is the Boolean value type, true or false, which we can see by calling the function within the print line function. To call a function, you write the name of the function with the argument (or arguments plural if there are more than one) in parentheses. Here, we get false for 20 and true for 22.
+
+14. Call a function with variables
+You can also pass in expressions as arguments. Calling bust with the expression kingSpades plus tenHearts results in the Boolean false. Functions being first-class values in Scala means you can even pass in OTHER FUNCTIONS as arguments to functions, which you'll see later.
+
+15. Sneak peek at future courses
+In more advanced Scala courses, you'll see the difference between specific kinds of functions. Here's a preview if you're curious now.
+
+----------------------
+2. Collections
+Collections are incredibly useful and you'll use them a lot. Like variables, there are two kinds: mutable and immutable. Mutable collections can be updated or extended in place. That is, you can change, add, or remove elements of the originally created collection. Immutable collections never change. Operations exist that simulate additions, removals, or updates, but those operations return a new collection and leave the old collection unchanged.
+
+3. Array
+Array is a mutable sequence of objects that all share the same type. In the Scala interpreter, here's an array for our players, Alex, Chen and Marta. val players equals capital A Array, then player names in quotations separated by commas. Here, the creation, parameterization, and initialization is done all at once, with Scala doing some work behind the scenes for us. Pause and take a second to read the definitions of parameterization and initialization. If we want to be more explicit,
+
+4. Array
+we separate the parameterization from the initialization. Let's look at parameterizing type first. val players new Array of type string (which goes in square brackets). All collections have a type parameter specifying what they hold, in this case, String, which can be inferred with type inference from the initialization content, like Alex, Chen, Marta in quotes from last slide. Next, parameter values. We give the length parameter a value of 3 here, which goes in parentheses. To be even more explicit
+
+5. Array
+we write the type parameterization after a colon and before the equals sign. The type parameterization is part of the instance, while the value parameterization (3 for length) is not. That is, the type of players is Array String, not Array String 3.
+
+6. Array
+Initializing the array is done by passing in data inside parentheses, not inside square brackets like in Java and Python. Arrays being sequences means that they have order. Collections are zero-indexed in Scala, so players zero is the first element, which is the String Alex. Hey, Alex!
+
+7. Arrays are mutable
+Note that the array players is a val, and vals cannot be reassigned. However, if the object to which that val refers is mutable, that object CAN change! Say if Alex leaves the game (bye Alex!) and Sindhu comes in to fill their place, we can update that data. players zero equals Sindhu. Boom, a val's elements updated in place, which is possible since Arrays are mutable.
+
+8. Arrays are mutable
+That said, you can only update arrays with values of the same type of the array. For example, if we update players index 0 with the Int 500, an error of type mismatch is thrown.
+
+9. Recommendation: use val with Array
+In Scala, it is recommended that you make mutable collections vals so you don't have to keep track of two things that can change. If we made players a var, the elements in our original array could change, like the update to include Sindhu, AND an entirely different Array object could be assigned to players.
+
+10. Scala nudges us towards immutability
+As you know, Scala nudges us towards immutability, and arrays are NOT immutable. Because collections store more data than the single value variables you previously created, immutability with collections increases the potential for hard-to-find bugs.
+
+11. The Any supertype
+Another tidbit: you can mix and match types by parameterizing with Any, the supertype of all types. You'll learn more about Scala's type hierarchy in more advanced courses.
+
+-----------------------
+1. Lists
+Now, another collection to add to your list: List. Lists are probably the most commonly used collection in Scala.
+
+2. Collections
+Again, there are two kinds of collections: mutable and immutable. You've used Array, which is a mutable sequence of objects that share the same type. Mutable meaning you can change, add, or remove elements of an Array, though you can't change the parameter values like the length of the array. List is an immutable sequence of objects that share the same type. Like with Array, "share the same type" unintuitively means you can have mixed types when you use the Any supertype.
+
+3. Lists have a type parameter
+Lists, like Arrays, have a type parameter specifying what the List holds. Say if you knew the players in Twenty-One would never change ever, you might use List: val players equals List then the names. players here is type List String. Note that Scala Lists are ALWAYS immutable, unlike in Java, where they can be mutable.
+
+4. How Lists are useful while immutable
+A List is an object, like pretty much everything in Scala, so it has methods, which for now you can think of as a function that belongs to an object. Calling a method on a List object returns a new list with a new value. This is how Lists remain useful. There are precisely one zillion List methods. Here are a few. These are beyond the scope of this course so check the link on the slide if you're curious now.
+
+1 http://bit.ly/scala_list_documentation
+5. How Lists are useful while immutable
+Here IS an example for this course. Say we want to add Sindhu to our list of players for a four-player game of Twenty-One. The colon colon operator prepends a new element to the start of an existing List. Since List is immutable, we need to define a new val (newPlayers) since the result is a completely new list with a new value.
+
+6. How Lists are useful while immutable
+Or we could define players as a var, then reassign that var the result of the new list produced by "Sindhu" colon colon players. The colon colon operator is pronounced
+
+7. cons (::)
+"cons" and it's an operator unique to Lists in Scala. Having something like cons that constructs lists is popular in functional programming languages in general. You'll use cons often. cons PREPENDS. An APPEND operation exists in Scala, but it's rarely used because its not efficient. Advanced topic, link on slide.
+
+1 http://bit.ly/append_list_inefficient
+8. Nil
+Nil is the shorthand way of specifying an empty list. Empty signified in the output here by no elements in the parentheses.
+
+9. Nil
+A common way to initialize new lists is to specify the elements with the cons operator separating them, with Nil as the last element. Nil is needed because the cons operator is actually a method that belongs to List objects!
+
+10. Concatenating Lists
+Concatenating Lists is also common. In this script, the triple colon operator is used, which is also an operator slash method unique to Lists. Concatenation demonstrates immutability well as this line of code creates a new List called allPlayers. The original Lists playersA and playersB are not mutated. Pause the video to take this behavior in if you need to.
+
+11. Scala nudges us towards immutability
+Since Scala likes us to program favoring immutability, you'll likely use Lists more than you use Arrays.
+
+12. Pros and cons of immutability
+The same pros and cons for immutable variables apply to immutable collections, too. We are unable to change, add, or remove elements of a list so no inadvertent changes. Our List code is easier to reason about. We have to write fewer tests. The main con, memory due to data copying. The pros usually outweigh the cons in Scala.

@@ -1,0 +1,81 @@
+1. Downloading data using curl
+Welcome to Intermediate Shell! My name is Susan Sun, and I do data work. I'm looking forward to learning with you in this course. In data, many of us bypass the command line in favor of GUI interfaces like Anaconda and RStudio because that is what we are familiar with. However, taking the time to learn data science on the command line is a great long term investment that will, ultimately, make us better and more productive data people. In this course, we take a practical approach and learn command line tools useful for everyday data processing and analyses. First, let's learn how to download data files using curl.
+
+2. What is curl?
+curl, short for Client for URLs, is a Unix command line tool for transferring data to and from a server. It is often used to download data from HTTP sites and FTP servers.
+
+3. Checking curl installation
+To check if curl has been properly installed, type the following in the command line: man curl If curl has not been installed, you will see: curl command not found To install curl, follow this link.
+
+4. Browsing the curl Manual
+If curl is installed, your console will look like this:
+
+5. Browsing the curl Manual
+Keep pressing Enter to scroll through the curl manual. To exit and return to your console, press q.
+
+6. Learning curl Syntax
+The basic syntax for curl has the following structure: curl, option flags, URL The URL is required for the command to run successfully. curl supports a large number of protocol calls. For a full list, use curl dash-dash-help.
+
+7. Downloading a Single File
+Let's download a single file stored at this hypothetical URL using curl. To save the file with its original name datafilename-dot-txt, use the option flag dash-uppercase-O. This reads: curl dash uppercase-O followed by the file URL location To save the file under a different name, replace dash uppercase O with dash lowercase o and the new filename. Now it reads: curl dash lowercase o followed by the new filename and the file URL location
+
+8. Downloading Multiple Files using Wildcards
+Oftentimes, a server will host multiple data files, with similar filenames. Like this: Instead of curl-ing each file individually, we can use wildcards to download all the files at once. To download every file hosted on this server that starts with datafilename and ends in dot-txt, we use: curl dash uppercase-O https colon forwardslash forwardslash websitename-dot-com forwardslash datafilename asterisk dot txt
+
+9. Downloading Multiple Files using Globbing Parser
+Another option is to increment using a globbing parser. The following will download every file sequentially starting with datafilename001-dot-txt and ending with datafilename100-dot-txt. Note the end of the command that reads: square bracket zero zero one dash one hundred close square bracket-dot-txt. That's the globbing at work.
+
+10. Downloading Multiple Files using Globbing Parser
+We can increment through the files and download every Nth file. For example, to download every 10th file, we can modify the globbing parser to read: open square bracket zero zero one dash one hundred colon ten close square bracket dot txt
+
+11. Preemptive Troubleshooting
+Sometimes Internet can time out. To make sure that our download progress is not lost, curl has these two flags: dash-uppercase-L redirects the HTTP URL if a 300 error code occurs. dash-uppercase-C resumes a previous file transfer if it times out before completion. Putting everything together: Note that all option flags come before the URL, but the order of the flags does not matter.
+
+12. Happy curl-ing!
+In this lesson, we learned how to download files using curl. Let's put our new knowledge to practice! Happy curl-ing!
+
+---------------------
+Got It!
+1. Downloading data using Wget
+Welcome back! In this lesson, we will introduce another command line tool for downloading data, called Wget. We will walk through how to install and set up Wget along with some basic usage.
+
+2. What is Wget?
+Wget derives its name from World Wide Web and get. It is a GNU project native to the Linux system, but is compatible across all operating systems. It is another command line tool that will help you download files via HTTP and FTP. Compared to curl, Wget is more multi-purpose. It can download a single file, an entire folder, or even a webpage. Most importantly, it makes multiple file downloads possible recursively.
+
+3. Checking Wget Installation
+Aside from using man, another way to check if Wget has been installed correctly, is by using which Wget. This will return the location of where Wget is installed. For example, in the local user bin: If Wget has not been installed, there will simply be no output.
+
+4. Wget Installation by Operating System
+The official documentation and source code for Wget is listed, but unless you are comfortable compiling from the source code, here are some easier alternatives. For Linux users, it's likely Wget is already installed for you. If not, run sudo apt get install wget on the command line. For Mac users, use homebrew by running brew install wget on the command line. For Windows users, this will not be a command line install. Rather, visit the link listed on the slide to download as part of the gnuwin32 package.
+
+5. Browsing the Wget Manual
+Once installation is complete, use the man command to print the Wget manual. Remember to press Enter to scroll and to press q to exit.
+
+6. Learning Wget Syntax
+The basic syntax for Wget has a similar structure to curl: Wget, option flags, URL The URL is also required for the Wget command to run successfully. Wget supports a large number of protocol calls for data stored on servers. For a full list of the options available, refer to wget dash-dash-help.
+
+7. Downloading a Single File
+Here are some option flags unique to Wget: dash-lowercase-b allows your download to run in the background. dash-lowercase-q turns off the Wget output, which saves some disk space. dash-lowercase-c is useful to finish up a previously broken download whether by Wget or another program. Finally, you can link all the option flags together like this. Wget dash-b-q-c followed by the file location Running this command on this hypothetical file location will generate the output: Continuing in background, pid 12345 The pid is a unique process ID assigned to this particular data download job for your reference, in case you need to cancel the process.
+
+8. Have fun Wget-ing!
+In this lesson, we learned another way to download files in the command line using the tool Wget. Up next, we will put our new knowledge to practice and learn more advanced Wget use cases! Happy Wget-ing!
+--------------
+. Advanced downloading using Wget
+So far, we've learned how to install and do basic file downloads using either curl or Wget. In this lesson, we will focus on getting the most out of Wget by going over more advanced techniques for data downloading.
+
+2. Multiple file downloading with Wget
+A common way for data people to handle multiple file downloads is by storing the file locations in a file and pass that meta file to the downloading program like Wget. In this case, all the URLs for the files we want to download are stored in the file URL underscore list dot txt. Let's use the cat command to print and preview the URLs really quickly. After confirming that the URLs are indeed stored in this file, we can now pass this file to Wget. Note that we need to preface this with the dash-lowercase-i option flag, so Wget knows that we are reading URLs from a local or external file. The command reads: wget dash lowercase-i url underscore list dot txt Finally, it's worth noting not to insert any option flags in between the dash-i and the URL file. If other option flags are needed, put it before dash-i.
+
+3. Setting download constraints for large files
+Sometimes, it's useful to make sure Wget does not consume your entire bandwidth with the file download. You can set an upper download bandwidth limit using the dash-dash-limit-rate option. Set the limit rate equal to a whole number, which will automatically convert to bytes per second. For example wget dash dash limit rate equal to 200k will make sure your download rate will not exceed 200 kilobytes per second as you download the files saved in the URL list.
+
+4. Setting download constraints for small files
+For downloading smaller files, enforcing a download bandwidth won't work as well. To avoid overtaxing the file hosting server, it is more useful to enforce a mandatory wait time between file downloads using dash-dash-wait. The default time interval is set to seconds. For example, wget dash dash wait equals two point five creates a 2.5 second pause between downloading each file stored in the URL list file.
+
+5. curl versus Wget
+As we round out this chapter, it is helpful to do a quick comparison between the two command line tools curl and Wget. Although both curl and Wget can download files from HTTP, HTTPS, and FTP. Curl alone can download and upload from 20 other protocols. It is also easier to install across all operating systems, compared to Wget. Wget's advantage is its ability to handle multiple file downloads gracefully. It can also be used to download just about anything, from a full file directory to a HTML page.
+
+--------------
+
+
+

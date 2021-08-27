@@ -1,0 +1,81 @@
+1. Airflow sensors
+Welcome back! Now that we've gotten some practice using operators and tasks within Airflow, let's look at a special kind of operator called a sensor.
+
+2. Sensors
+A sensor is a special kind of operator that waits for a certain condition to be true. Some examples of conditions include waiting for the creation of a file, uploading a database record, or a specific response from a web request. With sensors, you can define how often to check for the condition(s) to be true. Since sensors are a type of operator, they are assigned to tasks just like normal operators. This means you can apply the bitshift dependencies to them as well.
+
+3. Sensor details
+All sensors are derived from the airflow dot sensors dot base underscore sensor underscore operator class. There are some default arguments available to all sensors, including mode, poke_interval, and timeout. The mode tells the sensor how to check for the condition and has two options, poke or reschedule. The default is poke, and means to continue checking until complete without giving up a worker slot. Reschedule means to give up the worker slot and wait for another slot to become available. We'll discuss worker slots in the next lesson, but for now consider a worker slot to be the capability to run a task. The poke_interval is used in the poke mode, and tells Airflow how often to check for the condition. This is should be at least 1 minute to keep from overloading the Airflow scheduler. The timeout field is how long to wait (in seconds) before marking the sensor task as failed. To avoid issues, make sure your timeout is significantly shorter than your schedule interval. Note that as sensors are operators, they also include normal operator attributes such as task_id and dag.
+
+4. File sensor
+A useful sensor is the FileSensor, found in the airflow dot contrib dot sensors library. The FileSensor checks for the existence of a file at a certain location in the file system. It can also check for any files within a given directory. A quick example is importing the FileSensor object, then defining a task called file underscore sensor underscore task. We set the task_id and dag entries as usual. The filepath argument is set to salesdata.csv, looking for a file with this filename to exist before continuing. We set the poke_interval to 300 seconds, or to repeat the check every 5 minutes until true. Finally, we use the bitshift operators to define the sensor's dependencies within our DAG. In this case, we must run init_sales_cleanup, then wait for the file_sensor_task to finish, then we run generate_report.
+
+5. Other sensors
+There are many types of sensors available within Airflow. The ExternalTaskSensor waits for a task in a separate DAG to complete. This allows a loose connection to other workflow tasks without making any one workflow too complex. The HttpSensor will request a web URL and allow you define the content to check for. The SqlSensor runs a SQL query to check for content. Many other sensors are available in the airflow dot sensors and airflow dot contrib dot sensors libraries.
+
+6. Why sensors?
+You may be wondering when to use a sensor vs an operator. For the most part, you'll want to use a normal operator unless you have any of the following requirements: You're uncertain when a condition will be true. If you know something will complete that day but it might vary by an hour or so, you can use a sensor to check until it is. If you want to continue to check for a condition but not necessarily fail the entire DAG immediately. This provides some flexibility in defining your DAG. Finally, if you want to repeatedly run a check without adding cycles to your DAG, sensors are a good choice.
+-----
+1. Airflow executors
+Now that we've implemented some Airflow sensors, let's discuss the execution model within Airflow.
+
+2. What is an executor?
+In Airflow, an executor is the component that actually runs the tasks defined within your workflows. Each executor has different capabilities and behaviors for running the set of tasks. Some may run a single task at a time on a local system, while others might split individual tasks among all the systems in a cluster. As mentioned in the previous lesson, this is often referred to as the number of worker slots available. We'll discuss some of these in more detail soon, but a few examples of executors are the SequentialExecutor, the LocalExecutor, and the CeleryExecutor. This is not an exhaustive list, and you can also create your own executor if required (though we won't cover that in this course).
+
+3. SequentialExecutor
+The SequentialExecutor is the default execution engine for Airflow. It runs only a single task at a time. This means having multiple workflows scheduled around the same timeframe may cause things to take longer than expected. The SequentialExecutor is useful for debugging as it's fairly simple to follow the flow of tasks and it can also be used with some integrated development environments (though we won't cover that here). The most important aspect of the SequentialExecutor is that while it's very functional for learning and testing, it's not really recommended for production due to the limitations of task resources.
+
+4. LocalExecutor
+The LocalExecutor is another option for Airflow that runs entirely on a single system. It basically treats each task as a process on the local system, and is able to start as many concurrent tasks as desired / requested / and permitted by the system resources (ie, CPU cores, memory, etc). This concurrency is the parallelism of the system, and it is defined by the user in one of two ways - either unlimited, or limited to a certain number of simultaneous tasks. Defined intelligently, the LocalExecutor is a good choice for a single production Airflow system and can utilize all the resources of a given host system.
+
+5. CeleryExecutor
+The last executor we'll look at is the Celery executor. If you're not familiar with Celery, it's a general queuing system written in Python that allows multiple systems to communicate as a basic cluster. Using a CeleryExecutor, multiple Airflow systems can be configured as workers for a given set of workflows / tasks. You can add extra systems at any time to better balance workflows. The power of the CeleryExecutor is significantly more difficult to setup and configure. It requires a working Celery configuration prior to configuring Airflow, not to mention some method to share DAGs between the systems (ie, a git server, Network File System, etc). While it is more difficult to configure, the CeleryExecutor is a powerful choice for anyone working with a large number of DAGs and / or expects their processing needs to grow.
+
+6. Determine your executor
+Sometimes when developing Airflow workflows, you may want to know the executor being used. If you have access to the command line, you can determine this by: Looking at the appropriate airflow dot cfg file. Search for the executor equal line, and it will specify the executor in use. Note that we haven't discussed the airflow.cfg file in depth as we assume a configured Airflow instance in this course. The airflow.cfg file is where most of the configuration and settings for the Airflow instance are defined, including the type of executor.
+
+7. Determine your executor #2
+You can also determine the executor by running airflow list_dags from the command line. Within the first few lines, you should see an entry for which executor is in use (In this case, it's the SequentialExecutor).
+
+----
+Got It!
+1. Debugging and troubleshooting in Airflow
+Welcome back! Let's take a look at one of the biggest aspects of running a production system with Airflow and data engineering in general - debugging and troubleshooting.
+
+2. Typical issues...
+There are several common issues you may run across while working with Airflow - it helps to have an idea of what these might be and how best handle them. The first common issue is a DAG or DAGs that won't run on schedule. The next is a DAG that simply won't load into the system. The last common scenario involves syntax errors. Let's look at these more closely.
+
+3. DAG won't run on schedule
+The most common reason why a DAG won't run on schedule is the scheduler is not running. Airflow contains several components that accomplish various aspects of the system. The Airflow scheduler handles DAG run and task scheduling. If it is not running, no new tasks can run. You'll often see this error within the web UI if the scheduler component is not running. You can easily fix this issue by running airflow scheduler from the command-line.
+
+4. DAG won't run on schedule
+As we've covered before, another common issue with scheduling is the scenario where at least one schedule interval period has not passed since either the start date or the last DAG run. There isn't a specific fix for this, but you might want to modify the start date or schedule interval to meet your requirements. The last scheduling issue you'll often see is related to what we covered in the previous lesson - the executor does not have enough free slots to run tasks. There are basically three ways to alleviate this problem - by changing the executor type to something capable of more tasks (LocalExecutor or CeleryExecutor), by adding systems or system resources (RAM, CPUs), or finally by changing the scheduling of your DAGs.
+
+5. DAG won't load
+You'll often see an issue where a new DAG will not appear in your DAG view of the web UI or in the airflow list_dags output. The first thing to check is that the python file is in the expected DAGs folder or directory. You can determine the current DAGs folder setting by examining the airflow.cfg file. The line dags underscore folder will indicate where Airflow expects to find your Python DAG files. Note that the folder path must be an absolute path.
+
+6. Syntax errors
+Probably the most common reason a DAG workflow won't appear in your DAG list is one or more syntax errors in your python code. These are sometimes difficult to find, especially in an editor not setup for Python / Airflow (such as a base Vim install). I tend to prefer using Vim with some Python tools loaded, or VSCode but it's really up to your preference. There are two quick methods to check for these issues - airflow list_dags, and running your DAG script with python.
+
+7. airflow list_dags
+The first is to run airflow space list underscore dags. As we've seen before, Airflow will output some debugging information and the list of DAGs it's processed. If there are any errors, those will appear in the output, helping you to troubleshoot further.
+
+8. Running the Python interpreter
+Another method to verify Python syntax is to run the actual python3 interpreter against the file. You won't see any output normally as there's nothing for the interpreter to do, but it can check for any syntax errors in your code. If there are errors, you'll get an appropriate error message. If there are no errors, you'll be returned to the command prompt.
+
+----
+
+2. SLAs
+You may be wondering, what is an SLA? SLA stands for Service Level Agreement. Within the business world, this is often an uptime or availability guarantee. Airflow treats it a bit differently - it's considered the amount of time a task or a DAG should require to run. An SLA miss is any situation where a task or DAG does not meet the expected timing for the SLA. If an SLA is missed, an email alert is sent out per the system configuration and a note is made in the log. Any SLA miss can be viewed in the Browse, SLA Misses menu item of the web UI.
+
+3. SLA Misses
+To view any given SLA miss, you can access it in the web UI, via the Browse: SLA Misses link. It provides you general information about what task missed the SLA and when it failed. It also indicates if an email has been sent when the SLA failed.
+
+4. Defining SLAs
+There are several ways to define an SLA but we'll only look at two for this course. The first is via an sla argument on the task itself. This takes a timedelta object with the amount of time to pass. The second way is using the default_args dictionary and defining an sla key. The dictionary is then passed into the default_args argument of the DAG and applies to any tasks internally.
+
+5. timedelta object
+We haven't covered the timedelta object yet so let's look at some of the details. It's found in the datetime library, along with the datetime object. Most easily accessed with an import statement of from datetime import timedelta. Takes arguments of days, seconds, minutes, hours, and weeks. It also has milliseconds and microseconds available, but those wouldn't apply to Airflow. To create the object, you simply call timedelta with the argument or arguments you wish to reference. To create a 30 second time delta, call it with seconds equals 30. Or weeks equals 2. Or you can combine it into a longer mix of any of the arguments you wish (in this case, 4 days, 10 hours, 20 minutes, and 30 seconds).
+
+6. General reporting
+For reporting purposes you can use email alerting built into Airflow. There are a couple ways to do this. Airflow has built-in options for sending messages on success, failure, or error / retry. These are handled via keys in the default_args dictionary that gets passed on DAG creation. The required component is the list of emails assigned to the email key. Then there are boolean options for email underscore on underscore failure, email underscore on underscore retry, and email underscore on underscore success. In addition, we've already looked at the EmailOperator earlier but this is useful for sending emails outside of one of the defined Airflow options. Note that sending an email does require configuration within Airflow that is outside the scope of this course. The Airflow documentation provides information on how to set up the global email configuration.

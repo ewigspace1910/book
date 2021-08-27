@@ -1,0 +1,76 @@
+2. What is Big Data?
+What exactly is Big Data? There is no single definition of Big Data because projects, vendors, practitioners, and business professionals use it quite differently. According to Wikipedia - Big data is a term used to refer to the study and applications of data sets that are too complex for traditional data-processing software. There are three
+
+3. The 3 V's of Big Data
+Vs of Big data that are used to describe its characteristics. They are volume, velocity, and variety. Volume refers to the size of data. Variety refers to different sources and formats of data. Velocity is the speed at which data is generated and available for processing. Now let's take a look at some
+
+4. Big Data concepts and Terminology
+of the concepts and terminology of Big Data. Clustered computing is the pooling of resources of multiple machines to complete jobs. Parallel computing is a type of computation in which many calculations are carried out simultaneously. A distributed computing involves nodes or networked computers that run jobs in parallel. Batch processing refers to the breaking data into smaller pieces and running each piece on an individual machine. Real-time processing demands that information is processed and made ready immediately. There are two popular
+
+5. Big Data processing systems
+frameworks for Big Data processing. The first is the highly successful Hadoop/MapReduce framework. Hadoop/MapReduce framework is open source and scalable framework for batch data. The second is the most popular Apache Spark which is a parallel framework for storing and processing of Big Data across clustered computers. It is also open source and is suited for both batch and real-time data processing. In this course, you'll learn about Apache Spark. Let's talk about the main
+
+6. Features of Apache Spark framework
+features of Apache Spark. Spark distributes data and computation across multiple computers executing complex multi-stage applications such as machine learning. Spark runs most computations in memory and thereby provides better performance for applications such as interactive data mining. Spark helps to run an application up to 100 times faster in memory, and 10 times faster when running on disk. Spark is mainly written in Scala language but also have support for Java, Python, R, and SQL. Apache Spark is a
+
+7. Apache Spark Components
+powerful alternative to Hadoop MapReduce, with rich features like machine learning, real-time stream processing, and graph computations. At the center of the ecosystem is the Spark Core which contains the basic functionality of Spark. The rest of Spark’s libraries are built on top of it. First is Spark SQL, which is a library for processing structured and semi-structured data in Python, Java, and Scala. The second is MLlib, which is a library of common machine learning algorithms. The third component is GraphX, which is a collection of algorithms and tools for manipulating graphs and performing parallel graph computations. Finally, Spark Streaming is a scalable, high-throughput processing library for real-time data. In this course, you'll learn about SparkSQL and MLlib.
+
+8. Spark modes of deployment
+Spark can be run on two modes. The first is the local mode where you can run Spark on a single machine such as your laptop. The local mode is very convenient for testing, debugging and demonstration purposes. The second is the cluster mode where Spark is run on a cluster. The cluster mode is mainly used for production. The development workflow is that you start on local mode and transition to cluster mode. During the transition from local to cluster mode, no code change is necessary. In this course, you'll be using local mode.
+
+9. Coming up next - PySpark
+---------------------
+1. PySpark: Spark with Python
+In the last video, you were introduced to Apache Spark which is a fast and general-purpose framework for Big data processing. 
+Apache Spark provides high-level APIs in Scala, Java, Python, and R.
+ In this video, you'll learn about PySpark which is Spark's version of Python.
+
+2. Overview of PySpark
+Apache Spark is originally written in Scala programming language. 
+To support Python with Spark, PySpark was developed. Unlike previous versions, the newest version of PySpark provides computation power similar to Scala. 
+APIs in PySpark are similar to Pandas & Scikit-learn Python packages. 
+Thus, the entry level barrier to PySpark is very low for beginners.
+
+3. What is Spark shell?
+Spark comes with interactive shells that enable ad-hoc data analysis. 
+Spark shell is an interactive environment through which one can access Spark's functionality quickly and conveniently. 
+Spark shell is particularly helpful for fast interactive prototyping before running the jobs on clusters. 
+Unlike most other shells, Spark shell allow you to interact with data that is distributed on disk or in memory across many machines, and Spark takes care of automatically distributing this processing. 
+Spark provides the shell in three programming languages: spark-shell for Scala, PySpark for Python and sparkR for R. PySpark
+
+4. PySpark shell
+shell is the Python-based command line tool to develop Spark's interactive applications in Python. 
+PySpark helps data scientists interface with Spark data structures in Apache Spark and Python. 
+Similar to Scala Shell, Pyspark shell has been augmented to support connecting to a cluster. In this course, you'll use PySpark Shell. In order
+
+5. Understanding SparkContext
+to interact with Spark using PySpark shell, you need an entry point. 
+SparkContext is an entry point to interact with underlying Spark functionality. 
+Before understanding SparkContext, let’s understand what an entry point is. An entry point is where control is transferred from the Operating system to the provided program. 
+In simpler terms, it's like a key to your house. 
+Without the key you cannot enter the house, similarly, without an entry point, you cannot run any PySpark jobs. 
+You can access the SparkContext in the PySpark shell as a variable named sc. 
+Now let's take a look at some of the important attributes of SparkContext.
+
+6. Inspecting SparkContext
+The first is the version. 
+This attribute shows the version of spark that you are currently running. 
+In this example, sc dot version shows that the version of spark is 2-point-3-point-1. 
+The second is the Python version. 
+This attribute shows the version of Python that Spark is currently using. 
+In this example, sc dot pythonVer shows that the spark is using Python version 3-point-6. 
+The final attribute is the Master. 
+Master is the URL of the cluster or “local” string to run in local mode. 
+In this example, sc dot master returns local meaning the SparkContext acts as a master on a local node using all available threads on the computer where it is running. You can load your raw data
+
+7. Loading data in PySpark
+into PySpark using SparkContext by two different methods. 
+The first is the SparkContext’s parallelize method on a list. 
+For example, here is how to create parallelize collections holding the numbers 1 to 5. 
+The second is the SparkContext’s textFile method on a file. 
+For example, here’s a way to load a text file named "test-dot-txt" using SparkContext's textFile method. Now that you
+---------------------
+
+
+----------------------------
