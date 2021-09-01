@@ -1,0 +1,47 @@
+Got It!
+1. Intro to Aggregation: From Query Components to Aggregation Stages
+There are cases where you may want to avoid having to fetch and iterate over lots of data client-side. In this chapter, we'll learn how MongoDB can do a good chunk of your data analysis and aggregation for you. In this first lesson, we'll reproduce what we already know how to do with the "find" method of a collection. By doing so, we'll see how the implicit stages of a query can map to explicit stages of an aggregation pipeline.
+
+2. Queries have implicit stages
+Here, we iterate over a cursor to yield prize-year information for a few USA-born laureates. I used indentation in this code to demarcate implicit stages. Also, I passed the arguments to "find" as keyword arguments to name these stages. The first stage filters for documents that match an expression. The second stage projects out fields I need downstream for output. Finally, the last stage limits the number of documents retrieved. With an aggregation pipeline, I make these stages explicit. An aggregation pipeline is a list, a sequence of stages, and it looks like this. Each stage involves a stage operator. Here's an aggregation that produces the same result as our call to "find" on the left. To filter for documents matching an expression, I use the match operator. To project fields, I use project. And to limit results, I use limit. This pipeline, in particular, has three stages. It matches documents for USA-born laureates. It strips the documents of all but prize years. And it yields only the first three.
+
+3. Adding sort and skip stages
+Sorting and skipping are also available as pipeline stages. Here, we project prize years for USA-born laureates. We yield them in chronological order. Furthermore, we skip the first year and collect only the second, third, and fourth. One quirk of the sort stage in pymongo is that it requires a dictionary-like object. We can use the OrderedDict class in Python's included collections module. This class yields field-direction pairs in the order they are input. In the case of sorting by only one key, we can of course use a plain dictionary. I use the more general form here so that you know how to ensure compound indices.
+
+4. But can I count?
+Finally, we can use a "count" stage to count the number of documents passed in from the previous stage. This count gets assigned to a field of your choosing. Here, I count the number of USA-born laureates. This aggregation, of course, is the same as the "count_documents" method of a collection. The other convenience method we know about for aggregation is "distinct". This method has a counterpart aggregation stage as well, which we'll cover in the next lesson.
+----------
+
+2. Field paths
+Aggregation stages can use expressions that contain field paths. To see this in action, first let's clarify some terminology. An expression object has the form "field1, expression1, dot dot dot". It's what you pass to an aggregation stage. Here, we pass an expression object to a "project" stage. The object has one key, "prizes-dot-share", with a corresponding expression value of 1. In contrast, here we project a field that we call "n_prizes". The field takes the value of the expression "dollar-size maps to dollar-prizes". The string dollar-prizes is a field path. It takes the value of the prizes field for each document processed at that stage by the pipeline. Note that you can create new fields, or overwrite old ones, during aggregation.
+
+3. Operator expressions
+The other new concept here is the operator expression, which treats an operator as a function. The expression applies the operator to one or more arguments and returns a value. Here, the size operator take the field path dollar-prizes as an argument. Thus, the expression object assigns the field n-prizes to the size of the prizes array. We could also write the operator expression as taking a list of one element, and we get the same result. For convenience, when an operator only has one parameter, we can omit the brackets as above.
+
+4. One more example: a multi-parameter operator
+Many operators available in query filters have counterparts for aggregation. For example, here I use the dollar-in operator, which takes two parameters. To get the array of prize shares for a laureate, I use a field path. I then project a new field, "solo winner", which is true if and only if the array of prize shares contains the string value "1".
+
+5. Implementing .distinct()
+Now we know a bit about expressions and field paths. Let's translate the "distinct" collection method to an aggregation. Here I use a new stage, dollar-group. A group stage takes an expression object that must map the underscore-id field. As for any MongoDB document, the underscore-id field must be unique. In this case, each output document will have as its id a distinct value of the bornCountry field. All bornCountry values get captured because no match stage precedes the group stage. Thus, our list comprehension collecting id values collects all distinct bornCountry values. This includes the value None, which happens when a field is not present in a document.
+
+6. How many prizes have been awarded in total?
+Let's combine a group stage with a project stage. How many prizes has the Nobel committee awarded? The project stage is familiar to us from a few slides back, but what about this group stage? The underscore-id gets mapped to None for every document. This means one and only one document will emerge from the group stage. This one document maps a new field, n-prizes-total, to an operator expression. Some operators, like dollar-sum here, act as accumulators in a group stage. This means they don't operate only on one document. Rather, they have state and will accumulate a value as one document after another of a group gets passed to it. Here, we compute the sum of lengths of all prizes arrays across all laureates. We do this without sending a single laureate document down the wire. Aggregations like this can save a lot of time and bandwidth for very large collections.
+
+-------
+1. Zoom into Array Fields with $unwind
+Documents can have array-valued fields, and aggregation stages can introduce them. In this lesson, we'll learn a tool to access array elements during aggregation.
+
+2. Sizing and summing
+Let's say we want the number of laureates for each prize. One way to do this is to project a field using the dollar-size operator. We can then add a stage to group by prize category, producing a count of laureates per category. I remove the projection of year in this second pipeline, as there is no need for it. Then, I reset the n_laureates field to be the sum of n_laureates values over each category. Finally, I sort by descending count.
+
+3. How to $unwind
+How might we use individual elements of the laureates array? One powerful option is the dollar-unwind stage. This outputs one pipeline document per array element. Here, we unwind the laureates field across three documents.
+
+4. Renormalization, anyone?
+We can use stages following an unwind to recompress data. What if we want to normalize our data and track only laureate ids for each prize? After all, we can fetch more information from the laureates collection. Here, we get a list of laureate ids for each prize. After unwinding the laureates array, we project year, category, and laureate id. Year and category together identify a prize. So, we can group by a concatenation of those values. I use the addToSet operator in the group stage to collect laureate ids for each prize, and there you have it. I could also have grouped by underscore-id. But, the category-year combo is more readable, and I introduced you to a new operator!
+
+5. $unwind and count 'em, one by one
+Here's another way to understand the unwind operator. Before, we used the size operator to project the number of laureates per prize. This projection fed into a group stage to output counts by category. Instead of projecting sizes and summing over them, we can unwind and count documents. The group stage here counts the documents per category fed to it by the unwind stage. The two pipelines shown produce the same result.
+
+6. $lookup
+Finally, let's see a stage that often accompanies unwinding: dollar-lookup. This stage pulls in documents from another collection via what's termed a left outer join. Let's collect countries of birth for economics laureates. From the prizes collection, we first unwind the laureates array. Each pipeline document now has a single laureates-dot-id. Then, we query the laureates collection for documents with the same value for id. For each one we find, we push it into an array we name "laureate bios". Next, we collect the distinct laureate bornCountry values. We want to feed single bornCountry values, not arrays, to the $addToSet operator. Hence, we unwind before the group stage. Is there an easier way to do this? Sure! MongoDB doesn't enforce a normalized schema. Thus, you can tailor a collection's schema to support query simplicity and efficiency. We know the laureates collection stores info on prize categories as well. So, this one-liner produces the same result as the five-stage aggregation pipeline above. Even so, it's good to know that you can perform server-side joins in a pinch.

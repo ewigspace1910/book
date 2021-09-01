@@ -1,0 +1,189 @@
+1. Loading natural language text
+Hello and welcome to chapter two. The first step to working with natural language processing is to load your text data. You will load natural language text into a dataframe, while discarding unwanted data.
+
+2. The dataset
+We're using a public domain text called "The Project Gutenberg eBook of The Adventures of Sherlock Holmes". Project Gutenberg offers thousands of free eBooks. These are a great source of natural language text. To learn more go to gutenberg.org.
+
+3. Loading text
+To load text do spark.read.text()). The first argument gives the file path. df.first()) gets the first row, and df.count() counts the rows.
+
+4. Loading parquet
+The spark.read operation supports multiple formats. For example, use spark.read.load to load a parquet file. Parquet is the Hadoop file format to store data structures.
+
+5. Loaded text
+The following show command prints the first 15 rows. Setting truncate=False lets it print longer rows.
+
+6. Lower case operation
+The lower operation converts a column to lower case. It calls the result "lower(value)".
+
+7. Alias operation
+The alias operation allows us to give a new column a simpler name.
+
+8. Replacing text
+We plan on eventually removing all punctuation that separates sentences. But first we'll handle punctuation that is embedded in contractions. The operation regexp_replace replaces values that match a pattern. The first argument is the column name. The second argument is the pattern to be replaced. It replaces every occurrence of the second argument with the third argument. To prevent the period from being interpreted as a special character in the second argument, we put a backslash in front of it. This is called "escaping" it. We must also escape other special characters such as a single quote. ''
+
+9. Tokenizing text
+The split operation separates a string into individual tokens. The second argument gives the list of characters on which to split. Here it is a space.
+
+10. Tokenizing text – output
+It returns an array of strings. Notice how punctuation is messing up some words, such as "welcome", and "texts".
+
+11. Split characters are discarded
+Splitting on unwanted symbols in addition to spaces discards the unwanted symbols. '' ''
+
+12. Split characters are discarded – output
+"welcome" and "texts" no longer have asterisks.
+
+13. Exploding an array
+explode() takes an array of things, and puts each thing on its own row, preserving the order.
+
+14. Exploding an array – output
+The following puts every word into its own row.
+
+15. Explode increases row count
+The previous command increased the number of rows from 5500 to over 131 thousand.
+
+16. Removing empty rows
+To remove empty rows, use the length operation as the condition for a where operation. Notice how we originally count 131,404 rows. After removing all blank rows, we count only 107,320 rows.
+
+17. Adding a row id column
+The monotonically_increasing_id() operation efficiently creates a column of integers that are always increasing.
+
+18. Adding a row id column – output
+Here we are using it to create a column of unique IDs for each row.
+
+19. Partitioning the data
+Partitioning allows Spark to parallelize operations. We will organize the data allow window functions to use the partition clause. The when/otherwise operation is a case statement. The first argument gives the condition. The second argument gives the desired value for the column. You can chain multiple when() operations. The last when() operation is followed by an otherwise() clause that gives the column value used if none of the previous conditions applies. When combined with the withColumn operation when/otherwise groups the data into chapters. Repeating this adds a part id column.
+
+20. Partitioning the data – output
+We can now tell Spark to split this data into parts.
+
+21. Repartitioning on a column
+The first line repartitions the data in df, creating a new dataframe, df2. The first argument gives the desired number of partitions, here 4. The second argument is a column, saying, "put rows having the same part column value into the same partition." rdd.getNumPartitions gives the number of partitions.
+
+22. Reading pre-partitioned text
+Suppose you had a folder named sherlock_parts, containing 14 files.
+
+23. Reading pre-partitioned text
+spark.read.text() tells Spark to load all of the text files in the folder into a dataframe. If available parallelism is more than one and the folder contains more than one file, this reads the files in parallel and distributes the files over multiple partitions.
+----------
+Got It!
+1. Moving window analysis
+Congratulations on loading and manipulating text data! In this lesson you will keep working with the Sherlock Holmes ebook, and will now learn how to use a moving window using SQL.
+
+2. The raw text
+Here is a sample of the raw text.
+
+3. The processed text
+This dataset has already been processed to remove unwanted characters and put one word per row. An id column was added to identify the position of each word in the document.
+
+4. Partitions
+The data is partitioned into 12 parts, corresponding to chapters, each having a unique "part" and "title" column. The distinct() operation eliminates duplicates, fetching unique records. This will allow us to easily parallelize our work across up to 12 machines in a cluster, or up to 12 cores in a CPU on a single machine.
+
+5. MV0
+Here is what the text looks like in the processed table. We learned earlier that a window function allows using the values of other rows without using complicated joins.
+
+6. MV1
+A sliding window is analogous to an actual window that opens from top to bottom.
+
+7. MV2
+When opening the window its top edge moves down, as does its bottom edge.
+
+8. MV3
+You slide the window across the dataset,
+
+9. MV4
+calculating things using the data in the window.
+
+10. MV5
+11. MV7
+12. MV10
+13. MV13
+14. The words are indexed
+Take a mental snapshot of these rows.
+
+15. A moving window query
+This query prints the word of the current row as w1, the word from the following row as w2, and the word from the row after next as w3. The w1 column corresponds to the word column in the previous slide. As you move down the rows, each row gives a sliding window view of its own contents and contents from the next two rows. The columns w1, w2, and w3 correspond to a sequence of 3 words, also called a 3-tuple. Direct your attention to inside the over clause. It uses a partition by clause. '' This allows Spark to distribute the partitions, each partition containing a separate chapter, to different workers, thereby running the query in parallel on multiple cpus.
+
+16. Moving window output
+Let's read the first 7 rows of the w1 column. the project gutenberg ebook of the adventures. Now let's read the first three rows: "the project gutenberg". "project gutenberg ebook". "gutenberg ebook of". This is a sliding window. It is useful for creating features for algorithms that take moving window sequence data as input.
+
+17. LAG window function
+Let's do a similar thing, this time using the LAG window function. The LAG function gets its values from a previous row.
+
+18. LAG window function – output
+The w1 and w2 column values are null in the first row, because there are no previous rows in the partition. Likewise, the w1 column value is null in the second row because the lag function cannot find a row before the previous row.
+
+19. Windows stay within partition
+Suppose we look at the result for a later partition using WHERE part=2.
+
+20. Windows stay within partition – output
+Look at the first two rows. They contain null values in column w1 and w2. The window does not go outside of its partition to look at rows in partition 1!
+
+21. Repartitioning
+Window SQL makes use of partitions using the PARTITION BY clause. Dataframes are partitioned automatically without programmer intervention. However, sometimes it is useful to the specify the partitioning scheme to make the application more efficient, using knowledge that you have about the application that would not be automatically utilized by Spark. Previously we learned how to repartition data. Don't hesitate to refer to the slides available at the right of the console if you forget how this is done. Recall that properly partitioning data allows Spark to parallelize operations more efficiently. Rows that are in the same partition are guaranteed to be on the same machine. Thus, data won't be unnecessarily shuffled from one machine to another.
+
+22. Let's practice!
+Now it's your turn to play with moving windows!
+----------
+Got It!
+1. Common word sequences
+Previously we learned a powerful tool for handling sequential data. In this lesson you will learn how to use Spark SQL for finding the most frequent word sequences in a natural language text document. Before we do that, let's review what we can do with what we've already covered. One powerful application is
+
+2. Training
+creating training sets
+
+3. Predicting
+for predictive models.
+
+4. Endword prediction
+A special case of this is when you are trying to predict a word from previous words in a sequence.
+
+5. Sequence
+Suppose you have a sequence of things.
+
+6. Sequence last
+And you want to predict the last item in this sequence,
+
+7. The quick brown fox
+such as the end word of a sequence of words.
+
+8. Sentence bracket
+You can use previous words to predict the end word. In general we represent things using symbolic "tokens". These could be something else,
+
+9. Songs
+such as song ids in a person's listening history,
+
+10. Videos
+or videos.
+
+11. Categorical Data
+Categorical data can take one of a limited number of possible values. This is sometimes also referred to as nominal data, and as qualitative data. Categories that are near each other in lexical order are not necessarily qualitatively similar. For example, "he" and "she" are both gender pronouns, but are far away alphabetically. "He" and "hi" are close together alphabetically, but are not very similar qualitatively.
+
+12. Categorical vs Ordinal
+Categorical data generally have no logical order. When they do, they are called ordinal data.
+
+13. Sequence Analysis
+Another powerful class of applications involve sequence analysis.
+
+14. Word preceding and following
+Suppose you want to determine what words tend to appear together. You will now learn how to do just that. We will use the same dataset used in the previous video lesson.
+
+15. 3-tuples
+Here is a moving window query that we used in a previous lesson. This query gives all word sequences of length 3 in the text document. In general these tokens could be things other than words, such as song ids, or video ids. A more general way to refer to sequences of length 3 is "3-tuples". In each row, the columns w1, w2 and w3 identify a 3-tuple. Let's use this query as a subquery to tally the most common 3-tuples.
+
+16. A window function SQL as subquery
+Here we use the previous moving window query as a subquery. This groups on w1, w2, and w3, counting the number of occurrences of each 3-tuple. ORDER BY count DESCending gives the most common 3-tuples.
+
+17. A window function SQL as subquery – output
+We are thus able to obtain the most common 3-tuples in this dataset in two statements, the first one defining a query, the second one running and displaying it!
+
+18. Most frequent 3-tuples
+Here is the same result displayed for the previous query expanded so that you may see more of its rows. The 3-tuple "one of the" occurred 49 times. The 3-tuple "I think that" is second most frequent, at 46 occurrences.
+
+19. Another type of aggregation
+We are not limited to counting. We can look at other aspects of the word sequences. This query finds the longest 3-tuples.
+
+20. Another type of aggregation
+Again, note that Spark is able to run this query across multiple workers in parallel, without us having to tell it exactly how to do so. Because the data is partitioned, Spark is able to automatically parallelize the window function SQL.
+----------
