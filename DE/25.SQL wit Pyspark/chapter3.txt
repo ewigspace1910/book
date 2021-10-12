@@ -1,0 +1,106 @@
+2. What is caching?
+Caching is keeping data in memory so that it does not have to be refetched or recalculated each time it is used. Using caching properly is an important best practice to know when working with Spark. Spark is aggressive about freeing up data from memory. It will err on the side of unloading data from memory if it is not used, even if it is going to be needed later.
+
+3. Eviction Policy
+Eviction Policy determines when and which data is removed from cache. The policy is LRU. Each worker manages its own cache, and eviction depends on the memory available to each worker.
+
+4. Caching a dataframe
+To cache a dataframe, use df.cache(). To uncache it, use df.unpersist()
+
+5. Determining whether a dataframe is cached
+To determine whether a dataframe is cached, use the dataframe property is_cached. df.is_cached confirmed that it was not cached. Then, we cached it. Using df.is_cached again confirmed that it was cached.
+
+6. Uncaching a dataframe
+You uncache a dataframe using unpersist().
+
+7. Storage level
+A dataframe's storage level specifies 5 details about how it is cached: useDisk, useMemory, useOffHeap, deserialized, and replication. We can set any or all of these; however, the cache() operation sets them to defauls. useDisk specifies whether to move some or all of the dataframe to disk if it needed to free up memory. useMemory specifies whether to keep the data in memory. useOffHeap tells Spark to use off-heap storage instead of on-heap memory. The on-heap store refers to objects in an in-memory data structure that is fast to access. The off-heap store is also in memory, but is slightly slower than the on-heap store. However, off-heap storage is still faster than disk. Even though the best performance is obtained when operating solely in on-heap memory, Spark also makes it possible to use off-heap storage for certain operations. Off-heap storage is slightly slower than on-heap but still faster than disk. The downside is that the user has to manually deal with managing the allocated memory. deserialized True is faster but uses more memory. Serialized data is more space-efficient but slower to read. This option only applies to in-memory storage. Disk cache is always serialized. replication is used to tell Spark to replicate data on multiple nodes. This allows faster fault recovery when a node fails.
+
+8. Persisting a dataframe
+You may wonder why you use df.cache() to cache, but df.unpersist() to uncache. That's because df.cache() is shorthand for df.persist() with the first argument set to its default value. The persist() command allows you to specify the desired storage level using the first argument. If that argument is not provided, it uses a default setting. When memory is scarce, it is recommended to use MEMORY_AND_DISK caching strategy. This will spill the dataframe to disk if memory runs low. Reading the dataframe from disk cache is slower than reading it from memory, but can still be faster than recreating from scratch. cache() is equivalent to using persist() with the default storageLevel.
+
+9. Caching a table
+We just learned about caching a dataframe. Tables can also be cached. spark.catalog.isCached() tells you whether a table has been cached. You cache a table using the operation spark.catalog.cacheTable(), giving the table name as the first argument.
+
+10. Uncaching a table
+To uncache the table, use spark.catalog.uncacheTable(), giving the table name as the first argument. spark.catalog.clearCache() removes all cached tables.
+
+11. Tips
+Caching is a lazy operation. A dataframe won't appear in the cache until an action is performed on the dataframe. Don't overdo it. Only cache if more than one operation is to be performed and it takes substantial time to create the dataframe. Unpersist unneeded objects. Caching incurs a cost. Caching everything generally slows things down.
+-----------
+
+2. Use the Spark UI inspect execution
+A task is a unit of execution that runs on a single CPU. A stage is a group of tasks that run the same computation in parallel. A job is comprised of stages. The Spark UI also shows cache, settings, and SQL queries.
+
+3. Finding the Spark UI
+The Spark UI runs on the driver host. When running Spark locally the Spark UI is typically found at localhost, port 4040. If that port is already in use, then Spark will try 4041, 4042, 4043, and so on, in succession. If you are running Spark on a managed cluster, its admin console will provide a link to the Spark UI on the driver host.
+
+4. Spark UI initial view
+When Spark is first started and before any action has been performed, it will look something like this. It has six tabs: Jobs, Stages, Storage, Environment, Executors, and SQL. However, not much has happened yet.
+
+5. Spark UI after load
+This was after loading a small dataframe from file. It indicates that one job completed, having a single stage, and a single task.
+
+6. Cached dataframe in Spark UI
+You can inspect cache under the storage tab. Here it indicates that cache contains a dataframe loaded from a file named sherlock_full_parts.parquet, having size in memory of 554.9 KB.
+
+7. Spark catalog operations
+We've learned that the spark catalog provides operations on a table, here called table1, namely cacheTable(), uncacheTable() and isCached(). The last one, dropTempView(), removes the temporary table from the catalog.
+
+8. Spark Catalog
+The Spark catalog provides some information about what Spark tables exist, and their properties. Seen here, spark.catalog.listTables() tells us that there is a single temporary table called text.
+
+9. Cached table in Spark UI
+The Spark UI gives additional insight into the cached table. Here's what the storage tab looked like after caching a temporary table called 'df'. This indicates that it has a single partition, a size of 554.9 KB, and residing completely in memory.
+
+10. Spark UI SQL
+Here is the SQL tab after a SELECT COUNT(*) query was run on a table having 107462 rows.
+
+11. Spark UI Storage Tab
+The Spark UI Storage tab shows where partitions exist in memory, or on disk, across the cluster, at a snapshot in time.
+
+12. Spark UI SQL tab
+Let's see what a nontrivial SQL query looks like in the Spark UI. Here we run a window function query we learned in a previous lesson.
+
+13. Spark UI SQL tab
+Recall that this had a window function subquery wrapped within an aggregate query. At the bottom of the image, it indicates that the subquery is a window function.
+
+14. Spark UI SQL tab
+Scrolling down shows more about this query.
+
+15. Spark UI Stages tab
+Going to the Stages tab, we see that there were three stages involved with this query. Stages are presented in reverse chronological order. The first stage, stage 3, input 677.8 KB, then wrote 1972.4 KB in a shuffle operation. The next stage, stage 4, read in the data that was written by stage 3, performed 200 tasks, then wrote 3.7 MB in a shuffle operation. The next stage, stage 5, read in that 3.7 MB, and then performed 200 tasks. This indicates that 401 tasks were completed.
+
+16. Spark UI Jobs tab
+Going to the Jobs tab, we see that the first job had 3 stages, and 401 tasks. This coincides with what we saw on the stages tab.
+----------
+2. Explain
+Spark SQL is an easier transition for those of you who are already proficient with Relational database management systems. One of the tools familiar to SQL practitioners is EXPLAIN. If you put the Explain keyword at the head of an sql query, running the query provides detailed plan information about the query without actually running it. Instead of the usual table of data, it returns a query execution plan, also called a query plan. A query plan is a string, representing a set of steps used to access the data.
+
+3. Load dataframe and register
+Suppose we load a dataframe from file, located at /temp/df.parquet. Then, we use it to create an SQL table.
+
+4. Running an EXPLAIN query
+Running a simple explain select query gives this result, which when formatted
+
+5. Interpreting an EXPLAIN query
+tells us that it read the data from a parquet file, having 4 columns along with their names, located at /temp/df.parquet. It also tells us the schema of the table, including the column types. This allows us to determine how the data was obtained and from where.
+
+6. df.explain()
+Spark provides a way to run EXPLAIN() on a dataframe. It formats the result to be easier to read. When run on a dataframe, it tells you how Spark obtained the dataframe. Next, we ran explain() on a result obtained from running a query. See that the two query plans are identical.
+
+7. df.explain(), on cached dataframe
+Here we cache the dataframe, then explain. Reading a query plan from the top-down gives reverse-chronological order of the steps involved. Reading it from the bottom-up tells us the steps in order from the first step first. Next, we explain a SELECT * query on the corresponding table. The query plans are identical. The principles of relational data management run deep in Spark SQL. In particular, you can use explain to understand the steps used to obtain a dataframe even if it was not obtained using an SQL query.
+
+8. Words sorted by frequency query
+Consider this query.
+
+9. Same query using dataframe dot notation
+Here is the query plan obtained by running explain() on the dataframe result. This is a bit overwhelming, so let's examine it step by step. We will do so in the next slide, reading it from the bottom up.
+
+10. Reading from bottom up
+Reading the result from the previous slide from the bottom up, we see that this data was originally loaded from a file. It was cached in memory. A table scan was performed on the in-memory table. An aggregation operation was performed on the column word. A count operation was performed on the groups. Finally, the result was sorted on the count column in descending order.
+
+11. Query plan
+Suppose you had seen this query plan instead. Examine the query plan from the bottom-up and see if you can discern the difference between this one and the query plan from the previous slide. You would be able to determine that the data had not been cached. This could explain an unexpected slow query duration run on data of unknown provenance.
+----------

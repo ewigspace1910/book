@@ -1,0 +1,46 @@
+2. ETS
+using a class of techniques called ETS. ETS stands for
+
+3. Extract Transform Select
+Extract, Transform, and Select.
+
+4. Extract, Transform, and Select
+Extraction involves extracting features from raw data. Transformation involves scaling, converting, or modifying features. Selection obtains a subset of features.
+
+5. Built-in functions
+In chapter 2 we learned how to use built-in functions for operating on one or more column values. Examples included split() and explode(). These are imported from pyspark.sql.functions.
+
+6. The length function
+Another useful built-in is the length() function, which we will use to calculate the character length of string data. The length of character data includes the trailing spaces. Suppose we have a dataframe df containing a text column, 'sentence'. df.where length of 'sentence' equals zero gives the rows containing an empty sentence.
+
+7. Creating a custom function
+Spark has a rich set of highly optimized built-in column-based functions. When we cannot achieve what we want using a built-in, we can define a new column-based function. This is called a User Defined Function or, UDF.
+
+8. Importing the udf function
+To create a UDF we start by importing the function udf from pyspark.sql.functions.
+
+9. Creating a boolean UDF
+Suppose we have a dataframe called df containing a text column called textdata. Let's create a UDF called short_udf() that returns true when a column is less than ten characters long. We import the udf function from pyspark.sql.functions. We also need to import a type called BooleanType() from pyspark.sql.types. We will use this to tell Spark the type to be returned by our new UDF.
+
+10. Creating a boolean UDF
+Let's create a UDF. The first argument to the UDF is a function, denoted here by lambda x. The function takes a single argument, indicating that it operates on a single column. When the function is short, passing a lambda expression is preferred to using a named function, because a lambda expression is more efficient. We use our new UDF just as we would a built-in function. Here is an example of how its result might look.
+
+11. Important UDF return types
+UDF return types we'll use include string, float, and array.
+
+12. Creating an array UDF
+Let's create a UDF called 'in_udf' that removes the last word of a column containing an array of words.
+
+13. Creating an array UDF
+We import ArrayType and StringType. Then we define the UDF. The second argument to the udf() function specifies return type. Here it is an array of strings, using ArrayType(StringType).
+
+14. Sparse vector format
+We are going to create a feature set for a machine learning algorithm that uses a sparse vector format. The array we've been working with lists every element. This is called a dense format. A sparse vector is backed by two parallel arrays: indices and values. Only nonzero items are tallied. For example, Suppose we have a dense array of floats: [1.0, 0.0, 0.0, 3.0]. In sparse format this is (4, [0, 3], [1.0, 3.0]). The first element of the vector gives the size of the vector. The next element is an array of indices identifying the nonzero items in the input array. The third element of the vector gives the values of the items specified in the indices array.
+
+15. Working with vector data
+Finally, two other built-in functions are useful for arrays. The has_attribute() operation is a reliable way to determine that an object is a sparse vector. The numNonzeros operation is a fast way of determining that a vector is empty.
+--------------
+
+--------------
+
+--------------

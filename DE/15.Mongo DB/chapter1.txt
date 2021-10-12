@@ -22,8 +22,48 @@ Now, let's go over how to count documents in a collection, and how to find one t
 8. Count documents in a collection
 To count documents, use the "count_documents " collection method. Pass a filter document to limit what you count. In this case, I want an unfiltered total count, so I pass an empty document as the filter. Finally, you can fetch a document and infer the schema of the raw JSON data given by the Nobel Prize API. Use the find_one method, again with no filter, to grab a document from the collection.
 -----
+1. Finding documents
+In the last lesson, we learned about databases, collections, and documents. We also learned how data structures in MongoDB relate to those of JSON and Python. In this lesson, we will learn how to query a collection to find documents of interest.
 
+2. An example "laureates" document
+Here we have an example document in the laureates collection. Finding documents in MongoDB reminds me of the work of this particular laureate. The remarkable rays named after him are today called x-rays.
+
+3. Filters as (sub)documents
+To find documents satisfying some criteria, we express those criteria as a document. This filter document mirrors the structure of documents to match in the collection. Imagine a filter document as an x-ray image like the one on the right. This image is one of the first x-ray images ever recorded. Imagine you use it to filter by eye a collection of color photos of people's hands. You might keep ones with five fingers and a ring on the ring finger.
+
+4. The Walrus is Out
+Here's another way to think about filter documents. Hold a pair of pants up to a collection of mammals, one at a time. The pants fit a part of the structure of human beings, but not that of a walrus. Sorry, Wally.
+
+5. Simple filters
+Filter documents can be small. For example, there are 48 laureate documents with a value for the field gender equal to female. We can do the same for other fields, like country of death and city of birth. Also, we can merge criteria into a single filter document.
+
+6. Composing filters
+This filter document will have the same form as matching documents. In this case, the filter matches Marie Curie. She discovered the element polonium, named after her native land. Poland was under Russian rule at the time. She hoped that naming an element after it would publicize its lack of independence. Many immigrants won Nobel Prizes, but in what proportion? Later exercises in the course will explore this question.
+
+7. Query operators
+We've seen filters that match exact values in a document. What about satisfying other constraints? Query operators are like different ways to input values on a website form. Some values you select from options, like countries; some you select with a range slider. All operators on fields wrap around their corresponding values. You might operate a drop-down menu to select a country and a slider to pick a value in a range. Query operators in MongoDB work the same way. You place an operator in a filter document to wrap around a field and its acceptable values.
+
+8. Query operators
+For example, let's find documents where the field 'diedCountry' is either France or USA. We use the "in" operator to wrap around acceptable values. Operators in MongoDB have a dollar-sign prefix. Another example. To find documents where 'diedCountry' is not equal to a certain string, we can use the not-equal - or en ee - operator We can compose query operators for a field.
+
+9. Query operators
+For example, here we query for documents with 'diedCountry' greater than - or gee tee - the string 'Belgium'. At the same time, we query for 'diedCountry' less than or equal to - or el tee ee - the string 'USA'. How rude that MongoDB considers some countries to be greater than or less than others! Actually, this highlights MongoDB's loose requirements for comparisons. Comparison operators order values in lexicographic order, meaning alphabetical order for non-numeric values. This behavior is something to keep in mind when working with raw, unprocessed data.
+
+10. Let's Practice!
 ----
+1. Dot notation: reach into substructure
+In the last lesson, we learned how to construct and compose filter documents. We also learned about query operators to express criteria other than simple equality. In this lesson, we are going to learn how to query arrays and subdocuments using dot notation. Dot notation is how MongoDB allows us to query document substructure.
 
+2. A functional density
+Let's use the find_one method to retrieve one of my favorite laureates. Walter Kohn co-developed an important technique for computational chemistry. Notice that the "prizes" field is an array. In this case, the array has one element with data on Kohn's two-way share of the 1998 prize in chemistry. Note also that a laureate may have many affiliations for a prize. The affiliations field of each prize subdocument is an array. To fit text on this slide, I use parentheses to form multiline strings, and I show only part of the document. MongoDB allows you to query document substructure using dot notation. Here's a count of laureates. We reach into the prizes array to query on the affiliations field across prizes. From there, we reach again, this time to query on the name field across affiliations. We count laureates with at least one prize affiliation name as specified. The dot notation gives a full path to a field from the document root. I'm curious how many laureates had an affiliation in Berkeley, CA when they received a prize. Here's my query. Go Bears!
+
+3. No Country for Naipaul
+MongoDB allows you to specify and enforce a schema for a collection, but this is not required. For example, fields do not need to have the same type of value across documents in a collection. In the case of this laureate, there is an "empty" affiliation associated with his prize. Another accommodation in MongoDB is that of field presence. Even root-level fields don't need to be present in all documents. In this document, for example, the "bornCountry" field is absent. Using the "exists" operator, We can query for the existence, or non-existence of fields. Here, we see that many laureates documents do not have a "bornCountry" field.
+
+4. Multiple prizes
+Do all laureates have a prizes field? With the help of the exists operator, we see that, in fact, they do. But are any of those prizes fields empty arrays? I hope not. We can check using dot notation to access array elements. This borrows from JavaScript syntax. Here we see a filter document for the criteria that a value exists for the field "0" within the "prizes" field. You can reference an array element by its numerical index using dot notation. Thus, this expression counts documents that have a non-empty prizes array. We see, to our relief, that all laureate documents contain at least one prize. Are there laureates with more than one prize? Yes!
+
+5. Multiple-prize winners
+We see that Marie Curie is in this group, along with a few other people you may recognize.
 
 ----

@@ -1,3 +1,2 @@
-all file not book
-This is some slides (datacamp), books i used to learned
+There are some books, slides(datacamp, coursera,...) about AI, DE, ML, ...
 
