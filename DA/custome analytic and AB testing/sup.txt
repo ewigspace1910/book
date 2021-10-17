@@ -1,0 +1,91 @@
+1. Identifying and understanding KPIs
+Great work on the exercises! Now let’s dive into KPIs!
+
+2. Example: meditation app
+The example we will use throughout this course is that of a mobile app that offers meditation services for a paid subscription as well as one-off in-app purchases. The app is growing quickly and we are motivated to maintain a strong free-trial to paying user conversion rate. Additionally, we want to maintain strength in a variety of other business areas as we will see. While this is a very specific example, we can imagine interchanging users, meditation-app, and purchases with other nouns and KPIs, and the same mathematical techniques would still apply.
+
+3. Dataset 1: User demographics
+We have two data-sets related to our app. First is a set of user demographics, tied to a unique user id number. Let's import this file, customer_demographics dot csv with the Pandas dot read_csv() method. As we can see, it includes a broad set of demographic information.
+
+4. Dataset 2: User actions
+The second is a set of user actions called customer_subscriptions dot csv, containing the date the trial period ended, the date of purchase if they purchased, and the price they paid upon subscribing (in cents).
+
+5. KPI: Conversion Rate
+For now, let’s consider the KPI of conversion rate. We will consider a variety of others throughout the course. One question in defining our KPI is over what interval should we consider the conversion rate? The conversion immediately after lapse? one week after? One month? One way to decide this is to see the generalizability of these statistics across different demographic groups. Stability in this way is desired so we don't need custom KPIs for each breakdown. A second is to see if one is more correlated with important factors like retention or spending than the others.
+
+6. Joining the demographic and subscription data
+To begin answering these questions, we must match our demographics data to our subscription data so that we can explore specific relationships. We will do this with the pandas merge() method. This performs the equivalent of a SQL join on two dataFrames. There are two ways to call this method, either as a method of pandas or as a method of a dataFrame object. We will only consider the latter case here but they are equivalent.
+
+7. Merging mechanics
+As in SQL we have a left and right table. We call the merge method on one of our dataFrames, and this is considered the left dataFrame. In this case our demographics dataset. Next, we specify the right dataFrame as our first argument, in this case the subscription data. Then, we specify the `how` argument. This can be one of four values: inner, outer, left, or right, each analogous to a sql join. Understanding SQL is not important for this course, it suffices to say that these arguments specify the behavior of which rows are returned in the final output. For our purpose we will use an inner join which returns all rows that are matched between the two dataFrames. The next argument is the `on` argument. This is a list of fields, that appear in both dataFrames, which we want to match the rows on. There is a way to specify this argument when the columns differ in name, but we will not cover that here. We will match on the `uid`. As we can see in the output, the rows are associated with a corresponding row from the other dataFrame.
+
+8. Next steps
+Our next step is to aggregate our newly combined data set and to calculate the potential KPIs we are interested in.
+
+-----------
+
+2. KPIs
+We want to determine which conversion rate metric is the most appropriate. Note that most companies will have many KPIs each serving a different purpose, and that here we are only working through one of these cases.
+
+3. Methods for calculating KPIs
+To calculate our potential KPIs and measure performance across different groups we will use the `groupby()` and `agg()` pandas methods. This lesson will focus on these methods and the next lesson will more fully explore applying them in practice.
+
+4. Grouping Data: .groupby()
+We can call the `groupby()` method on a dataFrame to specify groups to aggregate over. Here we will use it on our combined demographics and purchase data dataset. The primary argument is `by` to which we provide a list of dataFrame fields that we want to group on. Here, the potentially relevant fields are "country", "device", "gender", and "age". Let us group by "country" and "device". The next relevant argument is `axis` which specifies whether we are grouping by row or column values. The default value, "0", groups by columns, which is what we will do here, and for the remainder of the course. The other argument of interest is `as_index`. By default, this argument is “True”, which means that the grouped by fields become indices. We want to set this to "False" so that this does not happen. This returns a dataFrameGroupedBy object. The next step is to aggregate over these groups.
+
+5. Aggregating data - mean price paid per group
+The easiest way to do this is to call an aggregation method on the dataFrameGroupedBy object. Let’s call `mean` on the `price` value of our dataFrame. The output is the mean amount paid per subscription across all purchasing users. In this case rather than being calculated over the entire set of data, it is calculated over each-device country combination.
+
+6. Aggregate data: .agg()
+Any built in function similar to mean can be called on a dataFrameGroupedBy object. However more flexible options exist through the dot agg() method The easiest way to use this method is to pass a function like mean to it. As we can see, this has the same result as when we called mean directly.
+
+7. .agg(): multiple functions
+It can be further expanded by passing in a list of functions, like mean and median, and calculating both.
+
+8. .agg(): multiple functions, multiple columns
+The true flexibility comes from a third type of argument. We can pass in a dictionary where the keys are column names within our dataset, like "purchase" or "age” and the values are a list of functions to be applied over those columns; still broken out by groups. Let us find the mean, minimum, and maximum value of each of purchase and age, as an example.
+
+9. .agg(): custom functions
+Another great flexibility of the agg method is that we can also pass our own functions in to aggregate over, not only built in ones. Here is a function that finds the truncated mean value, that is it removes the top and bottom ten-percent of values before calculating the average. We can aggregate our age over the country and device groupings with this function. The only distinction is that when inputting this function, we do not want its name in quotations as we did for the built in functions.
+
+-----------------------
+
+
+1. Introduction to A/B testing
+Great job on those exercises! Now we will transition our discussion to the topic of A/B testing. In the past two chapters we looked at indirect ways of observing user behavior. Now we will explore a set of tools that allows you to truly uncover causal relationships in user actions.
+
+2. Overview
+We will start off with an introduction to A/B testing, and then move to an in depth overview of the knowledge and skills you will use to design, understand, and analyze an A/B test.
+
+3. A/B test: an experiment where you...
+An A/B test is an experiment in which you test two different values of the same variable against one another to determine which one is “better” by evaluating their performance among two randomly assigned groups of real users.
+
+4. Control and treatment groups
+Often, we will be testing the current state, against a variant, in which case our two variables are called the control and treatment respectively.
+
+5. A/B Test - improving our app paywall
+Consider a scenario where the initial subscription paywall in our meditation app says: “I hope you enjoyed your free-trial, please consider subscribing” and we want to see whether, the phrase “Your free-trial has ended, don’t miss out, subscribe today!” will do a better job converting users.
+
+6. A/B testing process
+To test this with an A/B test, we randomly selecting a subset of users and show them the new phrase, and monitor the conversion behavior of this group compared to the other users. We can then observe whether one group converts at a higher rate than the other.
+
+7. The importance of randomness
+The key to the above is randomly assigning the users. By randomly assigning the users, we ensure that no other confounding variable is likely to explain the change in performance we observe. If instead we use some specific assignment criteria, then some aspect of that may explain the difference in our result and we cannot say with much certainty that it was our treatment.
+
+8. A/B testing flexibility
+A/B testing is a powerful and flexible tool. You could apply it to improve sales or interactions within an app or website, or in a variety of other contexts form medicine (called randomized controlled trials in this case) to optimizing efficiency on an assembly line.
+
+9. Good problems for A/B testing
+With that said it is important to be aware of the cases that are and are not conducive to improvement through A/B testing. While no general rule exists, there are some things worth considering. Good problems for A/B testing are those where users are being impacted in an individual way. Questions like which color will make the user more likely to press a button or which price is better are ripe for A/B testing.
+
+10. Bad problems for A/B testing
+Bad problems for A/B testing are those in which there are network effects of users, that is the change you want to test impacts or is directly related to an area where users are interacting with one another. An example of this is the matching algorithm for a dating app. It is hard to untangle the impact of the change if users are matching with people outside of the test group. There are many nuances to this, but it is worth thinking through how directly you can connect the change made in the A/B test to the change in behaviors. If you can't do this well, perhaps consider other methods.
+
+11. Let's practice!
+This should start you thinking variety of cases where A/B testing can be applied. We will begin diving into the details of this and the techniques used to execute one in the next lesson. Good luck on the exercises!
+
+------------
+
+
+
+------------
