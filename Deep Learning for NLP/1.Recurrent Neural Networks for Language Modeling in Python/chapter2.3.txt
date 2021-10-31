@@ -1,0 +1,18 @@
+Got It!
+1. Sentiment classification revisited
+You learned about different RNN architectures such as GRU and LSTM, and also about the embedding layer. Those are the first steps to tune a RNN model and improve performance. Let's put it all together to form a better model.
+
+2. Previous results
+In the first chapter of this course, you implemented a simple RNN model to classify sentiment on the IMDB dataset. But the performance was really poor and achieved less than 50% accuracy.
+
+3. Improving the model
+You learned some approaches to improve the model's performance. In summary, we can: Add the embedding layer, increase the number of layers, tune the parameters, increase the vocabulary size, accept longer sentences with more memory cells.
+
+4. Avoiding overfitting
+RNN models can overfit even with a few epochs like 10. If the model overfits, we can test using different batch sizes because RNN models are very sensitive to them since the batch size determines the number of updates in the weights that will be performed Also, adding dropout layers and using the parameters dropout recurrent dropout can add extra noise to the training data, forcing the model to be more general and reduce overfitting. The parameter dropout on RNN layers removes a percentage of the input data, while the recurrent dropout removes a percentage of the memory cell
+
+5. Extra: Convolution Layer
+Despite not being in the scope of this course, the mix of convolution and max pooling layers with RNN cells has been used recently and achieved state of the art results in NLP problems. In short, the convolution layer has filters that determines the output dimension, kernel size which is the window size for convolution and padding which determines if the input should be padded (add zeros around the matrix) or not. The max pooling contains the parameter pool size that determines the window to look for the max value. For more details on convolution and max pooling layers, search for convolution courses on DataCamp.
+
+6. One example model
+We created a model after some iterations of tests and parameter tuning to obtain high accuracy on the sentiment classification task. The model architecture is Using the embedding layer in the first layer of the model Add a dense layer add one LSTM layer Add one GRU layer Add two other dense layers Add another dense with one unit as output layer The dropout layers are to avoid overfitting by adding extra noise to the data (by removing some of the inputs).

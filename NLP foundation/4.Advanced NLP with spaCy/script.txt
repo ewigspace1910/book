@@ -1,0 +1,216 @@
+chapter1
+2. What are statistical models?
+Some of the most interesting things you can analyze are context-specific: for example, whether a word is a verb or whether a span of text is a person name. Statistical models enable spaCy to make predictions in context. This usually includes part-of speech tags, syntactic dependencies and named entities. Models are trained on large datasets of labeled example texts. They can be updated with more examples to fine-tune their predictions – for example, to perform better on your specific data.
+
+3. Model Packages
+spaCy provides a number of pre-trained model packages you can download. For example, the "en_core_web_sm" package is a small English model that supports all core capabilities and is trained on web text. The spacy dot load method loads a model package by name and returns an nlp object. The package provides the binary weights that enable spaCy to make predictions. It also includes the vocabulary, and meta information to tell spaCy which language class to use and how to configure the processing pipeline.
+
+4. Predicting Part-of-speech Tags
+Let's take a look at the model's predictions. In this example, we're using spaCy to predict part-of-speech tags, the word types in context. First, we load the small English model and receive an nlp object. Next, we're processing the text "She ate the pizza". For each token in the Doc, we can print the text and the "pos underscore" attribute, the predicted part-of-speech tag. In spaCy, attributes that return strings usually end with an underscore – attributes without the underscore return an ID. Here, the model correctly predicted "ate" as a verb and "pizza" as a noun.
+
+5. Predicting Syntactic Dependencies
+In addition to the part-of-speech tags, we can also predict how the words are related. For example, whether a word is the subject of the sentence or an object. The "dep underscore" attribute returns the predicted dependency label. The head attribute returns the syntactic head token. You can also think of it as the parent token this word is attached to.
+
+6. Dependency label scheme
+To describe syntactic dependencies, spaCy uses a standardized label scheme. Here's an example of some common labels: The pronoun "She" is a nominal subject attached to the verb – in this case, to "ate". The noun "pizza" is a direct object attached to the verb "ate". It is eaten by the subject, "she". The determiner "the", also known as an article, is attached to the noun "pizza".
+
+7. Predicting Named Entities
+Named entities are "real world objects" that are assigned a name – for example, a person, an organization or a country. The doc dot ents property lets you access the named entities predicted by the model. It returns an iterator of Span objects, so we can print the entity text and the entity label using the "label underscore" attribute. In this case, the model is correctly predicting "Apple" as an organization, "U.K." as a geopolitical entity and "$1 billion" as money.
+
+8. Tip: the explain method
+A quick tip: To get definitions for the most common tags and labels, you can use the spacy dot explain helper function. For example, "GPE" for geopolitical entity isn't exactly intuitive – but spacy dot explain can tell you that it refers to countries, cities and states. The same works for part-of-speech tags and dependency labels.
+
+
+2. Why not just regular expressions?
+Compared to regular expressions, the matcher works with Doc and Token objects instead of only strings. It's also more flexible: you can search for texts but also other lexical attributes. You can even write rules that use the model's predictions. For example, find the word "duck" only if it's a verb, not a noun.
+
+3. Match patterns
+Match patterns are lists of dictionaries. Each dictionary describes one token. The keys are the names of token attributes, mapped to their expected values. In this example, we're looking for two tokens with the text "iPhone" and "X". We can also match on other token attributes. Here, we're looking for two tokens whose lowercase forms equal "iphone" and "x". We can even write patterns using attributes predicted by the model. Here, we're matching a token with the lemma "buy", plus a noun. The lemma is the base form, so this pattern would match phrases like "buying milk" or "bought flowers".
+
+4. Using the Matcher (1)
+To use a pattern, we first import the matcher from spacy dot matcher. We also load a model and create the nlp object. The matcher is initialized with the shared vocabulary, nlp dot vocab. You'll learn more about this later – for now, just remember to always pass it in. The matcher dot add method lets you add a pattern. The first argument is a unique ID to identify which pattern was matched. The second argument is an optional callback. We don't need one here, so we set it to None. The third argument is the pattern. To match the pattern on a text, we can call the matcher on any doc. This will return the matches.
+
+5. Using the Matcher (2)
+When you call the matcher on a doc, it returns a list of tuples. Each tuple consists of three values: the match ID, the start index and the end index of the matched span. This means we can iterate over the matches and create a Span object: a slice of the doc at the start and end index.
+
+6. Matching lexical attributes
+Here's an example of a more complex pattern using lexical attributes. We're looking for five tokens: A token consisting of only digits. Three case-insensitive tokens for "fifa", "world" and "cup". And a token that consists of punctuation. The pattern matches the tokens "2018 FIFA World Cup:".
+
+7. Matching other token attributes
+In this example, we're looking for two tokens: A verb with the lemma "love", followed by a noun. This pattern will match "loved dogs" and "love cats".
+
+8. Using operators and quantifiers (1)
+Operators and quantifiers let you define how often a token should be matched. They can be added using the "OP" key. Here, the "?" operator makes the determiner token optional, so it will match a token with the lemma "buy", an optional article and a noun.
+
+9. Using operators and quantifiers (2)
+"OP" can have one of four values: An "!" negates the token, so it's matched 0 times. A "?" makes the token optional, and matches it 0 or 1 times. A "+" matches a token 1 or more times. And finally, an "*" matches 0 or more times. Operators can make your patterns a lot more powerful, but they also add more complexity – so use them wisely.
+######################
+chapter2
+
+Got It!
+1. Data Structures: Vocab, Lexemes and StringStore
+Welcome back! Now that you've had some real experience using spaCy's objects, it's time for you to learn more about what's actually going on under spaCy's hood. In this video, we'll take a look at the shared vocabulary and how spaCy deals with strings.
+
+2. Shared vocab and string store (1)
+spaCy stores all shared data in a vocabulary, the Vocab. This includes words, but also the labels schemes for tags and entities. To save memory, all strings are encoded to hash IDs. If a word occurs more than once, we don't need to save it every time. Instead, spaCy uses a hash function to generate an ID and stores the string only once in the string store. The string store is available as nlp dot vocab dot strings. It's a lookup table that works in both directions. You can look up a string and get its hash, and look up a hash to get its string value. Internally, spaCy only communicates in hash IDs. Hash IDs can't be reversed, though. If a word in not in the vocabulary, there's no way to get its string. That's why we always need to pass around the shared vocab.
+
+3. Shared vocab and string store (2)
+To get the hash for a string, we can look it up in nlp dot vocab dot strings. To get the string representation of a hash, we can look up the hash. A Doc object also exposes its vocab and strings.
+
+4. Lexemes: entries in the vocabulary
+Lexemes are context-independent entries in the vocabulary. You can get a lexeme by looking up a string or a hash ID in the vocab. Lexemes expose attributes, just like tokens. They hold context-independent information about a word, like the text, or whether the the word consists of alphanumeric characters. Lexemes don't have part-of-speech tags, dependencies or entity labels. Those depend on the context.
+
+5. Vocab, hashes and lexemes
+Here's an example. The Doc contains words in context – in this case, the tokens "I", "love" and "coffee" with their part-of-speech tags and dependencies. Each token refers to a lexeme, which knows the word's hash ID. To get the string representation of the word, spaCy looks up the hash in the string store.
+
+1. Data Structures: Doc, Span and Token
+Now that you know all about the vocabulary and string store, we can take a look at the most important data structure: the Doc, and its views Token and Span.
+
+2. The Doc object
+The Doc is one of the central data structures in spaCy. It's created automatically when you process a text with the nlp object. But you can also instantiate the class manually. After creating the nlp object, we can import the Doc class from spacy dot tokens. Here we're creating a Doc from three words. The spaces are a list of boolean values indicating whether the word is followed by a space. Every token includes that information – even the last one! The Doc class takes three arguments: the shared vocab, the words and the spaces.
+
+3. The Span object (1)
+A Span is a slice of a Doc consisting of one or more tokens. The Span takes at least three arguments: the doc it refers to, and the start and end index of the span. Remember that the end index is exclusive!
+
+4. The Span object (2)
+To create a Span manually, we can also import the class from spacy dot tokens. We can then instantiate it with the doc and the span's start and end index. To add an entity label to the span, we first need to look up the string in the string store. We can then provide it to the span as the label argument. The doc dot ents are writable, so we can add entities manually by overwriting it with a list of spans.
+
+5. Best practices
+A few tips and tricks before we get started: The Doc and Span are very powerful and optimized for performance. They give you access to all references and relationships of the words and sentences. If your application needs to output strings, make sure to convert the doc as late as possible. If you do it too early, you'll lose all relationships between the tokens. To keep things consistent, try to use built-in token attributes wherever possible. For example, token dot i for the token index. Also, don't forget to always pass in the shared vocab!
+
+1. Word vectors and semantic similarity
+In this video, you'll learn how to use spaCy to predict how similar documents, spans or tokens are to each other. You'll also learn about how to use word vectors and how to take advantage of them in your NLP application.
+
+2. Comparing semantic similarity
+spaCy can compare two objects and predict how similar they are – for example, documents, spans or single tokens. The Doc, Token and Span objects have a dot similarity method that takes another object and returns a floating point number between 0 and 1, indicating how similar they are. One thing that's very important: In order to use similarity, you need a larger spaCy model that has word vectors included. For example, the medium or large English model – but not the small one. So if you want to use vectors, always go with a model that ends in "md" or "lg". You can find more details on this in the models documentation.
+
+3. Similarity examples (1)
+Here's an example. Let's say we want to find out whether two documents are similar. First, we load the medium English model, "en_core_web_md". We can then create two doc objects and use the first doc's similarity method to compare it to the second. Here, a fairly high similarity score of 0-point-86 is predicted for "I like fast food" and "I like pizza". The same works for tokens. According to the word vectors, the tokens "pizza" and "pasta" are kind of similar, and receive a score of 0-point-7.
+
+4. Similarity examples (2)
+You can also use the similarity methods to compare different types of objects. For example, a document and a token. Here, the similarity score is pretty low and the two objects are considered fairly dissimilar. Here's another example comparing a span – "pizza and burgers" – to a document. The score returned here is 0-point-61, so it's determined kind of similar.
+
+5. How does spaCy predict similarity?
+But how does spaCy do this under the hood? Similarity is determined using word vectors, multi-dimensional representations of meanings of words. You might have heard of Word2Vec, which is an algorithm that's often used to train word vectors from raw text. Vectors can be added to spaCy's statistical models. By default, the similarity returned by spaCy is the cosine similarity between two vectors – but this can be adjusted if necessary. Vectors for objects consisting of several tokens, like the Doc and Span, default to the average of their token vectors. That's also why you usually get more value out of shorter phrases with fewer irrelevant words.
+
+6. Word vectors in spaCy
+To give you an idea of what those vectors look like, here's an example. First, we load the medium model again, which ships with word vectors. Next, we can process a text and look up a token's vector using the dot vector attribute. The result is a 300-dimensional vector of the word "banana".
+
+7. Similarity depends on the application context
+Predicting similarity can be useful for many types of applications. For example, to recommend a user similar texts based on the ones they have read. It can also be helpful to flag duplicate content, like posts on an online platform. However, it's important to keep in mind that there's no objective definition of what's similar and what isn't. It always depends on the context and what your application needs to do. Here's an example: spaCy's default word vectors assign a very high similarity score to "I like cats" and "I hate cats". This makes sense, because both texts express sentiment about cats. But in a different application context, you might want to consider the phrases as very dissimilar, because they talk about opposite sentiments.
+
+1. Combining models and rules
+Combining statistical models with rule-based systems is one of the most powerful tricks you should have in your NLP toolbox. In this video, we'll take a look at how to do it with spaCy.
+
+2. Statistical predictions vs. rules
+Statistical models are useful if your application needs to be able to generalize based on a few examples. For instance, detecting product or person names usually benefits from a statistical model. Instead of providing a list of all person names ever, your application will be able to predict whether a span of tokens is a person name. Similarly, you can predict dependency labels to find subject/object relationships. To do this, you would use spaCy's entity recognizer, dependency parser or part-of-speech tagger.
+
+3. Statistical predictions vs. rules
+Rule-based approaches on the other hand come in handy if there's a more or less finite number of instances you want to find. For example, all countries or cities of the world, drug names or even dog breeds. In spaCy, you can achieve this with custom tokenization rules, as well as the matcher and phrase matcher.
+
+4. Recap: Rule-based Matching
+In the last chapter, you learned how to use spaCy's rule-based matcher to find complex patterns in your texts. Here's a quick recap. The matcher is initialized with the shared vocabulary – usually nlp dot vocab. Patterns are lists of dictionaries, and each dictionary describes one token and its attributes. Patterns can be added to the matcher using the matcher dot add method. Operators let you specify how often to match a token. For example, "+" will match one or more times. Calling the matcher on a doc object will return a list of the matches. Each match is a tuple consisting of an ID, and the start and end token index in the document.
+
+5. Adding statistical predictions
+Here's an example of a matcher rule for "golden retriever". If we iterate over the matches returned by the matcher, we can get the match ID and the start and end index of the matched span. We can then find out more about it. Span objects give us access to the original document and all other token attributes and linguistic features predicted by the model. For example, we can get the span's root token. If the span consists of more than one token, this will be the token that decides the category of the phrase. For example, the root of "Golden Retriever" is "Retriever". We can also find the head token of the root. This is the syntactic "parent" that governs the phrase – in this case, the verb "have". Finally, we can look at the previous token and its attributes. In this case, it's a determiner, the article "a".
+
+6. Efficient phrase matching (1)
+The phrase matcher is another helpful tool to find sequences of words in your data. It performs a keyword search on the document, but instead of only finding strings, it gives you direct access to the tokens in context. It takes Doc objects as patterns. It's also really fast. This makes it very useful for matching large dictionaries and word lists on large volumes of text.
+
+7. Efficient phrase matching (2)
+Here's an example. The phrase matcher can be imported from spacy dot matcher and follows the same API as the regular matcher. Instead of a list of dictionaries, we pass in a Doc object as the pattern. We can then iterate over the matches in the text, which gives us the match ID, and the start and end of the match. This lets us create a Span object for the matched tokens "Golden Retriever" to analyze it in context.
+
+8. Let's practice!
+######################
+chapter3
+1. Processing pipelines
+Welcome back! This chapter is dedicated to processing pipelines: a series of functions applied to a Doc to add attributes like part-of-speech tags, dependency labels or named entities. In this video, you'll learn about the pipeline components provided by spaCy, and what happens behind the scenes when you call nlp on a string of text.
+
+2. What happens when you call nlp?
+You've already written this plenty of times by now: pass a string of text to the nlp object, and receive a Doc object. But what does the nlp object actually do? First, the tokenizer is applied to turn the string of text into a Doc object. Next, a series of pipeline components is applied to the Doc in order. In this case, the tagger, then the parser, then the entity recognizer. Finally, the processed Doc is returned, so you can work with it.
+
+3. Built-in pipeline components
+spaCy ships with the following built-in pipeline components. The part-of-speech tagger sets the token dot tag attribute. The depdendency parser adds the token dot dep and token dot head attributes and is also responsible for detecting sentences and base noun phrases, also known as noun chunks. The named entity recognizer adds the detected entities to the doc dot ents property. It also sets entity type attributes on the tokens that indicate if a token is part of an entity or not. Finally, the text classifier sets category labels that apply to the whole text, and adds them to the doc dot cats property. Because text categories are always very specific, the text classifier is not included in any of the pre-trained models by default. But you can use it to train your own system.
+
+4. Under the hood
+All models you can load into spaCy include several files and a meta JSON. The meta defines things like the language and pipeline. This tells spaCy which components to instantiate. The built-in components that make predictions also need binary data. The data is included in the model package and loaded into the component when you load the model.
+
+5. Pipeline attributes
+To see the names of the pipeline components present in the current nlp object, you can use the nlp dot pipe names attribute. For a list of component name and component function tuples, you can use the nlp dot pipeline attribute. The component functions are the functions applied to the Doc to process it and set attributes – for example, part-of-speech tags or named entities.
+-----
+1. Custom pipeline components
+Now that you know how spaCy's pipeline works, let's take a look at another very powerful feature: custom pipeline components. Custom pipeline components let you add your own function to the spaCy pipeline that is executed when you call the nlp object on a text – for example, to modify the Doc and add more data to it.
+
+2. Why custom components?
+After the text is tokenized and a Doc object has been created, pipeline components are applied in order. spaCy supports a range of built-in components, but also lets you define your own. Custom components are executed automatically when you call the nlp object on a text. They're especially useful for adding your own custom metadata to documents and tokens. You can also use them to update built-in attributes, like the named entity spans.
+
+3. Anatomy of a component (1)
+Fundamentally, a pipeline component is a function or callable that takes a doc, modifies it and returns it, so it can be processed by the next component in the pipeline. Components can be added to the pipeline using the nlp dot add pipe method. The method takes at least one argument: the component function.
+
+4. Anatomy of a component (2)
+To specify *where* to add the component in the pipeline, you can use the following keyword arguments: Setting last to True will add the component last in the pipeline. This is the default behavior. Setting first to True will add the component first in the pipeline, right after the tokenizer. The "before" and "after" arguments let you define the name of an existing component to add the new component before or after. For example, before equals "ner" will add it before the named entity recognizer. The other component to add the new component before or after needs to exist, though – otherwise, spaCy will raise an error.
+
+5. Example: a simple component (1)
+Here's an example of a simple pipeline component. We start off with the small English model. We then define the component – a function that takes a Doc object and returns it. Let's do something simple and print the length of the Doc that passes through the pipeline. Don't forget to return the Doc so it can be processed by the next component in the pipeline! The Doc created by the tokenizer is passed through all components, so it's important that they all return the modified doc. We can now add the component to the pipeline. Let's add it to the very beginning right after the tokenizer by setting first equals True. When we print the pipeline component names, the custom component now shows up at the start. This means it will be applied first when we process a Doc.
+-----
+1. Scaling and performance
+In this video, I'll show you a few tips and tricks to make your spaCy pipelines run as fast as possible, and process large volumes of text efficiently.
+
+2. Processing large volumes of text
+If you need to process a lot of texts and create a lot of Doc objects in a row, the nlp dot pipe method can speed this up significantly. It processes the texts as a stream and yields Doc objects. It is much faster than just calling nlp on each text, because it batches up the texts. nlp dot pipe is a generator that yields Doc objects, so in order to get a list of Docs, remember to call the list method around it.
+
+3. Passing in context (1)
+nlp dot pipe also supports passing in tuples of text / context if you set "as tuples" to True. The method will then yield doc / context tuples. This is useful for passing in additional metadata, like an ID associated with the text, or a page number.
+
+4. Passing in context (2)
+You can even add the context meta data to custom attributes. In this example, we're registering two extensions, "id" and "page number", which default to None. After processing the text and passing through the context, we can overwrite the doc extensions with our context metadata.
+
+5. Using only the tokenizer
+Another common scenario: Sometimes you already have a model loaded to do other processing, but you only need the tokenizer for one particular text. Running the whole pipeline is unnecessarily slow, because you'll be getting a bunch of predictions from the model that you don't need.
+
+6. Using only the tokenizer (2)
+If you only need a tokenized Doc object, you can use the nlp dot make doc method instead, which takes a text and returns a Doc. This is also how spaCy does it behind the scenes: nlp dot make doc turns the text into a Doc before the pipeline components are called.
+
+7. Disabling pipeline components
+spaCy also allows you to temporarily disable pipeline components using the nlp dot disable pipes context manager. It takes a variable number of arguments, the string names of the pipeline components to disable. For example, if you only want to use the entity recognizer to process a document, you can temporarily disable the tagger and parser. After the with block, the disabled pipeline components are automatically restored. In the with block, spaCy will only run the remaining components.
+
+
+
+########################
+chapter4
+
+
+Got It!
+1. Training and updating models
+Welcome to the final chapter, which is about one of the most exciting aspects of modern NLP: training your own models! In this video, you'll learn about training and updating spaCy's neural network models and the data you need for it – focusing specifically on the named entity recognizer.
+
+2. Why updating the model?
+Before we get starting with explaining how, it's worth taking a second to ask ourselves: Why would we want to update the model with our own examples? Why can't we just rely on pre-trained models? Statistical models make predictions based on the examples they were trained on. You can usually make the model more accurate by showing it examples from your domain. You often also want to predict categories specific to your problem, so the model needs to learn about them. This is essential for text classification, very useful for entity recognition and a little less critical for tagging and parsing.
+
+3. How training works (1)
+spaCy supports updating existing models with more examples, and training new models. If we're not starting with a pre-trained model, we first initialize the weights randomly. Next, we call nlp dot update, which predicts a batch of examples with the current weights. The model then checks the predictions against the correct answers, and decides how to change the weights to achieve better predictions next time. Finally, we make a small correction to the current weights and move on to the next batch of examples. We continue calling nlp dot update for each batch of examples in the data.
+
+4. How training works (2)
+Here's an illustration showing the process. The training data are the examples we want to update the model with. The text should be a sentence, paragraph or longer document. For the best results, it should be similar to what the model will see at runtime. The label is what we want the model to predict. This can be a text category, or an entity span and its type. The gradient is how we should change the model to reduce the current error. It's computed when we compare the predicted label to the true label. After training, we can then save out an updated model and use it in our application.
+
+5. Example: Training the entity recognizer
+Let's look at an example for a specific component: the entity recognizer. The entity recognizer takes a document and predicts phrases and their labels. This means that the training data needs to include texts, the entities they contain, and the entity labels. Entities can't overlap, so each token can only be part of one entity. Because the entity recognizer predicts entities in context, it also needs to be trained on entities and their surrounding context. The easiest way to do this is to show the model a text and a list of character offsets. For example, "iPhone X" is a gadget, starts at character 0 and ends at character 8. It's also very important for the model to learn words that aren't entities. In this case, the list of span annotations will be empty. Our goal is to teach the model to recognize new entities in similar contexts, even if they weren't in the training data.
+
+6. The training data
+The training data tells the model what we want it to predict. This could be texts and named entities we want to recognize, or tokens and their correct part-of-speech tags. To update an existing model, we can start with a few hundred to a few thousand examples. To train a new category we may need up to a million. spaCy's pre-trained English models for instance were trained on 2 million words labelled with part-of-speech tags, dependencies and named entities. Training data is usually created by humans who assign labels to texts. This is a lot of work, but can be semi-automated – for example, using spaCy's Matcher.
+
+
+1. Best practices for training spaCy models
+When you start running your own experiments, you might find that a lot of things just don't work the way you want them to. And that's okay. Training models is an iterative process, and you have to try different things until you find out what works best. In this video, I'll be sharing some best practices and things to keep in mind when training your own models. Let's take a look at some of the problems you may come across.
+
+2. Problem 1: Models can "forget" things
+Statistical models can learn lots of things – but it doesn't mean that they won't unlearn them. If you're updating an existing model with new data, especially new labels, it can overfit and adjust *too much* to the new examples. For instance, if you're only updating it with examples of "website", it may "forget" other labels it previously predicted correctly – like "person". This is also known as the catastrophic forgetting problem.
+
+3. Solution 1: Mix in previously correct predictions
+To prevent this, make sure to always mix in examples of what the model previously got correct. If you're training a new category "website", also include examples of "person". spaCy can help you with this. You can create those additional examples by running the existing model over data and extracting the entity spans you care about. You can then mix those examples in with your existing data and update the model with annotations of all labels.
+
+4. Problem 2: Models can't learn everything
+Another common problem is that your model just won't learn what you want it to. spaCy's models make predictions based on the local context – for example, for named entities, the surrounding words are most important. If the decision is difficult to make based on the context, the model can struggle to learn it. The label scheme also needs to be consistent and not too specific. For example, it may be very difficult to teach a model to predict whether something is adult clothing or children's clothing based on the context. However, just predicting the label "clothing" may work better.
+
+5. Solution 2: Plan your label scheme carefully
+Before you start training and updating models, it's worth taking a step back and planning your label scheme. Try to pick categories that are reflected in the local context and make them more generic if possible. You can always add a rule-based system later to go from generic to specific. Generic categories like "clothing" or "band" are both easier to label and easier to learn.

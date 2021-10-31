@@ -1,0 +1,352 @@
+
+Got It!
+1. What is streaming and why does it matter?
+Hello hello hello! Welcome to Streaming Data with Amazon Kinesis and AWS Lambda! My name is Maksim Pecherskiy. In this class, we're taking a step up from AWS basics and working with real-time data. We will dive into these concepts using (almost) real-life examples from my work in City government. Ready? Let's stream away!
+
+2. Batch vs stream
+There are two main ways of working with data - batch or stream. Neither is better or worse - they're just different tools for different jobs. A data engineer understands the business need and finds the right solution.
+
+3. Batch vs stream
+They key difference between batch and stream architectures is when you need to use the data. Batch is excellent for larger data and complex analysis, but the data can be a bit older - hours or days. Making a daily sales report, projecting next month's performance, or finding customers at risk of leaving are examples. Streaming is better for simpler analysis on each record or a fairly short time window. The data moves fast - seconds or miliseconds. Cases like fraud detection, monitoring wind turbines or sending alerts in real-time are a fit.
+
+4. Cody and the fleet
+We will be helping Cody, the Sustainability Manager for the City of San Diego. As the city's Data Engineer, you will be helping Cody decrease emissions and accidents using the internet of things or IOT. She wants to put a sensor in each vehicle that will transmit emissions, time and speed for that vehicle. This is known as vehicle telematics, a common streaming data use case.
+
+5. Telematics streaming
+You will use Amazon Kinesis for ingesting data from vehicle on-board devices. Next, you will combine it with AWS Lambda Functions for processing that data. You will also use S3, IAM and SNS from the previous class. This might look new, scary, and complicated. It looks to everyone that way at first. But as we dive into these tools, you will get much more comfortable.
+
+6. AWS Kinesis
+Let's dive into Kinesis. Kinesis has Data Firehose, Data Streams and Data Analytics as sub-services. You'll be combining these to solve streaming data use cases. Let's start with Firehose.
+
+7. Data Firehose
+The key component of Firehose is the Firehose Delivery Stream.
+
+8. Delivery streams
+Producers, like city vehicles, generate data.
+
+9. Delivery streams
+They write it to the Firehose Delivery Stream using boto3 client's .put_record() method (we will learn this in the next lesson).
+
+10. Delivery streams
+Next, the Firehose delivery stream delivers this data to a destination for storage - like S3, Redshift, or Elasticsearch. Let's kick the tires.
+
+11. Creating a Firehose client
+We use boto3 to interact with Firehose. We call boto3's .client() method, passing 'firehose' as the argument. We supply the AWS access_key_id and aws_secret_access_key. We will use 'us-east-1' region. These credentials are the same we created in the "Intro to Boto" class. More on permissions in the next lesson.
+
+12. Working with delivery streams
+Your coworker left some streams in the AWS account after she left to another job. Let's list them by calling .list_delivery_streams() method of the firehose client. A list of streams is available under the response object's DeliveryStreamNames key.
+
+13. Delete streams
+Let's delete the these old streams. We iterate over each stream_name from .list_delivery_streams(), and call the .delete_delivery_stream() method with the stream_name passed to the DeliveryStreamName argument. Now you have a clean slate for creating new streams.
+
+-----------------
+
+Got It!
+1. Getting ready for the first stream
+Hola! Welcome to Lesson 2! Last lesson we learned streaming vs batch and managing streams. In this lesson, we'll get to make our first one! Let's go!
+
+2. End goal
+Until the end of the chapter, we'll work on a simple data ingestion system.
+
+3. End goal
+Vehicle sensors
+
+4. End goal
+will write vehicle speed information and other telemetry to a Firehose delivery stream
+
+5. End goal
+which will deliver data to an S3 bucket. Let's set it up!
+
+6. dcUser
+In the boto3 course, we used dcUser's AWS key and secret.
+
+7. dcUser
+We gave him permission to create s3_buckets. Let's make sd-vehicle-data bucket - the stream's destination.
+
+8. A destination S3 bucket
+Create the S3 client, then call create_bucket_method(), with 'sd-vehicle-data' as the Bucket argument.
+
+9. dcUser
+But dcUser doesn't have permission to create Firehose delivery streams.
+
+10. dcUser
+We will use his keys to put data into the stream too - and he doesn't have permission for that either.
+
+11. Add permissions to user
+Let's give dcUser an additional permission. Login to AWS Console, then Identity and Access Management (or IAM),
+
+12. Add permissions to user
+users
+
+13. Add permissions to user
+dcUser
+
+14. Add permissions to user
+You will see the policies we assigned in the last class. Click add permissions,
+
+15. Add permissions to user
+Select "Attach existing policies directly."
+
+16. Add permissions to user
+Search for, and add AmazonKinesisFirehoseFullAccess Click Review, then Add, and you're done!
+
+17. New powers
+Now, dcUser has the power to create, manage and write to Firehose streams.
+
+18. A note on security
+There is an AdministratorAccess policy in IAM. It's a superUser policy that will allow any action on any service. Why not just assign that policy?
+
+19. A note on security
+It would allow ANYONE with dcUser's AWS_Key and Secret to have free reign, leaving us with a hefty bill.
+
+20. A note on security
+Data engineers balance security and getting things done. We're walking a balance by using service-specific full access permissions. As you're building for production, you may need even more granularity.
+
+21. New powers
+Now, dcUser has all the permissions to execute this. One small snag.
+
+22. Firehose stream permissions
+The firehose stream can't write to the S3 bucket.
+
+23. Firehose stream permissions
+After receiving records from the vehicles, the stream is acting on its own to write records to S3, not as dcUser. So it needs its own permissions.
+
+24. A role
+To let the Firehose stream write to the S3 bucket, we're going to create a role.
+
+25. How roles work
+A role is a hat that an Amazon service puts on.
+
+26. How roles work
+Roles have their own permissions. When the AWS service puts on the hat, it acquires those permissions.
+
+27. How roles work
+But this hat can only be worn by a trusted entity, which is specified in the role definition. Let's make our own.
+
+28. Roles vs users
+Roles, like users live in IAM. Like users, they can have permissions policies attached. But roles cannot act on their own or have keys or logins.
+
+29. Review - end goal
+Our end goal is to build a system that collects data from vehicle sensors and streams it into an S3 bucket.
+
+30. Review
+To create the stream and write data to it, dcUser needed an additional permission.
+
+31. Review
+We had him create a bucket that will serve as the destination.
+
+32. Review
+We now need to create a role, or a hat, that only fits Firehose streams, letting them write to S3 buckets.
+-----------------
+Go to IAM then roles, then "create role". Select AWS_service as trusted entity type. Then Kinesis, and Kinesis Firehose under "Choose a Use Case". Click Next. Grant this role S3FullAccess permission, and name it firehoseDeliveryRole. Click create. Let's look over our new role. Click firehoseDeliveryRole. The trusted relationships tab describes entities able to wear the firehoseDeliveryRole hat. The permissions tab looks similar to User permissions. Now we're set to create the firehose stream! In the next lesson, we'll create the stream and write to it! But first, let's review. Let's practice our permissions!
+
+2. Let's practice!
+
+------------------
+
+2. Ready to create stream
+After last lesson, everything is in place.
+
+3. Ready to create stream
+S3 bucket's been created.
+
+4. Ready to create stream
+dcUser has proper permissions for Firehose.
+
+5. Ready to create stream
+And we created a role for the Firehose stream to assume.
+
+6. Ready to create stream
+All that's left is to create our stream!
+
+7. Get Role ARN
+We will need to specify a role ARN - Amazon's unique identifier - when creating our stream. Go to IAM, Roles, FirehoseDeliveryRole. The ARN is on top.
+
+8. Initialize boto3 client
+Initialize the boto3 firehose client.
+
+9. Create the stream!
+Create the stream using client's create_delivery_stream() method, passing gps-delivery-stream as DeliveryStreamName, and DirectPut for DeliveryStreamType. DirectPut means we will be writing to the stream directly (as opposed to writing from another stream). Next, pass the S3DestinationConfiguration object containing the RoleARN you copied, followed by S3 bucket ARN. S3 ARNs are always in the format of arn:aws:s3:::BUCKET-NAME.
+
+10. Create stream response
+The response object comes back with a DeliveryStreamARN key.
+
+11. Stream is ready
+We have a stream that ingests data and writes it to an S3 bucket. Our components are ready!
+
+12. Writing to stream
+Let's write to the stream!
+
+13. Telematics hardware
+We will install OBD2 reader devices in each vehicle. They will collect vehicle data.
+
+14. Telematics data send
+The code that we write for these devices will take the sensor data and write it to the stream.
+
+15. Single record
+Let's examine a single record from a vehicle sensor. There's a record id. A capture timestamp. VIN number - or vehicle ID. Vehicle location latitude and longitude. And speed.
+
+16. Records coming in
+Each of these are coming in from different vehicles at different times - a great use case for streams.
+
+17. Another use case
+You would use the same pattern for collecting clickstream data from multiple browsers.
+
+18. Another use case
+Or collecting live logs from servers.
+
+19. Patterns
+Data engineering is about understanding the pattern and finding the right time to apply it.
+
+20. Sending a record
+To send a record, use the firehose client's put_record() method, passing the DeliveryStreamName as an argument. We send a dictionary to the Record argument, containing a Data key. This contains the record.
+
+21. Sending a record
+What we send to the stream in the Data key needs to be a string.
+
+22. Sending a record
+We convert our record to a string where each field is separated by a space, making it easier to read into Pandas later.
+
+23. Sending a record
+We use the python string join method to bring the values of a dictionary together into a string, enforcing the string data type across each value.
+
+24. Putting it together
+Putting it together, we have our record, and convert it to a string
+
+25. Putting it together
+Then, we push it to the stream. We also attach a line break at the end so that each record is a row.
+
+26. Created files
+Firehose doesn't immediately write because of buffering. After about 5 minutes, we see the data in our S3 bucket. Notice how Firehose arranges the data into folders based on a year/month/date pattern.
+
+27. Sample data
+On closer examination of the file, it looks like a CSV, sans commas. We can read it with Pandas!
+
+28. Created files
+This part should be familiar from the previous course. Click on one of the objects and copy its key.
+
+29. Create S3 client
+Create the boto3 s3 client.
+
+30. Read data into DataFrame
+Use the get_object() method to read the object data. Then use read_csv() to read it into pandas, assigning column names.
+
+31. vehicle_data
+Now we can use Pandas to analyze the data that streamed in!
+
+32. Review
+In this lesson you learned to create a Firehose delivery stream.
+
+33. Review
+Assigning it a role to assume and a bucket to write to.
+
+34. Review
+You learned how to write code that will put data into the stream.
+
+35. Review
+And how this pattern could apply to other use cases.
+
+36. Review
+Finally, you reviewed how to load streamed data from s3 into a dataframe for further analysis.
+
+37. Let's practice!
+Lots of skills to practice. Let's put them all together!
+
+----------------
+
+
+
+--------------
+
+
+
+----------------
+
+
+---------------
+
+
+--------------
+Chapter4
+2. This chapter
+In the last chapter of this course, we will learn how to put everything we learned together. We will send incoming streaming data to Firehose, store it and visualize it. We will set alerts on the values in real time, and monitor our infrastructure. Lastly, we will take a look at the different ways we can meet a set of requirements. In other words, you'll get to do everything a data engineer does - architect, store and monitor!
+
+3. The challenge
+The communications department is interested in learning about how the residents feel about living in the City of San Diego. You have been asked to create a dashboard that monitors twitter sentiments in tweets with the #sandiego hashtag.
+
+4. Requirements
+There are a few requirements. Tweets must include the #sandiego hashtag. The tweets must come in real-time. Tweets need to be marked as positive or negative. The dashboard should show metrics on the last 15 minutes of tweets. If more than three negative tweets happen in a five minute timeframe, the communications manager should be notified. The stream should minimize data loss due to downtime. Data must persist for later analysis.
+
+5. Tweets come in real-time
+The fact that we need to gather data in real-time is a prime example of a streaming use case. We will use a Python script to monitor tweets, and send them to a Firehose stream.
+
+6. Enriched with sentiment
+To determine the sentiment of each tweet, we will create a Transform Lambda and use the Amazon Comprehend service which we learned about in the prerequisite course to determine the sentiment of each tweet.
+
+7. Data must persist for later analysis
+To persist data for later analysis, we will use S3.
+
+8. Visualize last 15 minutes
+However, visualizing the last 15 minutes of data when it's stored in S3 will be difficult, since S3 is really designed as static storage. Luckily, Firehose has two other options - Redshift and Elasticsearch.
+
+9. Redshift vs Elasticsearch
+Let's take a closer look at the storage piece. Storing data in S3 for real-time analysis isn't really efficient. Besides S3, Firehose can send data to RedShift and Elasticsearch. Redshift is designed for storing large, clean tables of data with a defined schema. Elasticsearch is schema-less which makes it good for unstructured data like logs and text. We create the schema during the query. Redshift uses SQL for queries, while Elasticsearch has its own language. Redshift works great with BI tools like Tableau, while Elasticsearch has its own interface - Kibana.
+
+
+Got It!
+1. Monitoring performance
+Welcome back!
+
+2. Last lesson
+In the last lesson, we have created our Elasticsearch instance.
+
+3. Lambda transform
+Now, we can create the lambda transform function that will run each tweet against the Amazon comprehend API.
+
+4. Lambda transform
+The lambda code will look like a regular lambda transform function. We initialize the boto3 comprehend client in the handler, create a list to store our results, then we loop over the incoming records.
+
+5. Lambda transform
+We load the data, and decode it from base64. Then, we call the detect_sentiment() method of the boto3 comprehend client. Since twitter data from our query is coming in English and Spanish, we pass the language code directly from Twitter.
+
+6. Lambda transform
+Then we put it all together in a record so that it matches the model Firehose expects to receive from Lambda, and return when we're done looping through the records.
+
+7. Wiring it up
+Now all that's left is to wire everything up.
+
+8. Update firehoseDeliveryRole
+First, let's update firehoseDeliveryRole to have full access to Elasticsearch.
+
+9. Create delivery stream
+When we create the new Firehose delivery stream, we repeat all the steps from Chapter 1, except we will select Elasticsearch as the destination. We select the domain as the Elasticsearch domain we created. Lastly, we specify the index, which will act like a table where all our tweets get written to.
+
+10. Create delivery stream
+We will also specify the S3 bucket where our tweets will get backed up.
+
+11. Cloudwatch
+Let's make sure that everything is running smoothly, to meet our requirement of losing as little data as possible. To make this happen, we're going to use the AWS Cloudwatch service. Cloudwatch lets us monitor numerous metrics for every AWS service. There are four crucial components to CloudWatch that all build on top of each other. Logs are the raw data sent to CloudWatch by AWS services. Those are analyzed to present metrics - which are measures of various activities of the service. Metrics can be used to trigger alarms - or notifications when a metric is out of a specified range. Lastly, metrics can be visualized in dashboards.
+
+12. Failure points
+When I think of what to monitor, I like to think of places in the pipeline where a failure would have the most effect. Failure points are places where things could fail. Our architecture's failure points are highlighted in blue. Cloudwatch can help us monitor hundreds of different metrics across these services. We'll focus on making sure that data gets written to the stream and Elasticsearch is getting records.
+
+. Visualizing streaming data
+Welcome to the last lesson of this course!
+
+2. Our pipeline so far
+So far in this course, we have built an AWS pipeline that collects Twitter data, sends it to Firehose, enriches the tweets with Sentiment and then sends it to Elasticsearch. We are now meeting all of our requirements except for the last two - we need to be able to visualize our data in real time and trigger an alert!
+
+3. Kibana Discover view
+While we are sending our data to Elasticsearch - a storage engine - we are going to visualize it using Kibana a UI for Elasticsearch. The strength of Elasticsearch is that it lets us define the schema when we read the data. Kibana also has several key views. The Kibana discover view will let us see the raw data coming in, and let us slice and dice it as well as create a schema.
+
+4. Kibana visualizations
+The Kibana Visualizations view lets us create charts and visualize the data.
+
+5. Dashboards and alerts
+Lastly, Kibana Dashboards and Alerts allow us to combine the visualizations and set alerts when they pass thresholds.
+
+6. Elasticsearch vs CloudWatch
+Let's get this out of the way. Elasticsearch and CloudWatch are very similar, providing monitoring, alerts, visualizations and dashboards. Yet, they're different. CloudWatch is AWS centric. It can accept custom data, but it's not the best tool for general visualization. CloudWatch is also great for working with logs explicitly. Elasticsearch on the other hand is open source, and can accept a variety of datasets. The visualizations are more robust than CloudWatch, and there is a wide plugin ecosystem.
+
+7. Let's practice!
+Now, let's put Elasticsearch to use monitoring our tweets!

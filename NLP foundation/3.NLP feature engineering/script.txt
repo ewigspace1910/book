@@ -1,0 +1,330 @@
+chapter1
+
+Got It!
+1. Introduction to NLP feature engineering
+Welcome to Feature Engineering for NLP in Python! I am Rounak and I will be your instructor for this course. In this course, you will learn to extract useful features out of text and convert them into formats that are suitable for machine learning algorithms.
+
+2. Numerical data
+For any ML algorithm, data fed into it must be in tabular form and all the training features must be numerical. Consider the Iris dataset. Every training instance has exactly four numerical features. The ML algorithm uses these four features to train and predict if an instance belongs to class iris-virginica, iris-setosa or iris-versicolor.
+
+3. One-hot encoding
+ML algorithms can also work with categorical data provided they are converted into numerical form through one-hot encoding. Let's say you have a categorical feature 'sex' with two categories 'male' and 'female'.
+
+4. One-hot encoding
+One-hot encoding will convert this feature into two features,
+
+5. One-hot encoding
+'sex_male' and 'sex_female' such that each male instance has a 'sex_male' value of 1 and 'sex_female' value of 0. For females, it is the vice versa.
+
+6. One-hot encoding with pandas
+To do this in code, we use pandas' get_dummies() function. Let's import pandas using the alias pd. We can then pass our dataframe df into the pd.get_dummies() function and pass a list of features to be encoded as the columns argument. Not mentioning columns will lead pandas to automatically encode all non-numerical features. Finally, we overwrite the original dataframe with the encoded version by assigning the dataframe returned by get_dummies() back to df.
+
+7. Textual data
+Consider a movie reviews dataset. This data cannot be utilized by any machine learning or ML algorithm. The training feature 'review' isn't numerical. Neither is it categorical to perform one-hot encoding on.
+
+8. Text pre-processing
+We need to perform two steps to make this dataset suitable for ML. The first is to standardize the text. This involves steps like converting words to lowercase and their base form. For instance, 'Reduction' gets lowercased and then converted to its base form, reduce. We will cover these concepts in more detail in subsequent lessons.
+
+9. Vectorization
+After preprocessing, the reviews are converted into a set of numerical training features through a process known as vectorization. After vectorization, our original review dataset gets converted
+
+10. Vectorization
+into something like this. We will learn techniques to achieve this in later lessons.
+
+11. Basic features
+We can also extract certain basic features from text. It maybe useful to know the word count, character count and average word length of a particular text. While working with niche data such as tweets, it also maybe useful to know how many hashtags have been used in a tweet. This tweet by Silverado Records,for instance, uses two.
+
+12. POS tagging
+So far, we have seen how to extract features out of an entire body of text. Some NLP applications may require you to extract features for individual words. For instance, you may want to do parts-of-speech tagging to know the different parts-of-speech present in your text as shown. As an example, consider the sentence 'I have a dog'. POS tagging will label each word with its corresponding part-of-speech.
+
+13. Named Entity Recognition
+You may also want to know perform named entity recognition to find out if a particular noun is referring to a person, organization or country. For instance, consider the sentence "Brian works at DataCamp". Here, there are two nouns "Brian" and "DataCamp". Brian refers to a person whereas DataCamp refers to an organization.
+
+14. Concepts covered
+Therefore, broadly speaking, this course will teach you how to conduct text preprocessing, extract certain basic features, word features and convert documents into a set of numerical features (using a process known as vectorization).
+
+--
+2. Number of characters
+The most basic feature we can extract from text is the number of characters, including whitespaces. For instance, the string "I don't know." has 13 characters. The number of characters is the length of the string. Python gives us a built-in len() function which returns the length of the string passed into it. The output will be 13 here too. If our dataframe df has a textual feature (say 'review'), we can compute the number of characters for each review and store it as a new feature 'num_chars' by using the pandas dataframe apply method. This is done by creating df['num_chars'] and assigning it to df['review'].apply(len).
+
+3. Number of words
+Another feature we can compute is the number of words. Assuming that every word is separated by a space, we can use a string's split() method to convert it into a list where every element is a word. In this example, the string Mary had a little lamb is split to create a list containing the words Mary, had, a, little and lamb. We can now compute the number of words by computing the number of elements in this list using len().
+
+4. Number of words
+To do this for a textual feature in a dataframe, we first define a function that takes in a string as an argument and returns the number of words in it. The steps followed inside the function are similar as before. We then pass this function word_count into apply. We create df['num_words'] and assign it to df['review'].apply(word_count).
+
+5. Average word length
+Let's now compute the average length of words in a string. Let's define a function avg_word_length() which takes in a string and returns the average word length. We first split the string into words and compute the length of each word. Next, we compute the average word length by dividing the sum of the lengths of all words by the number of words.
+
+6. Average word length
+We can now pass this into apply() to generate a average word length feature like before.
+
+7. Special features
+When working with data such as tweets, it maybe useful to compute the number of hashtags or mentions used. This tweet by DataCamp, for instance, has one mention upendra_35 which begins with an @ and two hashtags, PySpark and Spark which begin with a #.
+
+8. Hashtags and mentions
+Let's write a function that computes the number of hashtags in a string. We split the string into words. We then use list comprehension to create a list containing only those words that are hashtags. We do this using the startswith method of strings to find out if a word begins with #. The final step is to return the number of elements in this list using len. The procedure to compute number of mentions is identical except that we check if a word starts with @. Let's see this function in action. When we pass a string "@janedoe This is my first tweet! #FirstTweet #Happy", the function returns 2 which is indeed the number of hashtags in the string.
+
+9. Other features
+There are other basic features we can compute such as number of sentences, number of paragraphs, number of words starting with an uppercase, all-capital words, numeric quantities etc. The procedure to do this is extremely similar to the ones we've already covered.
+
+---
+2. Overview of readability tests
+These tests are used to determine the readability of a particular passage. In other words, it indicates at what educational level a person needs to be in, in order to comprehend a particular piece of text. The scale usually ranges from primary school up to college graduate level and is in context of the American education system. Readability tests are done using a mathematical formula that utilizes the word, syllable and sentence count of the passage. They are routinely used by organizations to determine how easy their publications are to understand. They have also found applications in domains such as fake news and opinion spam detection.
+
+3. Readability text examples
+There are a variety of readability tests in use. Some of the common ones include the Flesch reading ease, the Gunning fog index, the simple measure of gobbledygook or SMOG and the Dale-Chall score. Note that these tests are used for texts in English. Tests for other languages also exist that that take into consideration, the nuances of that particular language. For the sake of brevity, we will cover only the
+
+4. Readability test examples
+first two scores in detail. However, once you understand them, you will be in a good position to understand and use the other scores too.
+
+5. Flesch reading ease
+The Flesch Reading Ease is one of the oldest and most widely used readability tests. The score is based on two ideas: the first is that the greater the average sentence length, harder the text is to read. Consider these two sentences. The first is easier to follow than the second. The second is that the greater the average number of syllables in a word, the harder the text is to read. Therefore, I live in my home is considered easier to read than I reside in my domicile on account of its usage of lesser syllables per word. The higher the Flesch Reading Ease score, the greater is the readability. Therefore, a higher score indicates that the text is easier to understand.
+
+6. Flesch reading ease score interpretation
+This table shows how to interpret the Flesch Reading Ease scores. A score above 90 would imply that the text is comprehensible to a 5th grader whereas a score below 30 would imply the text can only be understood by college graduates.
+
+7. Gunning fog index
+The Gunning fog index was developed in 1954. Like Flesch, this score is also dependent on the average sentence length. However, it uses percentage of complex words in place of average syllables per word to compute its score. Here, complex words refer to all words that have three or more syllables. Unlike Flesch, the formula for Gunning fog index is such that the higher the score ,the more difficult the passage is to understand.
+
+8. Gunning fog index interpretation
+The index can be interpreted using this table. A score of 6 would indicate 6th grade reading difficulty whereas a score of 17 would indicate college graduate level reading difficulty.
+
+We can conduct these readability tests in Python using the Textatistic library. We import the Textatistic class from textatistic. Next, we create a Textatistic object and pass in the passage or text we're evaluating. We then access the dictionary of readability scores from the Textatistic object using the 'scores' attribute and store it in a variable named readability_scores. Finally, we access the various scores from the readability_scores dictionary using their corresponding keys as shown. In this example, the text that was passed is between the reading level of a college senior and that of a college graduate
+
+
+---------
+chapter2
+1. Tokenization and Lemmatization
+In NLP, we usually have to deal with texts from a variety of sources. For instance,
+
+2. Text sources
+it can be a news article where the text is grammatically correct and proofread. It could be tweets containing shorthands and hashtags. It could also be comments on YouTube where people have a tendency to abuse capital letters and punctuations.
+
+3. Making text machine friendly
+It is important that we standardize these texts into a machine friendly format. We want our models to treat similar words as the same. Consider the words Dogs and dog. Strictly speaking, they are different strings. However, they connotate the same thing. Similarly, reduction, reducing and reduce should also be standardized to the same string regardless of their form and case usage. Other examples include don't and do not, and won't and will not. In the next couple of lessons, we will learn techniques to achieve this.
+
+4. Text preprocessing techniques
+The text processing techniques you use are dependent on the application you're working on. We'll be covering the common ones, including converting words into lowercase removing unnecessary whitespace, removing punctuation, removing commonly occurring words or stopwords, expanding contracted words like don't and removing special characters such as numbers and emojis.
+
+5. Tokenization
+To do this, we must first understand tokenization. Tokenization is the process of splitting a string into its constituent tokens. These tokens may be sentences, words or punctuations and is specific to a particular language. In this course, we will primarily be focused with word and punctuation tokens. For instance, consider this sentence. Tokenizing it into its constituent words and punctuations will yield the following list of tokens. Tokenization also involves expanding contracted words. Therefore, a word like don't gets decomposed into two tokens: do and n't as can be seen in this example.
+
+6. Tokenization using spaCy
+To perform tokenization in python, we will use the spacy library. We first import the spacy library. Next, we load a pre-trained English model 'en_core_web_sm' using spacy.load(). This will return a Language object that has the know-how to perform tokenization. This is stored in the variable nlp. Let's now define a string we want to tokenize. We pass this string into nlp to generate a spaCy Doc object. We store this in a variable named doc. This Doc object contains the required tokens (and many other things, as we will soon find out). We generate the list of tokens by using list comprehension as shown. This is essentially looping over doc and extracting the text of each token in each iteration. The result is as follows.
+
+7. Lemmatization
+Lemmatization is the process of converting a word into its lowercased base form or lemma. This is an extremely powerful process of standardization. For instance, the words reducing, reduces, reduced and reduction, when lemmatized, are all converted into the base form reduce. Similarly be verbs such as am, are and is are converted into be. Lemmatization also allows us to convert words with apostrophes into their full forms. Therefore, n't is converted to not and 've is converted to have.
+
+8. Lemmatization using spaCy
+When you pass the string into nlp, spaCy automatically performs lemmatization by default. Therefore, generating lemmas is identical to generating tokens except that we extract token.lemma_ in each iteration inside the list comprehension instead of token.text. Also, observe how spaCy converted the Is into -PRON-. This is standard behavior where every pronoun is converted into the string '-PRON-'.
+
+9. Let's practice!
+Once we understand how to perform tokenization and lemmatization, performing the text preprocessing techniques described earlier becomes easier. Before we move to that, let's first practice our understanding of the concepts introduced so far.
+---
+2. Text cleaning techniques
+Some of the most common text cleaning steps include removing extra whitespaces, escape sequences, punctuations, special characters such as numbers and stopwords. In other words, it is very common to remove non-alphabetic tokens and words that occur so commonly that they are not very useful for analysis.
+
+3. isalpha()
+Every python string has an isalpha() method that returns true if all the characters of the string are alphabets. Therefore, the "Dog".isalpha() will return true but "3dogs".isalpha() will return false as it has a non-alphabetic character 3. Similarly, numbers, punctuations and emojis will all return false too. This is an extremely convenient method to remove all (lemmatized) tokens that are or contain numbers, punctuation and emojis.
+
+4. A word of caution
+If isalpha() as a silver bullet that cleans text meticulously seems too good to be true, it's because it is. Remember that isalpha() has a tendency of returning false on words we would not want to remove. Examples include abbreviations such as USA and UK which have periods in them, and proper nouns with numbers in them such as word2vec and xto10x. For such nuanced cases, isalpha() may not be sufficient. It may be advisable to write your own custom functions, typically using regular expressions, to ensure you're not inadvertently removing useful words.
+
+5. Removing non-alphabetic characters
+Consider the string here. This has a lot of punctuations, unnecessary extra whitespace, escape sequences, numbers and emojis. We will generate the lemmatized tokens like before.
+
+6. Removing non-alphabetic characters
+Next, we loop through the tokens again and choose only those words that are either -PRON- or contain only alphabetic characters. Let's now print out the sanitized string. We see that all the non-alphabetic characters have been removed and each word is separated by a single space.
+
+7. Stopwords
+There are some words in the English language that occur so commonly that it is often a good idea to just ignore them. Examples include articles such as a and the, be verbs such as is and am and pronouns such as he and she.
+
+8. Removing stopwords using spaCy
+spaCy has a built-in list of stopwords which we can access using spacy.lang.en.stop_words.STOP_WORDS..
+
+9. Removing stopwords using spaCy
+We make a small tweak to a_lemmas generation step. Notice that we have removed the -PRON- condition as pronouns are stopwords anyway and should be removed. Additionally, we have introduced a new condition to check if the word belongs to spacy's list of stopwords. The output is as follows. Notice how the string consists only of base form words. Always exercise caution while using third party stopword lists. It is common that an application find certain words useful that may be considered a stopword by third party lists. It is often advisable to create your custom stopword lists.
+
+10. Other text preprocessing techniques
+There are other preprocessing techniques that are used but have been omitted for the sake of brevity. Some of them include removing HTML or XML tags, replacing accented characters and correcting spelling errors and shorthands
+
+11. A word of caution
+We have covered a lot of text preprocessing techniques in the last couple of lessons. However, a word of caution is in place. The text preprocessing techniques you use is always dependent on the application. There are many applications which may find punctuations, numbers and emojis useful, so it may be wise to not remove them. In other cases, using all caps may be a good indicator of something. Remember to always use only those techniques that are relevant to your particular use case.
+
+---
+1. Named entity recognition
+The final technique we will learn as part of this chapter is named entity recognition.
+
+2. Applications
+Named entity recognition or NER has a host of extremely useful applications. It is used to build efficient search algorithms and question answering systems. For instance, let us say you have a piece of text and you ask your system about the people that are being talked about in the text. NER would help the system in answering this question by identifying all the entities that refer to a person in the text. NER also found application with News Providers who use it to categorize their articles and Customer Service centers who use it to classify and record their complaints efficiently.
+
+3. Named entity recognition
+Let us now get down to the definitions. A named entity is anything that can be denoted with a proper name or a proper noun. Named entity recognition or NER, therefore, is the process of identifying such named entities in a piece of text and classifying them into predefined categories such as person, organization, country, etc. For example, consider the text "John Doe is a software engineer working at Google. He lives in France." Performing NER on this text will tell us that there are three named entities: John Doe, who is a person, Google, which is an organization and France, which is a country (or geopolitical entity)
+
+4. NER using spaCy
+Like POS tagging, performing NER is extremely easy using spaCy's pre-trained models. Let's try to find the named entities in the same sentence we used earlier. As usual, we import the spacy library, load the required model and create a Doc object for the string. When we do this, spaCy automatically computes all the named entities and makes it available as the ents attribute of doc. Therefore, to access the named entity and its category, we use list comprehension to loop over doc.ents and create a tuple containing the entity name, which is accessed using ent.text, and entity category, which is accessed using ent.label_. Printing this list out will give the following output. We see that spaCy has correctly identified and classified all the named entities in this string.
+
+5. NER annotations in spaCy
+Currently, spaCy's models are capable of identifying more than 15 different types of named entities. The complete list of categories and their annotations can be found in spaCy's documentatiion. Here is a snapshot of the page.
+
+6. A word of caution
+In this chapter, we have used spacy's models to accomplish several tasks. However, remember that spacy's models are not perfect and its performance depends on the data it was trained with and the data it is being used on. For instance, if we are trying extract named entities for texts from a heavily technical field, such as medicine, spacy's pretrained models may not perform such a great job. In such nuanced cases, it is better to train your models with your specialized data. Also, remember that spacy's models are language specific. This is understandable considering that each language has its own grammar and nuances. The en_core_web_sm model that we've been using is, as the name suggests, only suitable for English texts.
+----
+
+chapter3
+
+Got It!
+1. Building a bag of words model
+In this chapter, we will cover vectorization which is, as you may recall, the process of converting text into vectors.
+
+2. Recap of data format for ML algorithms
+Recall that for any ML algorithm to run properly, data fed into it must be in tabular form and all the training features must be numerical. This is clearly not the case for textual data. In this lesson, we will learn a technique called bag of words that converts text documents into vectors.
+
+3. Bag of words model
+The bag of words model is a procedure of extracting word tokens from a text document (henceforth, we will refer to this as just document), computing the frequency of these word tokens and constructing a word vector based on these frequencies and the vocabulary of the entire corpus of documents. This is best explained with the help of an example.
+
+4. Bag of words model example
+Consider a corpus of three documents. The lion is the king of the jungle. Lions have an average lifespan of 15 years. And, the lion is an endangered species.
+
+5. Bag of words model example
+We now extract the unique word tokens that occur in this corpus of documents. This will be the vocabulary of our model. In this example, the following 15 word tokens will constitute our vocabulary. Since there are 15 words in our vocabulary, our word vectors will have 15 dimensions and each dimension's value will correspond to the frequency of the word token corresponding to that dimension. For instance, the second dimension will correspond to the number of times the second word in the vocabulary, an, occurs in the document. Let's now convert our documents into word vectors using this bag of words model. The lion is the king of the jungle is converted to the following vector. Similarly, the other two sentences have the following word vector representations.
+
+6. Text preprocessing
+As we were constructing this model, you may have noticed how text preprocessing would have been extremely useful in creating arguably better models. We would usually want Lions and lion to mean the same thing and therefore, counted as the same thing. The same applies to 'the' with different cases. We would also want to remove punctuations and stopwords as they are extremely common and don't really contribute much to the character of the document. Performing text preprocessing usually leads to smaller vocabularies, which is a good thing. While working with vectorization, it is routine to form word vectors running into thousands of dimensions and keeping this to a minimum helps improve performance.
+
+7. Bag of words model using sklearn
+To construct the bag of words model in Python, we will use the scikit-learn library. We will use the corpus from before, consisting of the three sentences on lions. Let's ignore text preprocessing for now.
+
+8. Bag of words model using sklearn
+We import the CountVectorizer class from sklearn.feature_extraction.text. This is the class that will help us build our bag of words model. Next, we instantiate a CountVectorizer object vectorizer. We finally create our matrix of word vectors by passing corpus to the fit_transform method of vectorizer. This is stored in bow_matrix. This bow_matrix is a sparse matrix and we can print out its 2D array form using bow matrix dot toarray(). This gives us the following output. Notice how this is different from the word vectors we generated. This is because CountVectorizer automatically lowercases words and ignores single character tokens such as 'a'. Also, it doesn't necessarily index the vocabulary in alphabetical order. We will learn how to map the vocabulary to the indices in the exercises. We can now use this bow_matrix as our training features in ML models.
+
+
+------
+1. Building n-gram models
+We already know how to build bag-of-words representations of our documents and use it to conduct various machine learning tasks.
+
+2. BoW shortcomings
+Consider the following mini reviews. One is a positive review which states that the movie was good and not boring. The other is negative; commenting that the movie was not good and boring. If we were to construct BoW vectors for these reviews, we would get identical vectors since both reviews contain exactly the same words. And here in lies the biggest shortcoming of the bag-of-words model: context of the words is lost. In this example, the position of the word 'not' changes the entire sentiment of the review. Therefore, in this lesson, we will study techniques that will allow us to model this.
+
+3. n-grams
+An n-gram is a contiguous sequence of n elements (or words) in a given document. The bag-of-words model that we've explored so far is nothing but an n-gram model where n is equal to one. Let's now explore n-grams when n is greater than one. Consider the sentence 'for you a thousand times over'. If we set n to 2, then the n-grams (called bigrams in this case) would be for you, you a, a thousand, thousand times and times over.
+
+4. n-grams
+Similarly, for n equal to 3, the n-grams (or trigrams) will be for you a, you a thousand, a thousand times, thousand times over. Therefore, we can use these n-grams to capture more context and account for cases like 'not'.
+
+5. Applications
+Apart from capturing more context, n-grams have a host of other useful applications. They are used in sentence completion, spelling correction and machine translation correction. In all these cases, the model computes the probability of n words occurring contiguously to perform the above processes.
+
+6. Building n-gram models using scikit-learn
+Building these n-gram models using scikit-learn is extremely simple, now that we know how to use CountVectorizer. CountVectorizer takes in an argument ngram range which is a tuple containing the lower and upper bound for the range of n-values. For instance, passing 2,2 as the ngram_range will generate only bigrams. On the other hand, passing in 1,3 will generate n-grams where n is equal to 1, 2 and 3.
+
+7. Shortcomings
+While on the surface, it may seem lucrative to generate n-grams of high orders to capture more and more context, it comes with caveats. We've already seen that the BoW vectors run into thousands of dimensions. Adding higher order n-grams increases the number of dimensions even more and while performing machine learning, leads to a problem known as the curse of dimensionality. Additionally, n-grams for n greater than 3 become exceedingly rare to find in multiple documents. So that feature becomes effectively useless. For these reasons, it is often a good idea to restrict yourself to n-grams where n is small
+------------
+################
+chapter4
+
+1. Building tf-idf document vectors
+In the last chapter, we learned about n-gram modeling.
+
+2. n-gram modeling
+In n-gram modeling, the weight of a dimension for the vector representation of a document is dependent on the number of times the word corresponding to the dimension occurs in the document. Let's say we have a document that has the word 'human' occurring 5 times. Then, the dimension of its vector representation corresponding to 'human' would have the value 5.
+
+3. Motivation
+However, some words occur very commonly across all the documents in the corpus. As a result, the vector representations get more characterized by these dimensions. Consider a corpus of documents on the Universe. Let's say there is a particular document on Jupiter where the word 'jupiter' and 'universe' both occur about 20 times. However, 'jupiter' rarely figures in the other documents whereas 'universe' is just as common. We could argue that although both *jupiter* and *universe* occur 20 times, *jupiter* should be given a larger weight on account of its exclusivity. In other words, the word 'jupiter' characterizes the document more than 'universe'.
+
+4. Applications
+Weighting words this way has a huge number of applications. They can be used to automatically detect stopwords for the corpus instead of relying on a generic list. They're used in search algorithms to determine the ranking of pages containing the search query and in recommender systems as we will soon find out. In a lot of cases, this kind of weighting also generates better performance during predictive modeling.
+
+5. Term frequency-inverse document frequency
+The weighting mechanism we've described is known as term frequency-inverse document frequency or tf-idf for short. It is based on the idea that the weight of a term in a document should be proportional to its frequency and an inverse function of the number of documents in which it occurs.
+
+6. Mathematical formula
+Mathematically, the weight of a term i in document j is computed as
+
+7. Mathematical formula
+term frequency of the term i in document j
+
+8. Mathematical formula
+multiplied by the log of the ratio of the number of documents in the corpus and the number of documents in which the term i occurs or dfi.
+
+9. Mathematical formula
+Therefore, let's say the word 'library' occurs in a document 5 times. There are 20 documents in the corpus and 'library' occurs in 8 of them. Then, the tf-idf weight of 'library' in the vector representation of this document will be 5 times log of 20 by 8 which is approximately 2. In general, higher the tf-idf weight, more important is the word in characterizing the document. A high tf-idf weight for a word in a document may imply that the word is relatively exclusive to that particular document or that the word occurs extremely commonly in the document, or both.
+
+10. tf-idf using scikit-learn
+Generating vectors that use tf-idf weighting is almost identical to what we've already done so far. Instead of using CountVectorizer, we use the TfidfVectorizer class of scikit-learn. The parameters and methods it has is almost identical to CountVectorizer. The only difference is that TfidfVectorizer assigns weights using the tf-idf formula from before and has extra parameters related to inverse document frequency which we will not cover in this course. Here, we can see how using TfidfVectorizer is almost identical to using CountVectorizer for a corpus. However, notice that the weights are non-integer and reflect values calculated by the tf-idf formula.
+
+----1. Cosine similarity
+We now know how to compute vectors out of text documents. With this representation in mind, let us now explore techniques that will allow us to determine how similar two vectors and consequentially two documents, are to each other. More specifically, we will learn about the cosine similarity score which is one of the most popularly used similarity metrics in NLP.
+
+2. Mathematical formula
+Very simply put, the cosine similarity score of two vectors is the cosine of the angle between the vectors. Mathematically, it is the ratio of the dot product of the vectors and the product of the magnitude of the two vectors. Let's walk through what this formula really means.
+
+1 Image courtesy techninpink.com
+3. The dot product
+The dot product is computed by summing the product of values across corresponding dimensions of the vectors. Let's say we have two n-dimensional vectors V and W as shown. Then, the dot product here would be v1 times w1 plus v2 times w2 and so on until vn times wn. As an example, consider two vectors A and B. By applying the formula above, we see that the dot product comes to 37.
+
+4. Magnitude of a vector
+The magnitude of a vector is essentially the length of the vector. Mathematically, it is defined as the square root of the sum of the squares of values across all the dimensions of a vector. Therefore, for an n-dimensional vector V, the magnitude,mod V, is computed as the square root of v1 square plus v2 square and so on until vn square. Consider the vector A from before. Using the above formula, we compute its magnitude to be root 66.
+
+5. The cosine score
+We are now in a position to compute the cosine similarity score of A and B. It is the dot product, which is 37, divided by the product of the magnitudes of A and B, which are root 66 and root 38 respectively. The value comes out to be approximately 0.738, which is the value of the cosine of the angle theta between the two vectors.
+
+6. Cosine Score: points to remember
+Since the cosine score is simply the cosine of the angle between two vectors, its value is bounded between -1 and 1. However, in NLP, document vectors almost always use non-negative weights. Therefore, cosine scores vary between 0 and 1 where 0 indicates no similarity and 1 indicates that the documents are identical. Finally, since the cosine score ignores the magnitude of the vectors, it is fairly robust to document length. This may be an advantage or a disadvantage depending on the use case.
+
+7. Implementation using scikit-learn
+Scikit-learn offers a cosine_similarity function that outputs a similarity matrix containing the pairwise cosine scores for a set of vectors. You can import cosine_similarity from sklearn dot metrics dot pairwise. However, remember that cosine_similarity takes in 2-D arrays as arguments. Passing in 1-D arrays will throw an error. Let us compute the cosine similarity scores of vectors A and B from before. We see that we get the same answer of 0.738 from before.
+
+----
+
+
+Got It!
+1. Building a plot line based recommender
+In this lesson, we will use tf-idf vectors and cosine scores to build a recommender system that suggests movies based on overviews.
+
+2. Movie recommender
+We've a dataset containing movie overviews. Here, we can see two movies, Shanghai Triad and Cry, the Beloved Country and their overviews.
+
+3. Movie recommender
+Our task is to build a system that takes in a movie title and outputs a list of movies that has similar plot lines. For instance, if we passed in 'The Godfather', we could expect output like this. Notice how a lot of the movies listed here have to do with crime and gangsters, just like The Godfather.
+
+4. Steps
+Following are the steps involved. The first step, as always, is to preprocess movie overviews. The next step is to generate the tf-idf vectors for our overviews. Finally, we generate a cosine similarity matrix which contains the pairwise similarity scores of every movie with every other movie. Once the cosine similarity matrix is computed, we can proceed to build the recommender function.
+
+5. The recommender function
+We will build a recommender function as part of this course. Let's take a look at how it works. The recommender function takes a movie title, the cosine similarity matrix and an indices series as arguments. The indices series is a reverse mapping of movie titles with their indices in the original dataframe. The function extracts the pairwise cosine similarity scores of the movie passed in with every other movie. Next, it sorts these scores in descending order. Finally, it outputs the titles of movies corresponding to the highest similarity scores. Note that the function ignores the highest similarity score of 1. This is because the movie most similar to a given movie is the movie itself!
+
+6. Generating tf-idf vectors
+Let's say we already have the preprocessed movie overviews as 'movie_plots'. We already know how to generate the tf-idf vectors.
+
+7. Generating cosine similarity matrix
+Generating the cosine similarity matrix is also extremely simple. We simply pass in tfidf_matrix as both the first and second argument of cosine_similarity. This generates a matrix that contains the pairwise similarity score of every movie with every other movie. The value corresponding to the ith row and the jth column is the cosine similarity score of movie i with movie j. Notice that the diagonal elements of this matrix is 1. This is because, as stated earlier, the cosine similarity score of movie k with itself is 1.
+
+8. The linear_kernel function
+The magnitude of a tf-idf vector is always 1. Recall from the previous lesson that the cosine score is computed as the ratio of the dot product and the product of the magnitude of the vectors. Since the magnitude is 1, the cosine score of two tf-idf vectors is equal to their dot product! This fact can help us greatly improve the speed of computation of our cosine similarity matrix as we do not need to compute the magnitudes while working with tf-idf vectors. Therefore, while working with tf-idf vectors, we can use the linear_kernel function which computes the pairwise dot product of every vector with every other vector.
+
+9. Generating cosine similarity matrix
+Let us replace the cosine_similarity function with linear_kernel. As you can see, the output remains the same but it takes significantly lesser time to compute.
+
+10. The get_recommendations function
+The recommender function and the indices series described earlier will be built in the exercises. You can use this function to generate recommendations using the cosine similarity matrix.
+---------
+1. Beyond n-grams: word embeddings
+We have covered a lot of ground in the last 4 chapters. However, before we bid adieu, we will cover one advanced topic that has a large number of applications in NLP.
+
+2. The problem with BoW and tf-idf
+Consider the three sentences, I am happy, I am joyous and I am sad. Now if we were to compute the similarities, I am happy and I am joyous would have the same score as I am happy and I am sad, regardless of how we vectorize it. This is because 'happy', 'joyous' and 'sad' are considered to be completely different words. However, we know that happy and joyous are more similar to each other than sad. This is something that the vectorization techniques we've covered so far simply cannot capture.
+
+3. Word embeddings
+Word embedding is the process of mapping words into an n-dimensional vector space. These vectors are usually produced using deep learning models and huge amounts of data. The techniques used are beyond the scope of this course. However, once generated, these vectors can be used to discern how similar two words are to each other. Consequently, they can also be used to detect synonyms and antonyms. Word embeddings are also capable of capturing complex relationships. For instance, it can be used to detect that the words king and queen relate to each other the same way as man and woman. Or that France and Paris are related in the same way as Russia and Moscow. One last thing to note is that word embeddings are not trained on user data; they are dependent on the pre-trained spacy model you're using and are independent of the size of your dataset.
+
+4. Word embeddings using spaCy
+Generating word embeddings is easy using spaCy's pre-trained models. As usual, we load the spacy model and create the doc object for our string. Note that it is advisable to load larger spacy models while working with word vectors. This is because the en_core_web_sm model does not technically ship with word vectors but context specific tensors, which tend to give relatively poorer results. We generate word vectors for each word by looping through the tokens and accessing the vector attribute. The truncated output is as shown.
+
+5. Word similarities
+We can compute how similar two words are to each other by using the similarity method of a spacy token. Let's say we want to compute how similar happy, joyous and sad are to each other. We define a doc containing the three words. We then use a nested loop to calculate the similarity scores between each pair of words. As expected, happy and joyous are more similar to each other than they are to sad.
+
+6. Document similarities
+Spacy also allows us to directly compute the similarity between two documents by using the average of the word vectors of all the words in a particular document. Let's consider the three sentences from before. We create doc objects for the sentences. Like spacy tokens, docs also have a similarity method. Therefore, we can compute the similarity between two docs as follows. As expected, I am happy is more similar to I am joyous than it is to I am sad. Note that the similarity scores are high in both cases because all sentences share 2 out of their three words, I and am.

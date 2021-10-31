@@ -1,0 +1,36 @@
+1. Vanishing and exploding gradients
+You learned how to prepare text documents and use them on a RNN model to classify sentiment on movie reviews. But, the accuracy was not as expected! 
+In this lesson you will be introduced to some pitfalls of vanilla RNN cells, which are the vanishing or exploding gradient problems, and how to deal with them.
+
+2. Training RNN models
+To understand the vanishing or exploding gradient problems, you first need to understand how the RNN model is trained. 
+In other words, how to perform back propagation. In this picture, you can see the forward propagation and back propagation directions. 
+The important part here is that the they follow two directions: vertical (between input and output) and horizontal (going through time). 
+Because of this horizontal direction, back propagation is referred as back propagation through time.
+
+3. Forward propagation
+In the forward propagation phase, we compute a hidden state a that will carry past information by applying the linear combination over the previous step and the current input. 
+The output y is computed only in the last hidden state often by applying a sigmoid or softmax activation function. 
+The loss function can be the cross-entropy function and we use it to have a numeric value of the error. 
+We can see that the past information is carried out during the forward propagation with an example. 
+The second step combines the results from the first step, and receive the second word as input. 
+We can also see that the weight matrix Wa is used on all steps, which means the weights are shared among all the inputs.
+
+4. Back propagation through time (BPTT)
+In the back propagation phase, we have to compute the derivatives of the loss function with respect to the parameters. 
+To compute the derivative of the loss with respect to the matrix Wa, we need to use the chain rule because y hat depends on a_t which also depends on Wa. 
+But, a_t also depends on a_t minus 1 that depends on Wa. 
+Thus, we need to consider the contribution of every previous step by summing up their derivatives with respect to the matrix Wa. 
+Also, the derivative of at with respect to Wa also need the chain rule of derivatives and can be written as the product of the intermediate states multiplied by the derivative of the first state with respect to the matrix.
+
+5. BPTT continuation
+Not going into too much detail on the math, 
+when computing the gradients of the loss function with respect to the weight matrix we obtain the matrix Wa power t minus one multiplied by a term. 
+Intuitively, if the values of the matrix are below one, the series will converge to zero, and if its values are above one it will diverge to infinity.
+
+6. Solutions to the gradient problems
+Researchers found some approaches to avoid these problems. 
+Limiting the size of the gradients or scaling them can easily help us avoid the exploding gradient problem 
+Initializing the matrix W as an orthogonal matrix makes their multiplication always be equal to one Using regularization controls the size of the entries 
+By using the ReLU activation function, the derivative becomes a constant, and thus doesn't increase or decrease exponentially 
+Finally, use other RNN cells such as GRU and LSTM that we will learn later.
