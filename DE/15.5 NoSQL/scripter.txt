@@ -11,7 +11,18 @@ We will start chapter one by describing the differences between NoSQL and relati
 This is a conceptual course, so no coding is required. Throughout the course, we will follow Datazy, a fictional social network where data scientists can share their knowledge and ask questions about data science. We will see how this company implements each kind of NoSQL database for its different needs.
 
 4. NoSQL vs relational databases
-Let's start with comparing traditional relational databases with NoSQL databases. Relational databases use tables with rows and columns. A database schema needs to be defined before inserting the data. Changing the database schema later might prove complicated because, on some occasions, we will need to create migration scripts or change the application code. Queries may be slow when joining multiple tables. Relational databases scale vertically, which means they scale by adding more power, for example, CPU or RAM. This is more expensive. They guarantee Atomicity, Consistency, Isolation, and Durability in transactions, also known as ACID transactions. They are typically closed source. NoSQL, originally referred to "non-SQL" or "non-relational", is also interpreted as "Not Only SQL". These non-relational databases, don't use tables with rows and columns. They allow the data to be stored without having to define a schema, with the possibility of changing the structure of the data over time. Queries can be faster because there is no need to join multiple tables. NoSQL databases scale horizontally, which means they scale by adding more machines. This is cheaper than scaling vertically. They sometimes don't support ACID transactions. Most of them are open source.
+Let's start with comparing traditional relational databases with NoSQL databases. 
+Relational databases use tables with rows and columns. 
+A database schema needs to be defined before inserting the data. 
+Changing the database schema later might prove complicated because, on some occasions, we will need to create migration scripts or change the application code. 
+Queries may be slow when joining multiple tables. Relational databases scale vertically, which means they scale by adding more power, for example, CPU or RAM. 
+This is more expensive. They guarantee Atomicity, Consistency, Isolation, and Durability in transactions, also known as ACID transactions. 
+They are typically closed source. NoSQL, originally referred to "non-SQL" or "non-relational", is also interpreted as "Not Only SQL". 
+These non-relational databases, don't use tables with rows and columns. 
+They allow the data to be stored without having to define a schema, with the possibility of changing the structure of the data over time. 
+Queries can be faster because there is no need to join multiple tables. 
+NoSQL databases scale horizontally, which means they scale by adding more machines. 
+This is cheaper than scaling vertically. They sometimes don't support ACID transactions. Most of them are open source.
 
 5. NoSQL vs relational databases
 It is important to highlight that NoSQL and relational databases are complementary and can coexist with each other. We can have an application using different kinds of databases depending on the needs.
@@ -68,10 +79,13 @@ Got It!
 In this lesson, we are going to discuss when key-value databases are suitable and when not.
 
 2. Suitable cases
-Let's start with some scenarios where key-value databases are a good fit. Websites store data of user sessions. Key-value databases can store this information using the session identifier as the key and all the information about the session in the value.
+Let's start with some scenarios where key-value databases are a good fit. 
+Websites store data of user sessions. 
+Key-value databases can store this information using the session identifier as the key and all the information about the session in the value.
 
 3. Suitable cases
-Websites frequently store user profiles and user preferences, as we saw in lesson one, in the example of Datazy. The key can be, for instance, the user identifier. The user profile information and user preferences can be stored in the value within a single object.
+Websites frequently store user profiles and user preferences, as we saw in lesson one, in the example of Datazy. 
+The key can be, for instance, the user identifier. The user profile information and user preferences can be stored in the value within a single object.
 
 4. Suitable cases
 Key-value databases are also suitable for storing the data of shopping carts. The key can be the user identifier, and the value can be all the shopping cart information.
@@ -130,8 +144,8 @@ Chapter2
 #################################
 
 Got It!
-1. What is a document database?
-Welcome to this second chapter! In the previous chapter, we learned the basics of key-value databases. In this chapter, we will discover document databases. Let's start!
+
+In this chapter, we will discover document databases. Let's start!
 
 Documents are grouped into collections.
 
@@ -139,22 +153,42 @@ Documents are grouped into collections.
 We can have
 
 9. Document database - overview
-multiple collections within a database. If you are familiar with relational databases, we can say that documents are analogous to rows and collections to tables.
+multiple collections within a database. 
+If you are familiar with relational databases, 
+we can say that documents are analogous to rows and collections to tables.
 
 10. Documents
-A document is a set of key-value pairs. The keys are strings and the values can be numbers, strings, booleans, arrays or objects. As document databases are schemaless, there is no need to specify the structure of the documents. Documents can encode the data in JSON, BSON, YAML, or XML formats. Throughout this chapter, we will focus on JSON format, as it is the most popular.
+A document is a set of key-value pairs. The keys are strings and the values can be numbers, strings, booleans, arrays or objects. 
+As document databases are schemaless, there is no need to specify the structure of the documents. 
+Documents can encode the data in JSON, BSON, YAML, or XML formats. 
+Throughout this chapter, we will focus on JSON format, as it is the most popular.
 
 11. Documents - JSON format
-Here is an example of a document in JSON format. It stores the information of every user registered at Datazy. As we can see, data is organized in key-value pairs separated by commas. The value for the "address" key is another document. Notice that this related information is embedded in the main document, avoiding the need to look for the address in another place. The value for the "hobbies" key is an array. Its elements are separated by commas and surrounded by square brackets.
+Here is an example of a document in JSON format. 
+It stores the information of every user registered at Datazy. 
+As we can see, data is organized in key-value pairs separated by commas. 
+The value for the "address" key is another document. 
+Notice that this related information is embedded in the main document, avoiding the need to look for the address in another place. 
+The value for the "hobbies" key is an array. Its elements are separated by commas and surrounded by square brackets.
 
 12. Documents - queries
-Unlike key-value databases that we studied in the previous chapter, we can elaborate more complex queries with document databases. For instance, we can get all the users who live in New York and like hiking, get all the users older than 40, or simply get all the user's data by a given user identifier. We will see some query examples in the lesson dedicated to MongoDB.
+Unlike key-value databases that we studied in the previous chapter, 
+we can elaborate more complex queries with document databases. 
+For instance, we can get all the users who live in New York and like hiking, get all the users older than 40, or simply get all the user's data by a given user identifier. 
+We will see some query examples in the lesson dedicated to MongoDB.
 
 13. Documents - polymorphic model
-Document databases are polymorphic. It means that documents within the same collection don't need to have the same structure. For instance, these two documents describe Datazy users, but the information they have is different. The document on the right doesn't have the address information, but it has the date of birth.
+Document databases are polymorphic. 
+It means that documents within the same collection don't need to have the same structure. 
+For instance, these two documents describe Datazy users, but the information they have is different. 
+The document on the right doesn't have the address information, but it has the date of birth.
 
 14. Collections
-As we said before, collections are sets of documents. Usually, collections store the same type of entities, such as users, products, etc., but they don't mix different types of entities. A good way to organize documents and collections is by thinking about the queries we want to get in our application. There are best practices of modeling, but they are out of the scope of this course.
+As we said before, collections are sets of documents. 
+Usually, collections store the same type of entities, 
+such as users, products, etc., but they don't mix different types of entities. 
+A good way to organize documents and collections is by thinking about the queries we want to get in our application.
+There are best practices of modeling, but they are out of the scope of this course.
 
 15. Popular document databases
 Here are some popular document databases.
@@ -172,7 +206,15 @@ For developers, working with documents is very intuitive and a natural way to wo
 As we saw with key-value databases, document databases can scale horizontally by using the sharding technique.
 
 5. Limitations - more responsibility
-On the other hand, document databases have some limitations. As they are schemaless, we will have to be more responsible and care about data in the application code. For example, if the email account is always required when signing up a user, we will have to check in our code if this information has been received. This scenario is simple, but more complex ones can occur. Another point to take care of is redundant data. We may introduce redundancy for optimizing, but we must remember which data is redundant. Let's suppose that we need to display a customer name in several parts of our application, so we decide to duplicate the name in different documents to optimize the queries. If we need to modify the name, we will have to remember that we must change it in all the documents.
+On the other hand, document databases have some limitations. As they are schemaless, we will have to be more responsible and care about data in the application code.
+For example, if the email account is always required when signing up a user, we will have to check in our code if this information has been received. 
+This scenario is simple, but more complex ones can occur. 
+Another point to take care of is redundant data. 
+We may introduce redundancy for optimizing, but we must remember which data is redundant. 
+Let's suppose that we need to display a customer name in several parts of our application, 
+so we decide to duplicate the name in different documents to optimize the queries. 
+If we need to modify the name, 
+we will have to remember that we must change it in all the documents.
 
 6. Let's practice!
 Great job! Let's take some exercises before studying the scenarios where document databases are suitable.

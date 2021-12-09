@@ -10,28 +10,48 @@ We already saw that you can describe the information captured by two features by
 For instance the point highlighted here has coordinates 2.7 and 1 in the original hand length versus foot length reference system.
 
 4. PCA concept
-But we could just as well describe this point using multiplications of the vectors. In this case it would be 2 times the red vector and minus 1 times the yellow vector. We call these values the first and second principal components respectively, where the red one is most important as it is aligned with the biggest source of variance in the data. We can calculate these principal components for all points in the dataset with sklearn's PCA() class.
+But we could just as well describe this point using multiplications of the vectors. 
+In this case it would be 2 times the red vector and minus 1 times the yellow vector. 
+We call these values the first and second principal components respectively, 
+where the red one is most important as it is aligned with the biggest source of variance in the data. 
+We can calculate these principal components for all points in the dataset with sklearn's PCA() class.
 
 5. Calculating the principal components
-But before we do this, we have to scale the values with the StandardScaler(). PCA can really underperform if you don't do this. We can then create our PCA instance and apply the .fit_transform() method to the scaled data to calculate the two principal components.
+But before we do this, we have to scale the values with the StandardScaler(). 
+PCA can really underperform if you don't do this. 
+We can then create our PCA instance and apply the .fit_transform() method to the scaled data to calculate the two principal components.
 
 6. PCA removes correlation
-When we plot these values for all points in the dataset, you'll see that our resulting point cloud no longer shows any correlation and therefore, no more duplicate information. If we would add a third feature to the original dataset we would also have to add a third principal component if we don't want to lose any information. And this remains true as you keep adding features. You could describe a 100 feature dataset with 100 principal components. But why would you want to do such a thing? The components are much harder to understand than the original features.
+When we plot these values for all points in the dataset, 
+you'll see that our resulting point cloud no longer shows any correlation and therefore, no more duplicate information. 
+If we would add a third feature to the original dataset we would also have to add a third principal component if we don't want to lose any information. 
+And this remains true as you keep adding features. You could describe a 100 feature dataset with 100 principal components. 
+But why would you want to do such a thing? The components are much harder to understand than the original features.
 
 7. Principal component explained variance ratio
-The answer lies in the fact that the components share no duplicate information and that they are ranked from most to least important. We can access the explained variance ratio of each principal component after fitting the algorithm to the data using the .explained_variance_ratio_ attribute. In this case it tells us that the first components explains 90% of the variance in the data and the second the remaining 10%. When you are dealing with a dataset with a lot of correlation the explained variance typically becomes concentrated in the first few components. The remaining components then explain so little variance that they can be dropped. This is why PCA is so powerful for dimensionality reduction.
+The answer lies in the fact that the components share no duplicate information and that they are ranked from most to least important. 
+We can access the explained variance ratio of each principal component after fitting the algorithm to the data using the .explained_variance_ratio_ attribute. 
+In this case it tells us that the first components explains 90% of the variance in the data and the second the remaining 10%. 
+When you are dealing with a dataset with a lot of correlation the explained variance typically becomes concentrated in the first few components. 
+The remaining components then explain so little variance that they can be dropped. 
+This is why PCA is so powerful for dimensionality reduction.
 
 8. PCA for dimensionality reduction
 Let's look at a data sample with very strong correlation. The right versus left leg length data we already saw last lesson.
 
 9. PCA for dimensionality reduction
-The first component here explains more than 99.9% of the variance in the data and therefore it would clearly make sense to drop the second component. Two-feature datasets make it easier to see what PCA is doing behind the scenes but they are way too small for an actual dimensionality reduction use case.
+The first component here explains more than 99.9% of the variance in the data and therefore it would clearly make sense to drop the second component. 
+Two-feature datasets make it easier to see what PCA is doing behind the scenes but they are way too small for an actual dimensionality reduction use case.
 
 10. PCA for dimensionality reduction
-So let's look at a more high dimensional example. The full ANSUR dataset has 94 highly correlated features. When we fit pca to this data we'll find that the 2 first components explain 44 and 18% of the variance in the data.
+So let's look at a more high dimensional example. 
+The full ANSUR dataset has 94 highly correlated features. 
+When we fit pca to this data we'll find that the 2 first components explain 44 and 18% of the variance in the data.
 
 11. PCA for dimensionality reduction
-We can use NumPy's cumulative sum method on the .explained_variance_ratio_ attribute to see how much variance we can explain in total by using a certain number of components. Using just the first two components would still allow us to keep 62% of the variance in the data whereas we would have to use 10 components if we would want to keep 80% of the variance.
+We can use NumPy's cumulative sum method on the .explained_variance_ratio_ attribute 
+to see how much variance we can explain in total by using a certain number of components. 
+Using just the first two components would still allow us to keep 62% of the variance in the data whereas we would have to use 10 components if we would want to keep 80% of the variance.
 
 12. Let's practice!
 Now it's your turn to apply PCA.
