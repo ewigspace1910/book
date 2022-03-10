@@ -165,7 +165,12 @@ At first think, it seems like having a variable that you CAN'T change is a terri
 As you'll experience throughout your Scala journey on DataCamp, Scala nudges use towards immutability. BECAUSE we are forced to copy our objects each time we want to make a change, we become much more conscious of HOW and WHEN we change our program's state. With this philosophy, we receive fewer possible states within our programs, fewer defects, and codebases that are easier to maintain.
 
 7. Type inference is powerful
-We've defined vals, like fourHearts, and vars, like aceSpades. Using a powerful feature of Scala called type inference, we can make this code even more concise. All we need to do is drop the colon then the type (Int, in this case). Scala can infer that fourHearts is an Int because it knows whole numbers like 4 are typically meant to be integers. Type inference not only applies to variables, but also collections, functions, and more, with the rule of thumb being programmers can omit almost all type information that's considered annoying. Type inference saves keystrokes and characters, which is a big deal in massive codebases. You'll experience type inference more in this course later.
+We've defined vals, like fourHearts, and vars, like aceSpades. Using a powerful feature of Scala called type inference, we can make this code even more concise. 
+All we need to do is drop the colon then the type (Int, in this case). 
+Scala can infer that fourHearts is an Int because it knows whole numbers like 4 are typically meant to be integers. 
+Type inference not only applies to variables, but also collections, functions, and more, 
+with the rule of thumb being programmers can omit almost all type information that's considered annoying. 
+Type inference saves keystrokes and characters, which is a big deal in massive codebases. You'll experience type inference more in this course later.
 
 8. Semicolons
 There is something else that contributes to Scala's conciseness. You may have noticed there are no semicolons at the end of these statements.
